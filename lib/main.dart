@@ -20,6 +20,7 @@ class CircleJump extends StatelessWidget {
       routes: {
         '/': (context) => const StartScreen(),
         '/game': (context) => const GameScreen(),
+        '/game-over': (context) => const GameOverScreen(),
       },
     );
   }
@@ -49,7 +50,8 @@ class StartScreen extends StatelessWidget {
                 Navigator.pushNamed(context, '/game');
               },
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 backgroundColor: Colors.blue,
               ),
               child: const Text(
@@ -74,98 +76,55 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateMixin {
+class _GameScreenState extends State<GameScreen>
+    with SingleTickerProviderStateMixin {
+  double playerY = 0; // Początkowa pozycja Y gracza
+  bool isJumping = false; // Zmienna informująca, czy gracz skacze
+  double jumpSize = 200;
+  final jumpDurationMs = 200;
   late AnimationController _controller;
-  late Animation<double> _animation;
-
-  double playerDistance = 100.0; // Odległość gracza od środka okręgu
-  bool isJumping = false;
-  int _score = 0; // Licznik punktów
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
+      duration: Duration(milliseconds: jumpDurationMs),
       vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-
-    _animation = Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
+    )..addListener(() {
+        setState(() {
+          playerY = jumpSize * (_controller.value);
+        });
+      });
   }
 
   void _jump() {
-    if (!isJumping) {
-      setState(() {
-        isJumping = true;
-        _score++; // Zwiększamy liczbę punktów przy każdym skoku
-      });
-
-      Future.delayed(const Duration(milliseconds: 200), () {
-        setState(() {
-          playerDistance += 50;
-        });
-      }).then((_) {
-        Future.delayed(const Duration(milliseconds: 200), () {
-          setState(() {
-            playerDistance -= 50;
-            isJumping = false;
-          });
-        });
-      });
+    if (isJumping) {
+      return;
     }
+    setState(() {
+      isJumping = true;
+    });
+    _controller.forward(from: 0.0); // Uruchom animację skoku
+    Future.delayed(Duration(milliseconds: jumpDurationMs), () {
+      setState(() {
+        isJumping = false; // Po zakończeniu skoku
+      });
+      _controller.reverse(); // Wracanie do pierwotnej pozycji po skoku
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: _jump,
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            final centerX = MediaQuery.of(context).size.width / 2;
-            final centerY = MediaQuery.of(context).size.height / 2;
+    final size = MediaQuery.of(context).size;
 
-            final x = centerX + playerDistance * cos(_animation.value);
-            final y = centerY + playerDistance * sin(_animation.value);
-
-            return Stack(
-              children: [
-                // Okrąg
-                CustomPaint(
-                  size: Size.infinite,
-                  painter: CirclePainter(),
-                ),
-                // Gracz (czerwona kropka)
-                Positioned(
-                  left: x - 10,
-                  top: y - 10,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-                // Wyświetlanie punktów
-                Positioned(
-                  top: 50,
-                  right: 20,
-                  child: Text(
-                    'Score: $_score',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+    return GestureDetector(
+      onTap: _jump,
+      child: CustomPaint(
+        size: Size(size.width, size.height),
+        painter: CirclePainter(),
+        foregroundPainter: PlayerPainter(
+          playerY: (size.height / 2) - playerY,
+          isJumping: isJumping,
         ),
       ),
     );
@@ -178,6 +137,25 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   }
 }
 
+class Obstacle {
+  double angle;
+  final double speed;
+  final bool clockwise;
+
+  Obstacle({required this.angle, required this.speed, required this.clockwise});
+
+  void updateAngle() {
+    if (clockwise) {
+      angle += speed;
+    } else {
+      angle -= speed;
+    }
+
+    // Utrzymanie kąta w zakresie 0-2π
+    angle %= 2 * pi;
+  }
+}
+
 class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -186,15 +164,90 @@ class CirclePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4;
 
-    canvas.drawCircle(
-      Offset(size.width / 2, size.height / 2),
-      100,
-      paint,
-    );
+    final maxSize = max(size.width, size.height);
+    final radius = maxSize; // Promień okręgu = wysokość ekranu
+
+    // Środek okręgu
+    final centerX = size.width / 2;
+    final centerY = size.height / 2 + radius;
+
+    // Rysowanie pełnego okręgu o promieniu = wysokość ekranu
+    canvas.drawCircle(Offset(centerX, centerY), radius, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class GameOverScreen extends StatelessWidget {
+  const GameOverScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final score = ModalRoute.of(context)!.settings.arguments as int;
+
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Game Over',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Score: $score',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/game');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: const Text('Play Again'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlayerPainter extends CustomPainter {
+  final double playerY; // Zmienna do przechowywania pozycji Y gracza
+  final bool isJumping; // Zmienna informująca, czy gracz skacze
+
+  // Konstruktor przyjmujący stan skoku i pozycję Y
+  PlayerPainter({required this.playerY, required this.isJumping});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+
+    // Pozycja gracza na osi X zawsze w centrum ekranu
+    final playerX = size.width / 2;
+
+    // Rysowanie gracza (np. czerwone kółko) na dynamicznej pozycji Y
+    canvas.drawCircle(Offset(playerX, playerY), 20, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true; // Zawsze przerysowuj, gdy zmienia się pozycja
   }
 }
