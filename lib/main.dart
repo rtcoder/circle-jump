@@ -16,7 +16,7 @@ class CircleJump extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      initialRoute: '/', // Ustawiamy ekran startowy jako domyślny
+      initialRoute: '/',
       routes: {
         '/': (context) => const StartScreen(),
         '/game': (context) => const GameScreen(),
@@ -46,7 +46,6 @@ class StartScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Nawigacja do ekranu gry
                 Navigator.pushNamed(context, '/game');
               },
               style: ElevatedButton.styleFrom(
@@ -81,6 +80,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
 
   double playerDistance = 100.0; // Odległość gracza od środka okręgu
   bool isJumping = false;
+  int _score = 0; // Licznik punktów
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..repeat(); // Animacja ciągła
+    )..repeat();
 
     _animation = Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
   }
@@ -98,9 +98,9 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
     if (!isJumping) {
       setState(() {
         isJumping = true;
+        _score++; // Zwiększamy liczbę punktów przy każdym skoku
       });
 
-      // Skok: oddalamy się od okręgu i wracamy
       Future.delayed(const Duration(milliseconds: 200), () {
         setState(() {
           playerDistance += 50;
@@ -120,14 +120,13 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: _jump, // Skok po naciśnięciu ekranu
+        onTap: _jump,
         child: AnimatedBuilder(
           animation: _animation,
           builder: (context, child) {
             final centerX = MediaQuery.of(context).size.width / 2;
             final centerY = MediaQuery.of(context).size.height / 2;
 
-            // Obliczanie pozycji gracza
             final x = centerX + playerDistance * cos(_animation.value);
             final y = centerY + playerDistance * sin(_animation.value);
 
@@ -140,7 +139,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                 ),
                 // Gracz (czerwona kropka)
                 Positioned(
-                  left: x - 10, // Dopasowanie środka gracza
+                  left: x - 10,
                   top: y - 10,
                   child: Container(
                     width: 20,
@@ -148,6 +147,19 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                     decoration: const BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                // Wyświetlanie punktów
+                Positioned(
+                  top: 50,
+                  right: 20,
+                  child: Text(
+                    'Score: $_score',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -174,16 +186,15 @@ class CirclePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4;
 
-    // Rysujemy okrąg na środku ekranu
     canvas.drawCircle(
       Offset(size.width / 2, size.height / 2),
-      100, // Promień okręgu
+      100,
       paint,
     );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false; // Okrąg się nie zmienia, więc nie ma potrzeby odrysowywać
+    return false;
   }
 }
