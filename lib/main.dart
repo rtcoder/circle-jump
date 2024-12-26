@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'CircleJump.dart';
+import 'circle_jump.dart';
 
 void main() {
   runApp(const CircleJump());

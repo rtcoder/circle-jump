@@ -1,11 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'Painters/CirclePainter.dart';
-import 'GameScreen.dart';
-import 'Obstacle.dart';
-import 'Painters/ObstaclePainter.dart';
-import 'Painters/PlayerPainter.dart';
+
+import 'Background/animated_background.dart';
+import 'Obstacles/obstacle.dart';
+import 'Obstacles/obstacle_generator.dart';
+import 'Painters/circle_painter.dart';
+import 'Painters/obstacle_painter.dart';
+import 'Painters/player_painter.dart';
+import 'Screens/game_screen.dart';
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
@@ -29,14 +30,7 @@ class GameScreenState extends State<GameScreen>
       });
 
     // Inicjalizacja przeszkód
-    obstacles = List.generate(
-      5,
-      (index) => Obstacle(
-        angle: index * pi / 2.5,
-        speed: 0.02,
-        clockwise: index % 2 == 0,
-      ),
-    );
+    obstacles = obstacleGenerator(10);
 
     // Timer do aktualizacji przeszkód
     Future.doWhile(() async {
@@ -72,18 +66,24 @@ class GameScreenState extends State<GameScreen>
 
     return GestureDetector(
       onTap: _jump,
-      child: CustomPaint(
-        size: Size(size.width, size.height),
-        painter: CirclePainter(),
-        foregroundPainter: ObstaclePainter(
-          obstacles: obstacles,
-        ),
-        child: CustomPaint(
-          foregroundPainter: PlayerPainter(
-            playerY: (size.height / 2) - playerY,
-            isJumping: isJumping,
+      child: Stack(
+        children: [
+          const AnimatedBackground(),
+          CustomPaint(
+            size: Size(size.width, size.height),
+            painter: CirclePainter(),
+            foregroundPainter: ObstaclePainter(
+              obstacles: obstacles,
+            ),
           ),
-        ),
+          CustomPaint(
+            foregroundPainter: PlayerPainter(
+              mediaSize: size,
+              playerY: (size.height / 2) - playerY,
+              isJumping: isJumping,
+            ),
+          ),
+        ],
       ),
     );
   }

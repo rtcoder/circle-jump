@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../utils.dart';
+
 class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -10,12 +12,10 @@ class CirclePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4;
 
-    final maxSize = max(size.width, size.height);
-    final radius = maxSize;
-
-    final centerX = size.width / 2;
-    final centerY = size.height / 2 + radius;
-
+    var center = getCenterOfCircle(size);
+    final centerX = center.centerX;
+    final centerY = center.centerY;
+    final radius = center.radius;
     canvas.drawCircle(Offset(centerX, centerY), radius, paint);
   }
 
