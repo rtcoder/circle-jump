@@ -77,8 +77,8 @@ class GameScreenState extends State<GameScreen>
             ),
           ),
           CustomPaint(
+            size: Size(size.width, size.height),
             foregroundPainter: PlayerPainter(
-              mediaSize: size,
               playerY: (size.height / 2) - playerY,
               isJumping: isJumping,
             ),

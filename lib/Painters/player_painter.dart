@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 class PlayerPainter extends CustomPainter {
   final double playerY;
   final bool isJumping;
-  final Size mediaSize;
 
-  PlayerPainter({required this.mediaSize,required this.playerY, required this.isJumping});
+  PlayerPainter({required this.playerY, required this.isJumping});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -13,7 +12,7 @@ class PlayerPainter extends CustomPainter {
       ..color = Colors.red
       ..style = PaintingStyle.fill;
 
-    final playerX = mediaSize.width / 2;
+    final playerX = size.width / 2;
 
     canvas.drawCircle(Offset(playerX, playerY), 20, paint);
   }
