@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'Painters/CirclePainter.dart';
 import 'GameScreen.dart';
 import 'Obstacle.dart';
+import 'Painters/ObstaclePainter.dart';
 import 'Painters/PlayerPainter.dart';
 
 class GameScreenState extends State<GameScreen>
@@ -74,31 +75,14 @@ class GameScreenState extends State<GameScreen>
       child: CustomPaint(
         size: Size(size.width, size.height),
         painter: CirclePainter(),
-        foregroundPainter: PlayerPainter(
-          playerY: (size.height / 2) - playerY,
-          isJumping: isJumping,
+        foregroundPainter: ObstaclePainter(
+          obstacles: obstacles,
         ),
-        child: Stack(
-          children: obstacles
-              .map(
-                (obstacle) => Positioned(
-                  left: (size.width / 2) +
-                      (size.height / 2 - 50) * cos(obstacle.angle) -
-                      10,
-                  top: (size.height / 2) +
-                      (size.height / 2 - 50) * sin(obstacle.angle) -
-                      10,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.green,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
+        child: CustomPaint(
+          foregroundPainter: PlayerPainter(
+            playerY: (size.height / 2) - playerY,
+            isJumping: isJumping,
+          ),
         ),
       ),
     );
