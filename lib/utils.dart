@@ -20,3 +20,12 @@ CircleCenter getCenterOfCircle(Size size) {
 
   return CircleCenter(centerX: centerX, centerY: centerY, radius: radius);
 }
+
+Offset angleToPositionOnCircle(
+    CircleCenter center, double angleDeg, double radiusOffset) {
+  final angleRad = angleDeg * pi / 180;
+  final radius = center.radius + radiusOffset;
+  double x = center.centerX + radius * cos(angleRad);
+  double y = center.centerY + radius * sin(angleRad);
+  return Offset(x, y);
+}

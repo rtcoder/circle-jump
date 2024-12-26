@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +16,6 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final List<Cloud> _clouds = [];
-  final Random _random = Random();
   bool _cloudsInitialized = false;
 
   @override
@@ -28,23 +25,21 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     // Animacja kontrolera
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(minutes: 1),
+      duration: const Duration(minutes: 5),
     )..repeat(); // Powtarzanie cyklu
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     // Inicjalizacja chmur w odpowiednim momencie cyklu życia widgetu
     if (!_cloudsInitialized) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final screenHeight = MediaQuery.of(context).size.height;
-
       _clouds.addAll(cloudGenerator(5));
-
       _cloudsInitialized = true;
     }
   }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -53,11 +48,9 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
   // Aktualizowanie pozycji chmur
   void _updateClouds(double timeDelta) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     for (int i = 0; i < _clouds.length; i++) {
       final cloud = _clouds[i];
-      cloud.angle -= cloud.speed;// * timeDelta; // Ruch w lewo
+      cloud.angle -= cloud.speed; // * timeDelta; // Ruch w lewo
     }
   }
 
@@ -78,21 +71,21 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
           time <= 0.5 ? time * 2 : (1 - time) * 2,
         );
 
+        final size = MediaQuery.of(context).size;
+
         return Stack(
           children: [
             Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: size.width,
+              height: size.height,
               color: backgroundColor,
             ),
             CustomPaint(
-              size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height),
+              size: Size(size.width, size.height),
               foregroundPainter: SunMoonPainter(time: time),
             ),
             CustomPaint(
-              size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height),
+              size: Size(size.width, size.height),
               foregroundPainter: CloudPainter(clouds: _clouds),
             ),
           ],
