@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../utils.dart';
 
-void drawMoon(Canvas canvas, Paint paint, CircleCenter center,
+void drawMoon(Canvas canvas, Paint paint, CircleCenter center, Size size,
     double angleDeg) {
-
   final position = angleToPositionOnCircle(center, angleDeg, 200);
   double x = position.dx;
   double y = position.dy;
-  if (x < 0 || y < 0) {
+  if (x < -10 || y < -10 || x > size.width + 10 || y > size.height + 10) {
     return;
   }
   paint.color = Colors.grey;
@@ -20,11 +19,12 @@ void drawMoon(Canvas canvas, Paint paint, CircleCenter center,
   canvas.drawCircle(Offset(x + 15, y - 5), 6, paint);
 }
 
-void drawSun(Canvas canvas, Paint paint, CircleCenter center, double angleDeg) {
+void drawSun(Canvas canvas, Paint paint, CircleCenter center, Size size,
+    double angleDeg) {
   final position = angleToPositionOnCircle(center, angleDeg, 200);
   double x = position.dx;
   double y = position.dy;
-  if (x < 0 || y < 0) {
+  if (x < -10 || y < -10 || x > size.width + 10 || y > size.height + 10) {
     return;
   }
   paint.color = Colors.yellow;
@@ -38,15 +38,14 @@ class SunMoonPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.fill;
+    final paint = Paint()..style = PaintingStyle.fill;
 
     var center = getCenterOfCircle(size);
     final angleDegSun = 360 * time;
     final angleDegMoon = angleDegSun - 180;
 
-    drawSun(canvas, paint, center, angleDegSun);
-    drawMoon(canvas, paint, center, angleDegMoon);
+    drawSun(canvas, paint, center, size, angleDegSun);
+    drawMoon(canvas, paint, center, size, angleDegMoon);
   }
 
   @override

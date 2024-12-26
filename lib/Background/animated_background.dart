@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +19,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   late AnimationController _controller;
   final List<Cloud> _clouds = [];
   bool _cloudsInitialized = false;
+  ui.Image? _cloudImage;
 
   @override
   void initState() {
@@ -27,6 +30,19 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
       vsync: this,
       duration: const Duration(minutes: 5),
     )..repeat(); // Powtarzanie cyklu
+
+    _loadCloudImage();
+  }
+
+  Future<void> _loadCloudImage() async {
+    // Ładowanie obrazka z assetów
+    final data =
+        await DefaultAssetBundle.of(context).load('assets/images/cloud.png');
+    final bytes = data.buffer.asUint8List();
+    final image = await decodeImageFromList(bytes);
+    setState(() {
+      _cloudImage = image;
+    });
   }
 
   @override
@@ -56,6 +72,9 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
   @override
   Widget build(BuildContext context) {
+    if (_cloudImage == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -86,7 +105,10 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             ),
             CustomPaint(
               size: Size(size.width, size.height),
-              foregroundPainter: CloudPainter(clouds: _clouds),
+              foregroundPainter: CloudPainter(
+                clouds: _clouds, // Generacja chmur
+                cloudImage: _cloudImage!,
+              ),
             ),
           ],
         );
