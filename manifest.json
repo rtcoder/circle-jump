@@ -1,6 +1,6 @@
 {
-    "name": "circle_jump",
-    "short_name": "circle_jump",
+    "name": "Circle Jump",
+    "short_name": "Circle Jump",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
