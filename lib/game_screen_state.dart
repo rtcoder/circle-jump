@@ -65,7 +65,7 @@ class GameScreenState extends State<GameScreen>
     final size = MediaQuery.of(context).size;
 
     return GestureDetector(
-      onTap: _jump,
+      onTapDown: (_) => _jump(),
       child: Stack(
         children: [
           const AnimatedBackground(),
