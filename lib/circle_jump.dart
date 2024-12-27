@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'Screens/game_over_screen.dart';
+import 'Screens/GameOverScreen/game_over_screen.dart';
 import 'Screens/GameScreen/game_screen.dart';
-import 'Screens/start_screen.dart';
+import 'Screens/StartScreen/start_screen.dart';
 
 class CircleJump extends StatelessWidget {
   const CircleJump({super.key});
