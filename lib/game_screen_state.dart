@@ -1,6 +1,8 @@
 import 'package:circle_jump/game.dart';
 import 'package:circle_jump/player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'Background/animated_background.dart';
 import 'Obstacles/obstacle.dart';
 import 'Obstacles/obstacle_generator.dart';
@@ -72,27 +74,55 @@ class GameScreenState extends State<GameScreen>
 
     final size = MediaQuery.of(context).size;
 
-    return GestureDetector(
-      onTapDown: (_) => _jump(),
-      child: Stack(
-        children: [
-          const AnimatedBackground(),
-          CustomPaint(
-            size: Size(size.width, size.height),
-            foregroundPainter: ObstaclePainter(
-              obstacles: obstacles,
+    return Focus(
+      autofocus: true,
+      onKeyEvent: (FocusNode node, KeyEvent event) {
+        if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.space) {
+          _jump();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: GestureDetector(
+        onTapDown: (_) => _jump(),
+        child: Stack(
+          children: [
+            const AnimatedBackground(),
+            CustomPaint(
+              size: Size(size.width, size.height),
+              foregroundPainter: ObstaclePainter(
+                obstacles: obstacles,
+              ),
             ),
-          ),
-          CustomPaint(
-            size: Size(size.width, size.height),
-            foregroundPainter: PlayerPainter(
-              playerY: (size.height / 2) - playerY,
-              isJumping: isJumping,
+            CustomPaint(
+              size: Size(size.width, size.height),
+              foregroundPainter: PlayerPainter(),
             ),
-          ),
-        ],
+            Positioned(
+              top: 20,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5), // Poprawiona wartość alpha
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Distance: ${game.distance.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+
   }
 
   @override
