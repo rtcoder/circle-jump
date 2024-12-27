@@ -3,13 +3,13 @@ import 'package:circle_jump/player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'Background/animated_background.dart';
-import 'Obstacles/obstacle.dart';
-import 'Obstacles/obstacle_generator.dart';
-import 'Painters/obstacle_painter.dart';
-import 'Painters/player_painter.dart';
-import 'Screens/game_screen.dart';
-import 'images.dart';
+import '../../Background/animated_background.dart';
+import '../../Obstacles/obstacle.dart';
+import '../../Obstacles/obstacle_generator.dart';
+import '../../Painters/obstacle_painter.dart';
+import '../../Painters/player_painter.dart';
+import 'game_screen.dart';
+import '../../images.dart';
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
