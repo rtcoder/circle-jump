@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../Painters/cloud_painter.dart';
 import '../Painters/sun_moon_painter.dart';
 import 'Cloud/cloud.dart';
+import 'background_color.dart';
 
 class AnimatedBackground extends StatefulWidget {
   const AnimatedBackground({super.key});
@@ -84,11 +85,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
         // Aktualizacja pozycji chmur
         _updateClouds(timeDelta / 1000.0); // Przeliczenie na sekundy
 
-        final backgroundColor = Color.lerp(
-          Color(0xFF0093D9),
-          Color(0xFF010117),
-          time <= 0.5 ? time * 2 : (1 - time) * 2,
-        );
+        final backgroundColor = getBackgroundColor(time);
 
         final size = MediaQuery.of(context).size;
 
