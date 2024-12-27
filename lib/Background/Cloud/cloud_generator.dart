@@ -10,6 +10,7 @@ List<Cloud> cloudGenerator(int count) {
       heightOverGround: 150 + rand.nextDouble() * 150, // Wysokość
       size: 50 + rand.nextDouble() * 50, // Rozmiar chmury
       speed: 0.001 + rand.nextDouble() * (0.003 - 0.001),
+      opacity: 0.4 + rand.nextDouble() * (1 - 0.4),
     );
   });
 }

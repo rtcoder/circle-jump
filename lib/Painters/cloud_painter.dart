@@ -19,11 +19,15 @@ class CloudPainter extends CustomPainter {
     for (final cloud in clouds) {
       final x = cloud.calculateX(centerX, radius);
       final y = cloud.calculateY(centerY, radius);
-      _drawCloudImage(canvas, Offset(x, y), cloud.size);
+      _drawCloudImage(canvas, Offset(x, y), cloud.size, cloud.opacity);
     }
   }
 
-  void _drawCloudImage(Canvas canvas, Offset position, double size) {
+  void _drawCloudImage(Canvas canvas, Offset position, double size, double opacity) {
+    // Paint z ustawioną przezroczystością
+    final paint = Paint()
+      ..color = Color.fromARGB((opacity * 255).toInt(), 255, 255, 255); // Biały kolor z przezroczystością
+
     canvas.drawImageRect(
       cloudImage,
       Rect.fromLTWH(0, 0, cloudImage.width.toDouble(), cloudImage.height.toDouble()),
@@ -32,7 +36,7 @@ class CloudPainter extends CustomPainter {
         width: size * 1.5, // Szerokość obrazka
         height: size * 0.75, // Wysokość obrazka
       ),
-      Paint(),
+      paint,
     );
   }
 

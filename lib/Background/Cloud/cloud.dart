@@ -5,12 +5,14 @@ class Cloud {
   double size; // Rozmiar chmury
   double speed; // Szybkość przesuwania
   double angle; // Szybkość przesuwania
+  double opacity; // Szybkość przesuwania
 
   Cloud({
     required this.heightOverGround,
     required this.size,
     required this.speed,
     required this.angle,
+    required this.opacity,
   });
 
   double _calculateRadius(double radius) {
