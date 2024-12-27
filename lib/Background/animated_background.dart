@@ -1,10 +1,11 @@
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
+import 'package:circle_jump/game.dart';
+import 'package:circle_jump/player.dart';
 import 'package:flutter/material.dart';
 
 import '../Painters/circle_painter.dart';
 import '../Painters/cloud_painter.dart';
 import '../Painters/sun_moon_painter.dart';
-import '../utils.dart';
 import 'Cloud/cloud.dart';
 import 'background_color.dart';
 
@@ -33,8 +34,8 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 16));
       setState(() {
-        incrementCircleAngle();
-        incrementPlayerAngle();
+        game.incrementCircleAngle();
+        player.incrementPlayerAngle();
       });
       return true;
     });
@@ -96,7 +97,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             CustomPaint(
               size: Size(size.width, size.height),
               foregroundPainter: CloudPainter(
-                clouds: _clouds, // Generacja chmur
+                clouds: _clouds,
               ),
             ),
           ],

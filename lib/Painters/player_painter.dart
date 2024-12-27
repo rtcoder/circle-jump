@@ -1,31 +1,23 @@
 import 'package:circle_jump/images.dart';
+import 'package:circle_jump/player.dart';
 import 'package:flutter/material.dart';
 
-import '../utils.dart';
-
 class PlayerPainter extends CustomPainter {
-  final double playerY;
-  final bool isJumping;
-
-  PlayerPainter({
-    required this.playerY,
-    required this.isJumping,
-  });
-
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = isJumping ? Colors.blue : Colors.red
+      ..color = Colors.black
       ..style = PaintingStyle.fill;
 
     final playerX = size.width / 2;
+    final playerY = (size.height / 2) - player.playerY;
 
-    canvas.drawCircle(Offset(playerX, playerY), playerRadius, paint);
-    final newSize = 40.0;
+    canvas.drawCircle(Offset(playerX, playerY), player.playerRadius, paint);
+    const newSize = 40.0;
     final circleOffset = Offset(playerX - newSize / 2, playerY - newSize / 2);
     canvas.save();
     canvas.translate(playerX, playerY);
-    canvas.rotate(playerAngle);
+    canvas.rotate(player.playerAngle);
     canvas.translate(-playerX, -playerY);
     canvas.drawImageRect(
         Images.ballImage!,

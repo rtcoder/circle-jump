@@ -1,3 +1,4 @@
+import 'package:circle_jump/game.dart';
 import 'package:flutter/material.dart';
 
 import '../images.dart';
@@ -21,7 +22,7 @@ class CirclePainter extends CustomPainter {
     final circleOffset = Offset(centerX - newSize / 2, centerY - newSize / 2);
     canvas.save();
     canvas.translate(centerX, centerY);
-    canvas.rotate(-circleAngle);
+    canvas.rotate(-game.circleAngle);
     canvas.translate(-centerX, -centerY);
     canvas.drawImageRect(
         Images.circleImage!,

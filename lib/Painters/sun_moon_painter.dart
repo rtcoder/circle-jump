@@ -9,7 +9,7 @@ void drawMoon(Canvas canvas, Paint paint, CircleCenter center, Size size,
   paint.color = Colors.grey;
   canvas.drawCircle(Offset(x, y), 30, paint);
 
-  paint.color = Color(0x1701011E);
+  paint.color = const Color(0x1701011E);
   canvas.drawCircle(Offset(x - 10, y - 10), 5, paint);
   canvas.drawCircle(Offset(x + 8, y + 12), 4, paint);
   canvas.drawCircle(Offset(x + 15, y - 5), 6, paint);

@@ -1,5 +1,6 @@
 import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
+
 import '../Background/Cloud/cloud.dart';
 import '../utils.dart';
 
@@ -24,10 +25,8 @@ class CloudPainter extends CustomPainter {
 
   void _drawCloudImage(
       Canvas canvas, Offset position, double size, double opacity) {
-    // Paint z ustawioną przezroczystością
     final paint = Paint()
-      ..color = Color.fromARGB((opacity * 255).toInt(), 255, 255,
-          255); // Biały kolor z przezroczystością
+      ..color = Color.fromARGB((opacity * 255).toInt(), 255, 255, 255);
 
     canvas.drawImageRect(
       Images.cloudImage!,
@@ -35,8 +34,8 @@ class CloudPainter extends CustomPainter {
           Images.cloudImage!.height.toDouble()),
       Rect.fromCenter(
         center: position,
-        width: size * 1.5, // Szerokość obrazka
-        height: size * 0.75, // Wysokość obrazka
+        width: size * 1.5,
+        height: size * 0.75,
       ),
       paint,
     );
@@ -44,6 +43,6 @@ class CloudPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; // Zawsze odświeżaj, gdy zmieniają się chmury
+    return true;
   }
 }

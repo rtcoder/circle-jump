@@ -1,12 +1,6 @@
 import 'dart:math';
-
+import 'package:circle_jump/game.dart';
 import 'package:flutter/material.dart';
-
-double playerAngle = 0;
-double circleAngle = 0;
-final circleAngleDelta = 0.001;
-const circleRadius = 1000.0;
-const playerRadius = 20.0;
 
 class CircleCenter {
   final double centerX;
@@ -18,12 +12,10 @@ class CircleCenter {
 }
 
 CircleCenter getCenterOfCircle(Size size) {
-  const radius = circleRadius;
-
   final centerX = size.width / 2;
-  final centerY = size.height / 2 + radius;
+  final centerY = size.height / 2 + game.circleRadius;
 
-  return CircleCenter(centerX: centerX, centerY: centerY, radius: radius);
+  return CircleCenter(centerX: centerX, centerY: centerY, radius: game.circleRadius);
 }
 
 Offset angleToPositionOnCircle(
@@ -36,13 +28,3 @@ Offset angleToPositionOnCircle(
   return Offset(x, y);
 }
 
-double calculatePlayerAngleDelta() {
-  return circleAngleDelta * circleRadius / playerRadius;
-}
-
-void incrementCircleAngle() {
-  circleAngle += circleAngleDelta;
-}
-void incrementPlayerAngle() {
-  playerAngle += calculatePlayerAngleDelta();
-}

@@ -1,3 +1,5 @@
+import 'package:circle_jump/game.dart';
+import 'package:circle_jump/player.dart';
 import 'package:flutter/material.dart';
 import 'Background/animated_background.dart';
 import 'Obstacles/obstacle.dart';
@@ -24,7 +26,7 @@ class GameScreenState extends State<GameScreen>
       vsync: this,
     )..addListener(() {
         setState(() {
-          playerY = jumpSize * (_controller.value);
+          player.playerY = player.jumpSize * (_controller.value);
         });
       });
 
@@ -37,6 +39,7 @@ class GameScreenState extends State<GameScreen>
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 16));
       setState(() {
+        game.updateDistance();
         for (var obstacle in obstacles) {
           obstacle.updateAngle();
         }
@@ -46,16 +49,16 @@ class GameScreenState extends State<GameScreen>
   }
 
   void _jump() {
-    if (isJumping) {
+    if (player.isJumping) {
       return;
     }
     setState(() {
-      isJumping = true;
+      player.isJumping = true;
     });
     _controller.forward(from: 0.0);
     Future.delayed(Duration(milliseconds: jumpDurationMs), () {
       setState(() {
-        isJumping = false;
+        player.isJumping = false;
       });
       _controller.reverse();
     });
