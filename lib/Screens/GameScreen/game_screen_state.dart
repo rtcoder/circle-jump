@@ -8,6 +8,7 @@ import '../../Obstacles/obstacle.dart';
 import '../../Obstacles/obstacle_generator.dart';
 import '../../Painters/obstacle_painter.dart';
 import '../../Painters/player_painter.dart';
+import 'VisualComponents/distance_text.dart';
 import 'game_screen.dart';
 import '../../images.dart';
 
@@ -98,26 +99,7 @@ class GameScreenState extends State<GameScreen>
               size: size,
               foregroundPainter: PlayerPainter(),
             ),
-            Positioned(
-              top: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5), // Poprawiona wartość alpha
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'Distance: ${game.distance.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ),
-            ),
+            distanceText(game.distance),
           ],
         ),
       ),
