@@ -29,7 +29,7 @@ jobs:
 
       # 4. Build the Flutter web app
       - name: Build Flutter Web
-        run: flutter build web --release
+        run: flutter build web
 
       # 5. Set base href for GitHub Pages deploy
       - name: Set base href for deploy
@@ -37,6 +37,8 @@ jobs:
           if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
             sed -i 's|<base href="/">|<base href="/circle-jump/">|' build/web/index.html
           fi
+      - name: List build/web directory
+        run: ls -la build/web
 
       # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
