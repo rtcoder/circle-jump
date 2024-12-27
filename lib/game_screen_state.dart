@@ -1,25 +1,11 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-
 import 'Background/animated_background.dart';
 import 'Obstacles/obstacle.dart';
 import 'Obstacles/obstacle_generator.dart';
 import 'Painters/obstacle_painter.dart';
 import 'Painters/player_painter.dart';
 import 'Screens/game_screen.dart';
-import 'utils.dart';
-
-class ImagesList {
-  static const String circle = 'assets/images/circle.png';
-  static const String cloud = 'assets/images/cloud.png';
-  static const String ball = 'assets/images/ball.png';
-}
-class Images {
-  ui.Image? cloudImage;
-  ui.Image? circleImage;
-  ui.Image? ballImage;
-}
+import 'images.dart';
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
@@ -29,9 +15,6 @@ class GameScreenState extends State<GameScreen>
   final jumpDurationMs = 500;
   late AnimationController _controller;
   List<Obstacle> obstacles = []; // Lista przeszkód
-  bool _imagesInitialized = false;
-  final Images _images = Images();
-   double _playerAngle = 0;
 
   @override
   void initState() {
@@ -45,7 +28,7 @@ class GameScreenState extends State<GameScreen>
         });
       });
 
-    _loadImages();
+    loadImages(context);
 
     // Inicjalizacja przeszkód
     obstacles = obstacleGenerator(10);
@@ -54,7 +37,6 @@ class GameScreenState extends State<GameScreen>
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 16));
       setState(() {
-        _playerAngle += calculatePlayerAngleDelta();
         for (var obstacle in obstacles) {
           obstacle.updateAngle();
         }
@@ -79,29 +61,9 @@ class GameScreenState extends State<GameScreen>
     });
   }
 
-  Future<ui.Image> _loadImage(String path) async {
-    final data = await DefaultAssetBundle.of(context).load(path);
-    final bytes = data.buffer.asUint8List();
-    final image = await decodeImageFromList(bytes);
-    return image;
-  }
-
-  Future<void> _loadImages() async {
-    final cloudImage = await _loadImage(ImagesList.cloud);
-    final circleImage = await _loadImage(ImagesList.circle);
-    final ballImage = await _loadImage(ImagesList.ball);
-
-    setState(() {
-      _images.cloudImage = cloudImage;
-      _images.circleImage = circleImage;
-      _images.ballImage = ballImage;
-      _imagesInitialized = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!_imagesInitialized) {
+    if (!imagesInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -111,7 +73,7 @@ class GameScreenState extends State<GameScreen>
       onTapDown: (_) => _jump(),
       child: Stack(
         children: [
-          AnimatedBackground(images: _images,),
+          const AnimatedBackground(),
           CustomPaint(
             size: Size(size.width, size.height),
             foregroundPainter: ObstaclePainter(
@@ -123,8 +85,6 @@ class GameScreenState extends State<GameScreen>
             foregroundPainter: PlayerPainter(
               playerY: (size.height / 2) - playerY,
               isJumping: isJumping,
-              playerImage: _images.ballImage!,
-              playerAngle: _playerAngle,
             ),
           ),
         ],

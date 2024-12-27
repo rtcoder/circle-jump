@@ -1,22 +1,18 @@
-import 'dart:ui' as ui;
-
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../Painters/circle_painter.dart';
 import '../Painters/cloud_painter.dart';
 import '../Painters/sun_moon_painter.dart';
-import '../game_screen_state.dart';
 import '../utils.dart';
 import 'Cloud/cloud.dart';
 import 'background_color.dart';
 
 class AnimatedBackground extends StatefulWidget {
-  final Images images;
-  const AnimatedBackground({super.key, required this.images});
+  const AnimatedBackground({super.key});
 
   @override
-  State<AnimatedBackground> createState() => _AnimatedBackgroundState(images: images);
+  State<AnimatedBackground> createState() => _AnimatedBackgroundState();
 }
 
 class _AnimatedBackgroundState extends State<AnimatedBackground>
@@ -24,10 +20,6 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   late AnimationController _controller;
   final List<Cloud> _clouds = [];
   bool _cloudsInitialized = false;
-  final Images images;
-  double _angle = 0;
-
-  _AnimatedBackgroundState({required this.images});
 
   @override
   void initState() {
@@ -41,7 +33,8 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 16));
       setState(() {
-        _angle += circleAngleDelta;
+        incrementCircleAngle();
+        incrementPlayerAngle();
       });
       return true;
     });
@@ -98,14 +91,12 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             ),
             CustomPaint(
               size: Size(size.width, size.height),
-              painter: CirclePainter(
-                  circleImage: images.circleImage!, angle: _angle),
+              painter: CirclePainter(),
             ),
             CustomPaint(
               size: Size(size.width, size.height),
               foregroundPainter: CloudPainter(
                 clouds: _clouds, // Generacja chmur
-                cloudImage: images.cloudImage!,
               ),
             ),
           ],

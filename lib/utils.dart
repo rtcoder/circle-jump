@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+double playerAngle = 0;
+double circleAngle = 0;
 final circleAngleDelta = 0.001;
 const circleRadius = 1000.0;
 const playerRadius = 20.0;
@@ -36,4 +38,11 @@ Offset angleToPositionOnCircle(
 
 double calculatePlayerAngleDelta() {
   return circleAngleDelta * circleRadius / playerRadius;
+}
+
+void incrementCircleAngle() {
+  circleAngle += circleAngleDelta;
+}
+void incrementPlayerAngle() {
+  playerAngle += calculatePlayerAngleDelta();
 }

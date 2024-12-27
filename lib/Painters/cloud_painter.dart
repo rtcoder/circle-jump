@@ -1,13 +1,12 @@
-import 'dart:ui' as ui;
+import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
 import '../Background/Cloud/cloud.dart';
 import '../utils.dart';
 
 class CloudPainter extends CustomPainter {
   final List<Cloud> clouds;
-  final ui.Image cloudImage; // Obraz chmury
 
-  CloudPainter({required this.clouds, required this.cloudImage});
+  CloudPainter({required this.clouds});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -23,14 +22,17 @@ class CloudPainter extends CustomPainter {
     }
   }
 
-  void _drawCloudImage(Canvas canvas, Offset position, double size, double opacity) {
+  void _drawCloudImage(
+      Canvas canvas, Offset position, double size, double opacity) {
     // Paint z ustawioną przezroczystością
     final paint = Paint()
-      ..color = Color.fromARGB((opacity * 255).toInt(), 255, 255, 255); // Biały kolor z przezroczystością
+      ..color = Color.fromARGB((opacity * 255).toInt(), 255, 255,
+          255); // Biały kolor z przezroczystością
 
     canvas.drawImageRect(
-      cloudImage,
-      Rect.fromLTWH(0, 0, cloudImage.width.toDouble(), cloudImage.height.toDouble()),
+      Images.cloudImage!,
+      Rect.fromLTWH(0, 0, Images.cloudImage!.width.toDouble(),
+          Images.cloudImage!.height.toDouble()),
       Rect.fromCenter(
         center: position,
         width: size * 1.5, // Szerokość obrazka
