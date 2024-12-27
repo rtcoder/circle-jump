@@ -28,8 +28,8 @@ const RESOURCES = {"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2e
 "canvaskit/skwasm.wasm": "e42815763c5d05bba43f9d0337fa7d84",
 "canvaskit/canvaskit.wasm": "3d2a2d663e8c5111ac61a46367f751ac",
 "canvaskit/canvaskit.js": "c86fbd9e7b17accae76e5ad116583dc4",
-"index.html": "5220d2833b2c5aca34ecb93d8b4f4322",
-"/": "5220d2833b2c5aca34ecb93d8b4f4322",
+"index.html": "38701399165db7e2cb91a30decf57e20",
+"/": "38701399165db7e2cb91a30decf57e20",
 "flutter.js": "c71a09214cb6f5f8996a531350400a9a",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "main.dart.js": "969e5edc8bdb3923a904fc4fb0e57058"};
