@@ -3,7 +3,7 @@ name: Deploy Flutter Web to GitHub Pages
 on:
   push:
     branches:
-      - main # Wybierz główną gałąź do wdrożenia (zmień na swoją, jeśli to np. "master")
+      - main # Update this to your default branch if it's different (e.g., "master")
 
 jobs:
   build-and-deploy:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "stable" # Możesz ustawić konkretną wersję Fluttera
+          flutter-version: "3.10.0" # Explicit version instead of "stable"
 
       # 3. Install dependencies
       - name: Install dependencies
