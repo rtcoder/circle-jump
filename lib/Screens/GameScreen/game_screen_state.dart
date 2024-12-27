@@ -89,13 +89,13 @@ class GameScreenState extends State<GameScreen>
           children: [
             const AnimatedBackground(),
             CustomPaint(
-              size: Size(size.width, size.height),
+              size: size,
               foregroundPainter: ObstaclePainter(
                 obstacles: obstacles,
               ),
             ),
             CustomPaint(
-              size: Size(size.width, size.height),
+              size: size,
               foregroundPainter: PlayerPainter(),
             ),
             Positioned(
