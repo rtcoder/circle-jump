@@ -3,16 +3,20 @@ import 'dart:ui' as ui;
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
 import 'package:flutter/material.dart';
 
+import '../Painters/circle_painter.dart';
 import '../Painters/cloud_painter.dart';
 import '../Painters/sun_moon_painter.dart';
+import '../game_screen_state.dart';
+import '../utils.dart';
 import 'Cloud/cloud.dart';
 import 'background_color.dart';
 
 class AnimatedBackground extends StatefulWidget {
-  const AnimatedBackground({super.key});
+  final Images images;
+  const AnimatedBackground({super.key, required this.images});
 
   @override
-  State<AnimatedBackground> createState() => _AnimatedBackgroundState();
+  State<AnimatedBackground> createState() => _AnimatedBackgroundState(images: images);
 }
 
 class _AnimatedBackgroundState extends State<AnimatedBackground>
@@ -20,29 +24,26 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   late AnimationController _controller;
   final List<Cloud> _clouds = [];
   bool _cloudsInitialized = false;
-  ui.Image? _cloudImage;
+  final Images images;
+  double _angle = 0;
+
+  _AnimatedBackgroundState({required this.images});
 
   @override
   void initState() {
     super.initState();
 
-    // Animacja kontrolera
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(minutes: 5),
-    )..repeat(); // Powtarzanie cyklu
+      duration: const Duration(seconds: 30),
+    )..repeat();
 
-    _loadCloudImage();
-  }
-
-  Future<void> _loadCloudImage() async {
-    // Ładowanie obrazka z assetów
-    final data =
-        await DefaultAssetBundle.of(context).load('assets/images/cloud.png');
-    final bytes = data.buffer.asUint8List();
-    final image = await decodeImageFromList(bytes);
-    setState(() {
-      _cloudImage = image;
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 16));
+      setState(() {
+        _angle += circleAngleDelta;
+      });
+      return true;
     });
   }
 
@@ -63,7 +64,6 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     super.dispose();
   }
 
-  // Aktualizowanie pozycji chmur
   void _updateClouds(double timeDelta) {
     for (int i = 0; i < _clouds.length; i++) {
       final cloud = _clouds[i];
@@ -73,17 +73,13 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 
   @override
   Widget build(BuildContext context) {
-    if (_cloudImage == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         final time = _controller.value;
         final timeDelta = _controller.lastElapsedDuration?.inMilliseconds ?? 16;
 
-        // Aktualizacja pozycji chmur
-        _updateClouds(timeDelta / 1000.0); // Przeliczenie na sekundy
+        _updateClouds(timeDelta / 1000.0);
 
         final backgroundColor = getBackgroundColor(time);
 
@@ -102,9 +98,14 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             ),
             CustomPaint(
               size: Size(size.width, size.height),
+              painter: CirclePainter(
+                  circleImage: images.circleImage!, angle: _angle),
+            ),
+            CustomPaint(
+              size: Size(size.width, size.height),
               foregroundPainter: CloudPainter(
                 clouds: _clouds, // Generacja chmur
-                cloudImage: _cloudImage!,
+                cloudImage: images.cloudImage!,
               ),
             ),
           ],
