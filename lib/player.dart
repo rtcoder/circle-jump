@@ -1,6 +1,6 @@
 import 'package:circle_jump/game.dart';
 
-class _Player {
+class Player {
   double playerY = 0;
   bool isJumping = false;
   double jumpSize = 200;
@@ -8,7 +8,11 @@ class _Player {
   double playerAngle = 0;
   final playerRadius = 20.0;
 
-  void incrementPlayerAngle() {
+  void update() {
+    _incrementPlayerAngle();
+  }
+
+  void _incrementPlayerAngle() {
     playerAngle += _calculatePlayerAngleDelta() * (isJumping ? 3 : 1);
   }
 
@@ -17,4 +21,3 @@ class _Player {
   }
 }
 
-final player = _Player();

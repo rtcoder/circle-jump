@@ -25,9 +25,9 @@ class CirclePainter extends CustomPainter {
     canvas.rotate(-game.circleAngle);
     canvas.translate(-centerX, -centerY);
     canvas.drawImageRect(
-        Images.circleImage!,
+        Images.circleImage,
         Rect.fromLTRB(
-            0, 0, Images.circleImage!.width.toDouble(), Images.circleImage!.height.toDouble()),
+            0, 0, Images.circleImage.width.toDouble(), Images.circleImage.height.toDouble()),
         Rect.fromLTWH(circleOffset.dx, circleOffset.dy, newSize, newSize),
         paint);
     canvas.restore();

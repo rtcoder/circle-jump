@@ -19,26 +19,29 @@ class CloudPainter extends CustomPainter {
     for (final cloud in clouds) {
       final x = cloud.calculateX(centerX, radius);
       final y = cloud.calculateY(centerY, radius);
-      _drawCloudImage(canvas, Offset(x, y), cloud.size, cloud.opacity);
+      _drawCloudImage(canvas, Offset(x, y), cloud);
     }
   }
 
-  void _drawCloudImage(
-      Canvas canvas, Offset position, double size, double opacity) {
+  void _drawCloudImage(Canvas canvas, Offset position, Cloud cloud) {
     final paint = Paint()
-      ..color = Color.fromARGB((opacity * 255).toInt(), 255, 255, 255);
-
+      ..color = Color.fromARGB((cloud.opacity * 255).toInt(), 255, 255, 255);
+    canvas.save();
+    canvas.translate(position.dx, position.dy);
+    canvas.rotate(cloud.angle + degreesToRadians(90));
+    canvas.translate(-position.dx, -position.dy);
     canvas.drawImageRect(
-      Images.cloudImage!,
-      Rect.fromLTWH(0, 0, Images.cloudImage!.width.toDouble(),
-          Images.cloudImage!.height.toDouble()),
+      Images.cloudImage,
+      Rect.fromLTWH(0, 0, Images.cloudImage.width.toDouble(),
+          Images.cloudImage.height.toDouble()),
       Rect.fromCenter(
         center: position,
-        width: size * 1.5,
-        height: size * 0.75,
+        width: cloud.size * 1.5,
+        height: cloud.size * 0.75,
       ),
       paint,
     );
+    canvas.restore();
   }
 
   @override

@@ -1,6 +1,4 @@
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
-import 'package:circle_jump/game.dart';
-import 'package:circle_jump/player.dart';
 import 'package:flutter/material.dart';
 
 import '../Painters/circle_painter.dart';
@@ -30,22 +28,11 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
       vsync: this,
       duration: const Duration(seconds: 30),
     )..repeat();
-
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(milliseconds: 16));
-      setState(() {
-        game.incrementCircleAngle();
-        player.incrementPlayerAngle();
-      });
-      return true;
-    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    // Inicjalizacja chmur w odpowiednim momencie cyklu życia widgetu
     if (!_cloudsInitialized) {
       _clouds.addAll(cloudGenerator(5));
       _cloudsInitialized = true;

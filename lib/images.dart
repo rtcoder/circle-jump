@@ -11,24 +11,30 @@ class ImagesList {
 }
 
 class Images {
-  static ui.Image? cloudImage;
-  static ui.Image? circleImage;
-  static ui.Image? ballImage;
+  static late ui.Image cloudImage;
+  static late ui.Image circleImage;
+  static late ui.Image ballImage;
 }
-Future<ui.Image> _loadImage(BuildContext context, String path) async {
-  final data = await DefaultAssetBundle.of(context).load(path);
-  final bytes = data.buffer.asUint8List();
-  final image = await decodeImageFromList(bytes);
-  return image;
+
+class _ImageLoader {
+  final BuildContext _context;
+
+  _ImageLoader(this._context);
+
+  Future<ui.Image> loadImage(String assetPath) async {
+    final data = await DefaultAssetBundle.of(_context).load(assetPath);
+    return await decodeImageFromList(data.buffer.asUint8List());
+  }
 }
 
 Future<void> loadImages(BuildContext context) async {
-  final cloudImage = await _loadImage(context, ImagesList.cloud);
-  final circleImage = await _loadImage(context, ImagesList.circle);
-  final ballImage = await _loadImage(context, ImagesList.ball);
+  final loader = _ImageLoader(context);
+  final cloudImage = await loader.loadImage(ImagesList.cloud);
+  final circleImage = await loader.loadImage(ImagesList.circle);
+  final ballImage = await loader.loadImage(ImagesList.ball);
 
-    Images.cloudImage = cloudImage;
-    Images.circleImage = circleImage;
-    Images.ballImage = ballImage;
-    imagesInitialized = true;
+  Images.cloudImage = cloudImage;
+  Images.circleImage = circleImage;
+  Images.ballImage = ballImage;
+  imagesInitialized = true;
 }

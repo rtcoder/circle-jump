@@ -1,18 +1,15 @@
 import 'package:circle_jump/Obstacles/obstacle.dart';
+import 'package:circle_jump/game.dart';
 import 'package:flutter/material.dart';
 import '../Obstacles/obstacle_type.dart';
 import '../utils.dart';
 
 class ObstaclePainter extends CustomPainter {
-  final List<Obstacle> obstacles;
-
-  ObstaclePainter({required this.obstacles});
-
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
     var center = getCenterOfCircle(size);
-    for (final obstacle in obstacles) {
+    for (final obstacle in game.obstacles) {
       drawSingleObstacle(canvas, paint, size, obstacle, center);
     }
   }
@@ -40,8 +37,6 @@ class ObstaclePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return obstacles.any((o) =>
-        o.angle !=
-        (oldDelegate as ObstaclePainter).obstacles[obstacles.indexOf(o)].angle);
+    return true;
   }
 }
