@@ -30,9 +30,9 @@ class _Game {
   }
 
   void _updateGameSpeed() {
-    // if (distance > 10) {
-    //   circleAngleDelta = baseCircleAngleDelta * (1 + (distance / 1000)* 5);
-    // }
+    if (distance > 10) {
+      circleAngleDelta = baseCircleAngleDelta * (1 + (distance / 1000)* 5);
+    }
   }
 
   void _incrementCircleAngle() {
