@@ -23,7 +23,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   @override
   void initState() {
     super.initState();
-
+    initializeBackgroundColors(1000);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 30),
