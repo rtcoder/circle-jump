@@ -17,8 +17,7 @@ class AnimatedBackground extends StatefulWidget {
 class _AnimatedBackgroundState extends State<AnimatedBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final List<Cloud> _clouds = [];
-  bool _cloudsInitialized = false;
+  final List<Cloud> _clouds = cloudGenerator(15);
 
   @override
   void initState() {
@@ -28,15 +27,6 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
       vsync: this,
       duration: const Duration(seconds: 30),
     )..repeat();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_cloudsInitialized) {
-      _clouds.addAll(cloudGenerator(5));
-      _cloudsInitialized = true;
-    }
   }
 
   @override
