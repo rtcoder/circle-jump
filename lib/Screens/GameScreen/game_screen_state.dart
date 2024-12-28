@@ -12,20 +12,10 @@ import 'game_screen.dart';
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      duration: Duration(milliseconds: game.player.jumpDurationMs),
-      vsync: this,
-    )..addListener(() {
-        setState(() {
-          game.player.playerY = game.player.jumpSize * (_controller.value);
-        });
-      });
 
     loadImages(context);
 
@@ -35,22 +25,6 @@ class GameScreenState extends State<GameScreen>
         game.update();
       });
       return true;
-    });
-  }
-
-  void _jump() {
-    if (game.player.isJumping) {
-      return;
-    }
-    setState(() {
-      game.player.isJumping = true;
-    });
-    _controller.forward(from: 0.0);
-    Future.delayed(Duration(milliseconds: game.player.jumpDurationMs), () {
-      setState(() {
-        game.player.isJumping = false;
-      });
-      _controller.reverse();
     });
   }
 
@@ -66,13 +40,13 @@ class GameScreenState extends State<GameScreen>
       autofocus: true,
       onKeyEvent: (FocusNode node, KeyEvent ev) {
         if (ev is KeyDownEvent && ev.logicalKey == LogicalKeyboardKey.space) {
-          _jump();
+          game.player.jump();
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
       },
       child: GestureDetector(
-        onTapDown: (_) => _jump(),
+        onTapDown: (_) => game.player.jump(),
         child: Stack(
           children: [
             const AnimatedBackground(),
@@ -93,11 +67,5 @@ class GameScreenState extends State<GameScreen>
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }
