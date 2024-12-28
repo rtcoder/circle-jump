@@ -7,6 +7,7 @@ class Player {
   final jumpDurationMs = 500;
   double playerAngle = 0;
   final playerRadius = 20.0;
+  final radius = 20.0;
 
   void update() {
     _incrementPlayerAngle();
