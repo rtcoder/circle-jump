@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:circle_jump/platform.dart';
 import 'package:circle_jump/player.dart';
 
@@ -7,7 +9,7 @@ import 'Obstacles/obstacle_generator.dart';
 class _Game {
   double distance = 0;
   final double baseCircleAngleDelta = 0.002;
-  double circleAngleDelta = 0.002;
+  double circleAngleDelta = 0.005;
   double circleAngle = 0;
   final circleRadius = 1000.0;
   List<PlatformModel> platforms = generatePlatforms(10);
@@ -28,19 +30,13 @@ class _Game {
   }
 
   void _updateGameSpeed() {
-    if (distance <= 100) {
-      return;
-    }
-    double divisionResult = distance / 100;
-    incrementCircleAngleDelta(divisionResult.floor());
+    // if (distance > 10) {
+    //   circleAngleDelta = baseCircleAngleDelta * (1 + (distance / 1000)* 5);
+    // }
   }
 
   void _incrementCircleAngle() {
     circleAngle += circleAngleDelta;
-  }
-
-  void incrementCircleAngleDelta(int value) {
-    circleAngleDelta = baseCircleAngleDelta * ((value / 10) + 1) ;
   }
 
   void _updatePlatforms() {
