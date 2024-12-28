@@ -5,7 +5,6 @@ class PlatformModel {
   double radius;
   double arcLength;
   double thickness;
-  double platformAngleDelta = 0.001;
 
   PlatformModel({
     required this.angle,
@@ -14,8 +13,8 @@ class PlatformModel {
     required this.thickness,
   });
 
-  void move() {
-    angle -= platformAngleDelta;
+  void move(double delta) {
+    angle -= delta;
     if (angle < 0) {
       angle += 2 * pi;
     }

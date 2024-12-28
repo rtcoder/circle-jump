@@ -8,7 +8,6 @@ List<Obstacle> obstacleGenerator(int count) {
     final type = ObstacleType.values[index % ObstacleType.values.length];
     return Obstacle(
       angle: index * pi / 2.5,
-      speed: 0.001,
       type: type,
     );
   });

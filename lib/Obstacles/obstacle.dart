@@ -3,22 +3,20 @@ import 'obstacle_type.dart';
 
 class Obstacle {
   double angle;
-  final double speed;
   final ObstacleType type;
   double oscillationOffset = 0;
   double airHeight = 0;
 
   Obstacle({
     required this.angle,
-    required this.speed,
     required this.type,
   }) {
     airHeight =
         (type == ObstacleType.air) ? Random().nextDouble() * 100 + 50 : 0;
   }
 
-  void updateAngle() {
-    angle -= speed;
+  void move(double delta) {
+    angle -= delta;
 
     angle %= 2 * pi;
 
