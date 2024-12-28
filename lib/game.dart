@@ -26,7 +26,7 @@ class _Game {
   }
 
   void _updateDistance() {
-    distance += circleAngleDelta * player.playerRadius;
+    distance += circleAngleDelta * player.radius;
   }
 
   void _updateGameSpeed() {
