@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:circle_jump/platform.dart';
 import 'package:circle_jump/player.dart';
 
@@ -31,7 +29,7 @@ class _Game {
 
   void _updateGameSpeed() {
     if (distance > 10) {
-      circleAngleDelta = baseCircleAngleDelta * (1 + (distance / 1000)* 5);
+      circleAngleDelta = baseCircleAngleDelta * (1 + (distance / 1000) * 2);
     }
   }
 
