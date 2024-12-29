@@ -1,15 +1,20 @@
 import 'package:circle_jump/game.dart';
 
+enum JumpState { none, single, double }
+
 class Player {
   final int _jumpSpeed = 15;
   final int _jumpSize = 200;
-  bool _isJumping = false;
+  JumpState _jumpState = JumpState.none;
   int _jumpDirection = 1;
   double playerY = 0;
   double jumpProgress = 0;
   double playerAngle = 0;
-  final playerRadius = 20.0;
   final radius = 20.0;
+
+  bool get withFire {
+    return _jumpState != JumpState.none && _jumpDirection == 1;
+  }
 
   void update() {
     _incrementPlayerAngle();
@@ -17,32 +22,48 @@ class Player {
   }
 
   void _processJump() {
-    if (!_isJumping) {
+    if (_jumpState == JumpState.none) {
       return;
     }
     if (jumpProgress == 0) {
       _jumpDirection = 1;
     }
-    if (jumpProgress >= _jumpSize) {
+    if (_shouldReverseJump()) {
       _jumpDirection = -1;
     }
     jumpProgress += (_jumpDirection * _jumpSpeed);
 
     if (jumpProgress <= 0) {
       jumpProgress = 0;
-      _isJumping = false;
+      _jumpState = JumpState.none;
     }
+  }
+
+  bool _shouldReverseJump() {
+    if (_jumpState == JumpState.double && jumpProgress >= _jumpSize * 1.5) {
+      return true;
+    }
+    if (_jumpState == JumpState.single && jumpProgress >= _jumpSize) {
+      return true;
+    }
+    return false;
   }
 
   void jump() {
-    if (_isJumping) {
+    if (_jumpState == JumpState.double) {
       return;
     }
-    _isJumping = true;
+    if (_jumpState == JumpState.single) {
+      _jumpState = JumpState.double;
+      _jumpDirection = 1;
+      return;
+    }
+    _jumpState = JumpState.single;
   }
 
   void _incrementPlayerAngle() {
-    playerAngle += _calculatePlayerAngleDelta() * (_isJumping ? 3 : 1);
+    playerAngle +=
+        _calculatePlayerAngleDelta() * (_jumpState != JumpState.none ? 3 : 1);
   }
 
   double _calculatePlayerAngleDelta() {
