@@ -13,6 +13,31 @@ class _Game {
   List<PlatformModel> platforms = generatePlatforms(10);
   List<Obstacle> obstacles = obstacleGenerator(10);
   Player player = Player();
+  late Size screenSize;
+  late CircleCenter circleCenter;
+  bool gameInitialized = false;
+
+  String get distanceHuman {
+    if (distance < 1000) {
+      return '${distance.toInt()}m';
+    }
+    return '${(distance / 1000).toStringAsFixed(2)}km';
+  }
+
+  void updateScreenSize(Size newVal) {
+    screenSize = newVal;
+    circleCenter = getCenterOfCircle(screenSize);
+  }
+
+  void init() {
+    if (gameInitialized) {
+      return;
+    }
+
+    platforms = generatePlatforms(10);
+    obstacles = obstacleGenerator(10);
+    gameInitialized=true;
+  }
 
   void update() {
     _updateDistance();

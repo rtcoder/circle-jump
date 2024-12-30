@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Positioned distanceText(double distance) {
+Positioned distanceText(String distance) {
   return Positioned(
     top: 20,
     right: 20,
@@ -11,7 +11,7 @@ Positioned distanceText(double distance) {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        'Distance: ${distance.toStringAsFixed(2)}',
+        'Distance: $distance',
         style: const TextStyle(
           color: Colors.white,
           fontSize: 16,

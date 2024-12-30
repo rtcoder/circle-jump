@@ -7,7 +7,6 @@ import '../../Painters/obstacle_painter.dart';
 import '../../Painters/platform_painter.dart';
 import '../../Painters/player_painter.dart';
 import '../../images.dart';
-import 'VisualComponents/distance_text.dart';
 import 'game_screen.dart';
 
 class GameScreenState extends State<GameScreen>
@@ -58,11 +57,7 @@ class GameScreenState extends State<GameScreen>
               size: size,
               foregroundPainter: PlayerPainter(),
             ),
-            CustomPaint(
-              painter: PlatformPainter(),
-              child: Container(),
-            ),
-            distanceText(game.distance),
+            // distanceText(game.distanceHuman),
           ],
         ),
       ),
