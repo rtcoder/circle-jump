@@ -15,7 +15,7 @@ class PlayerPainter extends CustomPainter {
     final h = img.height.toDouble();
     final Player player = game.player;
     final playerX = size.width / 2;
-    final playerY = (size.height / 2) - (player.playerY + player.jumpProgress);
+    final playerY = (size.height / 2) - player.playerY;
     final radius = player.radius;
     final playerW = radius * 2;
     final circleOffset = Offset(playerX - radius, playerY - radius);

@@ -1,69 +1,52 @@
 import 'package:circle_jump/game.dart';
-
-enum JumpState { none, single, double }
+import 'package:circle_jump/player_platform.dart';
 
 class Player {
-  final int _jumpSpeed = 15;
-  final int _jumpSize = 200;
-  JumpState _jumpState = JumpState.none;
-  int _jumpDirection = 1;
+  double velocityY = 0;
+  final double jumpPower = -12;
+  bool onGround = true;
   double playerY = 0;
-  double jumpProgress = 0;
   double playerAngle = 0;
   final radius = 20.0;
-
-  bool get withFire {
-    return _jumpState != JumpState.none && _jumpDirection == 1;
-  }
+  bool canDoubleJump = false;
+  final PlayerPlatform playerPlatform = PlayerPlatform();
 
   void update() {
     _incrementPlayerAngle();
-    _processJump();
-  }
+    onGround = false;
+    double newY = playerY;
+    velocityY += game.gravity;
+    newY -= velocityY;
 
-  void _processJump() {
-    if (_jumpState == JumpState.none) {
-      return;
-    }
-    if (jumpProgress == 0) {
-      _jumpDirection = 1;
-    }
-    if (_shouldReverseJump()) {
-      _jumpDirection = -1;
-    }
-    jumpProgress += (_jumpDirection * _jumpSpeed);
 
-    if (jumpProgress <= 0) {
-      jumpProgress = 0;
-      _jumpState = JumpState.none;
+    if (velocityY >= 0) {
+      final onAnyPlatform = playerPlatform.isOnAnyPlatform(newY);
+      if (onAnyPlatform != null) {
+        velocityY = 0;
+        newY = onAnyPlatform.height+radius;
+        onGround = true;
+      }
     }
-  }
-
-  bool _shouldReverseJump() {
-    if (_jumpState == JumpState.double && jumpProgress >= _jumpSize * 1.5) {
-      return true;
+    if (newY <= 0) {
+      velocityY = 0;
+      newY = 0;
+      onGround = true;
     }
-    if (_jumpState == JumpState.single && jumpProgress >= _jumpSize) {
-      return true;
-    }
-    return false;
+    playerY = newY;
   }
 
   void jump() {
-    if (_jumpState == JumpState.double) {
-      return;
+    if (onGround) {
+      velocityY = jumpPower;
+      canDoubleJump = true; // Zezwól na podwójny skok
+    } else if (canDoubleJump) {
+      velocityY = jumpPower;
+      canDoubleJump = false; // Wykorzystaj podwójny skok
     }
-    if (_jumpState == JumpState.single) {
-      _jumpState = JumpState.double;
-      _jumpDirection = 1;
-      return;
-    }
-    _jumpState = JumpState.single;
   }
 
   void _incrementPlayerAngle() {
-    playerAngle +=
-        _calculatePlayerAngleDelta() * (_jumpState != JumpState.none ? 3 : 1);
+    playerAngle += _calculatePlayerAngleDelta();
   }
 
   double _calculatePlayerAngleDelta() {

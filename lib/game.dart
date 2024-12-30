@@ -1,13 +1,18 @@
+import 'package:circle_jump/images.dart';
 import 'package:circle_jump/platform.dart';
 import 'package:circle_jump/player.dart';
+import 'package:circle_jump/utils.dart';
+import 'package:flutter/material.dart';
 
 import 'Obstacles/obstacle.dart';
 import 'Obstacles/obstacle_generator.dart';
 
 class _Game {
+  final double gravity = 0.5;
   double distance = 0;
-  final double baseCircleAngleDelta = 0.002;
-  double circleAngleDelta = 0.005;
+  final double _baseCircleAngleDelta = 0.005;
+  final double _maxCircleAngleDelta = 0.015;
+  double circleAngleDelta = 0.001;
   double circleAngle = 0;
   final circleRadius = 1000.0;
   late List<PlatformModel> platforms;
