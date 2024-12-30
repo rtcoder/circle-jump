@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'Obstacles/obstacle.dart';
 import 'Obstacles/obstacle_generator.dart';
+import 'Platforms/platform_generator.dart';
 
 class _Game {
   final double gravity = 0.5;
@@ -41,7 +42,7 @@ class _Game {
 
     platforms = generatePlatforms(10);
     obstacles = obstacleGenerator(10);
-    gameInitialized=true;
+    gameInitialized = true;
   }
 
   void update() {
