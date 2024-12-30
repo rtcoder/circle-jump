@@ -5,17 +5,17 @@ import 'package:flutter/cupertino.dart';
 bool imagesInitialized = false;
 
 class ImagesList {
-  static const String circle = 'assets/images/circle.png';
+  static const String circle = 'assets/images/circle_road.png';
   static const String cloud = 'assets/images/cloud.png';
   static const String ball = 'assets/images/ball.png';
-  static const String fireEngine = 'assets/images/fire_engine.png';
+  static const String block = 'assets/images/block.png';
 }
 
 class Images {
   static late ui.Image cloudImage;
   static late ui.Image circleImage;
   static late ui.Image ballImage;
-  static late ui.Image fireEngineImage;
+  static late ui.Image blockImage;
 }
 
 class _ImageLoader {
@@ -34,11 +34,12 @@ Future<void> loadImages(BuildContext context) async {
   final cloudImage = await loader.loadImage(ImagesList.cloud);
   final circleImage = await loader.loadImage(ImagesList.circle);
   final ballImage = await loader.loadImage(ImagesList.ball);
-  final fireEngineImage = await loader.loadImage(ImagesList.fireEngine);
+  final block = await loader.loadImage(ImagesList.block);
 
   Images.cloudImage = cloudImage;
   Images.circleImage = circleImage;
   Images.ballImage = ballImage;
-  Images.fireEngineImage = fireEngineImage;
+  Images.blockImage = block;
+
   imagesInitialized = true;
 }
