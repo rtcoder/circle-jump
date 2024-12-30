@@ -2,7 +2,6 @@ import 'package:circle_jump/game.dart';
 import 'package:flutter/material.dart';
 
 import '../images.dart';
-import '../utils.dart';
 
 class CirclePainter extends CustomPainter {
   @override
@@ -12,7 +11,7 @@ class CirclePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4;
 
-    var center = getCenterOfCircle(size);
+    var center = game.circleCenter;
     final centerX = center.centerX;
     final centerY = center.centerY;
     final radius = center.radius;
@@ -26,8 +25,8 @@ class CirclePainter extends CustomPainter {
     canvas.translate(-centerX, -centerY);
     canvas.drawImageRect(
         Images.circleImage,
-        Rect.fromLTRB(
-            0, 0, Images.circleImage.width.toDouble(), Images.circleImage.height.toDouble()),
+        Rect.fromLTRB(0, 0, Images.circleImage.width.toDouble(),
+            Images.circleImage.height.toDouble()),
         Rect.fromLTWH(circleOffset.dx, circleOffset.dy, newSize, newSize),
         paint);
     canvas.restore();

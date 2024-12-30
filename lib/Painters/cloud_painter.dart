@@ -1,3 +1,4 @@
+import 'package:circle_jump/game.dart';
 import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class CloudPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = getCenterOfCircle(size);
+    final center = game.circleCenter;
     final centerX = center.centerX;
     final centerY = center.centerY;
     final radius = center.radius;
