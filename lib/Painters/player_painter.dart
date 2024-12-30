@@ -20,8 +20,6 @@ class PlayerPainter extends CustomPainter {
     final playerW = radius * 2;
     final circleOffset = Offset(playerX - radius, playerY - radius);
 
-    drawFire(canvas, player, playerW, circleOffset, paint);
-
     canvas.drawCircle(Offset(playerX, playerY), radius, paint);
     canvas.save();
     canvas.translate(playerX, playerY);
@@ -33,24 +31,6 @@ class PlayerPainter extends CustomPainter {
         Rect.fromLTWH(circleOffset.dx, circleOffset.dy, playerW, playerW),
         paint);
     canvas.restore();
-  }
-
-  void drawFire(Canvas canvas, Player player, double playerW,
-      Offset circleOffset, Paint paint) {
-    if (!player.withFire) {
-      return;
-    }
-    final imgFire = Images.fireEngineImage;
-    final imgFireW = imgFire.width.toDouble();
-    final imgFireH = imgFire.height.toDouble();
-    final ratio = imgFireW / playerW;
-    final newH = imgFireH / ratio;
-    canvas.drawImageRect(
-        imgFire,
-        Rect.fromLTRB(0, 0, imgFireW, imgFireH),
-        Rect.fromLTWH(
-            circleOffset.dx, circleOffset.dy + player.radius, playerW, newH),
-        paint);
   }
 
   @override
