@@ -1,4 +1,3 @@
-import 'package:circle_jump/images.dart';
 import 'package:circle_jump/platform.dart';
 import 'package:circle_jump/player.dart';
 import 'package:circle_jump/utils.dart';
