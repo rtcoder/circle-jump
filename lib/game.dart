@@ -58,8 +58,8 @@ class _Game {
   }
 
   void _updateGameSpeed() {
-    if (distance > 10) {
-      circleAngleDelta = baseCircleAngleDelta * (1 + (distance / 1000) * 2);
+    if (distance > 10 && circleAngleDelta < _maxCircleAngleDelta) {
+      // circleAngleDelta = _baseCircleAngleDelta * (1 + (distance / 1000) * 2);
     }
   }
 
@@ -72,7 +72,7 @@ class _Game {
       platform.move(circleAngleDelta);
     }
 
-    platforms.removeWhere((platform) => platform.angle < 0.1);
+    // platforms.removeWhere((platform) => platform.endAngle < 0.1);
 
     if (platforms.length <= 2) {
       platforms.addAll(generatePlatforms(10));

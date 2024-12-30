@@ -60,6 +60,10 @@ class GameScreenState extends State<GameScreen>
               foregroundPainter: ObstaclePainter(),
             ),
             CustomPaint(
+              painter: PlatformPainter(),
+              child: Container(),
+            ),
+            CustomPaint(
               size: size,
               foregroundPainter: PlayerPainter(),
             ),
