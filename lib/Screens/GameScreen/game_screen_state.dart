@@ -11,18 +11,25 @@ import 'game_screen.dart';
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
 
-    loadImages(context);
-
+    if (mounted) {
+      setState(() {
+        loadImages(context);
+        game.init();
+      });
+    }
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 16));
-      setState(() {
-        game.update();
-      });
+      if (mounted) {
+        setState(() {
+          final size = MediaQuery.of(context).size;
+          game.updateScreenSize(size);
+          game.update();
+        });
+      }
       return true;
     });
   }
@@ -32,7 +39,6 @@ class GameScreenState extends State<GameScreen>
     if (!imagesInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
-
     final size = MediaQuery.of(context).size;
 
     return Focus(

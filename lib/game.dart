@@ -10,8 +10,8 @@ class _Game {
   double circleAngleDelta = 0.005;
   double circleAngle = 0;
   final circleRadius = 1000.0;
-  List<PlatformModel> platforms = generatePlatforms(10);
-  List<Obstacle> obstacles = obstacleGenerator(10);
+  late List<PlatformModel> platforms;
+  late List<Obstacle> obstacles;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
