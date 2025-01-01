@@ -56,7 +56,6 @@ class GameScreenState extends State<GameScreen>
             ),
             CustomPaint(
               painter: PlatformPainter(),
-              child: Container(),
             ),
             CustomPaint(
               size: size,

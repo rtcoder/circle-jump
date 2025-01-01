@@ -1,3 +1,4 @@
+import 'package:circle_jump/Widgets/loading_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/GameOverScreen/game_over_screen.dart';
@@ -28,19 +29,19 @@ class _CircleJumpState extends State<CircleJump> {
       final List<Future<void>> loadTasks = [
         loader.loadImage(ImagesList.cloud).then((image) {
           Images.cloudImage = image;
-          _updateProgress(0.25);
+          _updateProgress(25);
         }),
         loader.loadImage(ImagesList.circle).then((image) {
           Images.circleImage = image;
-          _updateProgress(0.25);
+          _updateProgress(25);
         }),
         loader.loadImage(ImagesList.ball).then((image) {
           Images.ballImage = image;
-          _updateProgress(0.25);
+          _updateProgress(25);
         }),
         loader.loadImage(ImagesList.block).then((image) {
           Images.blockImage = image;
-          _updateProgress(0.25);
+          _updateProgress(25);
         }),
       ];
 
@@ -75,21 +76,7 @@ class _CircleJumpState extends State<CircleJump> {
         useMaterial3: true,
       ),
       home: isLoading
-          ? Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Ładowanie: ${(loadingProgress * 100).toStringAsFixed(0)}%',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            )
+          ? LoadingScreen(loadingProgress: loadingProgress)
           : const StartScreen(),
       routes: {
         '/game': (context) => const GameScreen(),
