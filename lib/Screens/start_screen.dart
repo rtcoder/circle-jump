@@ -2,7 +2,7 @@ import 'package:circle_jump/Widgets/title_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../Widgets/button_widget.dart';
+import '../Widgets/button_widget.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});

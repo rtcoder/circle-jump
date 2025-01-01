@@ -1,8 +1,7 @@
 import 'package:circle_jump/Widgets/button_widget.dart';
 import 'package:circle_jump/Widgets/score_widget.dart';
+import 'package:circle_jump/Widgets/title_widget.dart';
 import 'package:flutter/material.dart';
-
-import '../../Widgets/title_widget.dart';
 
 class GameOverScreen extends StatelessWidget {
   const GameOverScreen({super.key});
