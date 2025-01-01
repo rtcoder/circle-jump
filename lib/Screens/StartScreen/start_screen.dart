@@ -2,7 +2,7 @@ import 'package:circle_jump/Widgets/title_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'VisualComponents/start_game_btn.dart';
+import '../../Widgets/button_widget.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -26,7 +26,9 @@ class StartScreen extends StatelessWidget {
               children: [
                 const TitleWidget('Circle Jump'),
                 const SizedBox(height: 20),
-                startGameBtn(context),
+                ButtonWidget('Start Game', onPressed: () {
+                  Navigator.pushNamed(context, '/game');
+                }),
               ],
             ),
           ),

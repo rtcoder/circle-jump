@@ -1,8 +1,8 @@
+import 'package:circle_jump/Widgets/button_widget.dart';
 import 'package:circle_jump/Widgets/score_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../Widgets/title_widget.dart';
-import 'VisualComponents/play_again_btn.dart';
 
 class GameOverScreen extends StatelessWidget {
   const GameOverScreen({super.key});
@@ -20,7 +20,9 @@ class GameOverScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ScoreWidget(score: score),
             const SizedBox(height: 20),
-            playAgainBtn(context),
+            ButtonWidget('Play Again', onPressed: () {
+              Navigator.pushReplacementNamed(context, '/game');
+            }),
           ],
         ),
       ),
