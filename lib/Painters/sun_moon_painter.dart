@@ -1,8 +1,11 @@
+import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
+
+import '../Models/circle_center.dart';
 import '../utils.dart';
 
-void drawMoon(Canvas canvas, Paint paint, CircleCenter center, Size size,
-    double angleDeg) {
+void drawMoon(Canvas canvas, Paint paint, Size size, double angleDeg) {
+  final CircleCenter center = game.circleCenter;
   final position = angleToPositionOnCircle(center, angleDeg, 200);
   double x = position.dx;
   double y = position.dy;
@@ -15,8 +18,8 @@ void drawMoon(Canvas canvas, Paint paint, CircleCenter center, Size size,
   canvas.drawCircle(Offset(x + 15, y - 5), 6, paint);
 }
 
-void drawSun(Canvas canvas, Paint paint, CircleCenter center, Size size,
-    double angleDeg) {
+void drawSun(Canvas canvas, Paint paint, Size size, double angleDeg) {
+  final CircleCenter center = game.circleCenter;
   final position = angleToPositionOnCircle(center, angleDeg, 200);
   double x = position.dx;
   double y = position.dy;
@@ -33,21 +36,20 @@ class SunMoonPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
 
-    var center = getCenterOfCircle(size);
-    final sunAngleDeg = _interpolateAngle(time <= 0.5 ? time * 2 : 0); // Dzień
-    final moonAngleDeg = _interpolateAngle(time > 0.5 ? (time - 0.5) * 2 : 0); // Noc
+    final sunAngleDeg = _interpolateAngle(time <= 0.5 ? time * 2 : 0);
+    final moonAngleDeg = _interpolateAngle(time > 0.5 ? (time - 0.5) * 2 : 0);
 
     if (time <= 0.5) {
-      // Rysowanie słońca (dzień)
-      drawSun(canvas, paint, center, size, sunAngleDeg);
+      drawSun(canvas, paint, size, sunAngleDeg);
     } else {
-      // Rysowanie księżyca (noc)
-      drawMoon(canvas, paint, center, size, moonAngleDeg);
+      drawMoon(canvas, paint, size, moonAngleDeg);
     }
   }
+
   double _interpolateAngle(double progress) {
     return 243 + (296 - 243) * progress;
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;

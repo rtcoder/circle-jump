@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'obstacle.dart';
-import 'obstacle_type.dart';
+import '../Models/obstacle.dart';
+import '../Enums/obstacle_type.dart';
 
 List<Obstacle> obstacleGenerator(int count) {
   return List.generate(count, (index) {

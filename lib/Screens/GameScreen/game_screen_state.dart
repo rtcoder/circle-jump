@@ -1,4 +1,4 @@
-import 'package:circle_jump/game.dart';
+import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -1,5 +1,5 @@
-import 'package:circle_jump/game.dart';
-import 'package:circle_jump/player_platform.dart';
+import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Models/player_platform.dart';
 
 class Player {
   double velocityY = 0;
@@ -11,6 +11,10 @@ class Player {
   bool canDoubleJump = false;
   final PlayerPlatform playerPlatform = PlayerPlatform();
 
+  double get playerX {
+    return game.screenSize.width / 2;
+  }
+
   void update() {
     _incrementPlayerAngle();
     onGround = false;
@@ -18,12 +22,11 @@ class Player {
     velocityY += game.gravity;
     newY -= velocityY;
 
-
     if (velocityY >= 0) {
-      final onAnyPlatform = playerPlatform.isOnAnyPlatform(newY);
+      final onAnyPlatform = playerPlatform.isOnAnyPlatform(playerX, newY);
       if (onAnyPlatform != null) {
         velocityY = 0;
-        newY = onAnyPlatform.height+radius;
+        newY = onAnyPlatform.height + radius;
         onGround = true;
       }
     }

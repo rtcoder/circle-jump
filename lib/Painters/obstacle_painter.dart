@@ -1,8 +1,8 @@
-import 'package:circle_jump/Obstacles/obstacle.dart';
-import 'package:circle_jump/game.dart';
+import 'package:circle_jump/Models/obstacle.dart';
+import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 
-import '../Obstacles/obstacle_type.dart';
+import '../Enums/obstacle_type.dart';
 
 class ObstaclePainter extends CustomPainter {
   @override
@@ -14,10 +14,9 @@ class ObstaclePainter extends CustomPainter {
   }
 
   void drawSingleObstacle(Canvas canvas, Paint paint, Obstacle obstacle) {
-    final center = game.circleCenter;
     final size = game.screenSize;
-    double x = obstacle.calculateX(center.centerX, center.radius);
-    double y = obstacle.calculateY(center.centerY, center.radius);
+    double x = obstacle.x;
+    double y = obstacle.y;
 
     if (x < -10 || y < -10 || x > size.width + 10 || y > size.height + 10) {
       return;

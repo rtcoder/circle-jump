@@ -1,11 +1,11 @@
-import 'package:circle_jump/platform.dart';
-import 'package:circle_jump/player.dart';
-import 'package:circle_jump/utils.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/player.dart';
 import 'package:flutter/material.dart';
 
-import 'Obstacles/obstacle.dart';
-import 'Obstacles/obstacle_generator.dart';
-import 'Platforms/platform_generator.dart';
+import '../Generators/obstacle_generator.dart';
+import '../Generators/platform_generator.dart';
+import 'circle_center.dart';
+import 'obstacle.dart';
 
 class _Game {
   final double gravity = 0.5;
@@ -31,7 +31,7 @@ class _Game {
 
   void updateScreenSize(Size newVal) {
     screenSize = newVal;
-    circleCenter = getCenterOfCircle(screenSize);
+    circleCenter = CircleCenter.getCenterOfCircle(screenSize);
   }
 
   void init() {

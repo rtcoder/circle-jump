@@ -1,11 +1,26 @@
 import 'dart:math';
-import 'obstacle_type.dart';
+
+import 'game.dart';
+import '../utils.dart';
+import '../Enums/obstacle_type.dart';
 
 class Obstacle {
   double angle;
   final ObstacleType type;
   double oscillationOffset = 0;
   double airHeight = 0;
+
+  get x {
+    final center = game.circleCenter;
+    final radius = calculateRadius(center.radius);
+    return getXPosOnCircle(center.centerX, radius, angle);
+  }
+
+  get y {
+    final center = game.circleCenter;
+    final radius = calculateRadius(center.radius);
+    return getYPosOnCircle(center.centerY, radius, angle);
+  }
 
   Obstacle({
     required this.angle,
@@ -25,7 +40,7 @@ class Obstacle {
     }
   }
 
-  double _calculateRadius(double radius) {
+  double calculateRadius(double radius) {
     if (type == ObstacleType.air) {
       return radius + airHeight;
     }
@@ -35,13 +50,5 @@ class Obstacle {
     }
 
     return radius;
-  }
-
-  double calculateX(double centerX, double radius) {
-    return centerX + _calculateRadius(radius) * cos(angle);
-  }
-
-  double calculateY(double centerY, double radius) {
-    return centerY + _calculateRadius(radius) * sin(angle);
   }
 }
