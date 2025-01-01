@@ -1,7 +1,7 @@
 import 'package:circle_jump/Widgets/score_widget.dart';
 import 'package:flutter/material.dart';
 
-import 'VisualComponents/game_over_text.dart';
+import '../../Widgets/title_widget.dart';
 import 'VisualComponents/play_again_btn.dart';
 
 class GameOverScreen extends StatelessWidget {
@@ -16,7 +16,7 @@ class GameOverScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            gameOverText,
+            const TitleWidget('Game Over', color: Colors.red),
             const SizedBox(height: 20),
             ScoreWidget(score: score),
             const SizedBox(height: 20),
