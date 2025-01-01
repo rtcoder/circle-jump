@@ -1,4 +1,4 @@
-import 'package:circle_jump/Screens/GameOverScreen/VisualComponents/score_text.dart';
+import 'package:circle_jump/Widgets/score_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'VisualComponents/game_over_text.dart';
@@ -18,7 +18,7 @@ class GameOverScreen extends StatelessWidget {
           children: [
             gameOverText,
             const SizedBox(height: 20),
-            scoreText(score),
+            ScoreWidget(score: score),
             const SizedBox(height: 20),
             playAgainBtn(context),
           ],
