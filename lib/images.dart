@@ -18,10 +18,10 @@ class Images {
   static late ui.Image blockImage;
 }
 
-class _ImageLoader {
+class ImageLoader {
   final BuildContext _context;
 
-  _ImageLoader(this._context);
+  ImageLoader(this._context);
 
   Future<ui.Image> loadImage(String assetPath) async {
     final data = await DefaultAssetBundle.of(_context).load(assetPath);
@@ -30,7 +30,7 @@ class _ImageLoader {
 }
 
 Future<void> loadImages(BuildContext context) async {
-  final loader = _ImageLoader(context);
+  final loader = ImageLoader(context);
   final cloudImage = await loader.loadImage(ImagesList.cloud);
   final circleImage = await loader.loadImage(ImagesList.circle);
   final ballImage = await loader.loadImage(ImagesList.ball);

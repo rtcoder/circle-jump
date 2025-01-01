@@ -3,9 +3,68 @@ import 'package:flutter/material.dart';
 import 'Screens/GameOverScreen/game_over_screen.dart';
 import 'Screens/GameScreen/game_screen.dart';
 import 'Screens/StartScreen/start_screen.dart';
+import 'images.dart';
 
-class CircleJump extends StatelessWidget {
+class CircleJump extends StatefulWidget {
   const CircleJump({super.key});
+
+  @override
+  State<CircleJump> createState() => _CircleJumpState();
+}
+
+class _CircleJumpState extends State<CircleJump> {
+  bool isLoading = true;
+  double loadingProgress = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    try {
+      final loader = ImageLoader(context);
+      final List<Future<void>> loadTasks = [
+        loader.loadImage(ImagesList.cloud).then((image) {
+          Images.cloudImage = image;
+          _updateProgress(0.25);
+        }),
+        loader.loadImage(ImagesList.circle).then((image) {
+          Images.circleImage = image;
+          _updateProgress(0.25);
+        }),
+        loader.loadImage(ImagesList.ball).then((image) {
+          Images.ballImage = image;
+          _updateProgress(0.25);
+        }),
+        loader.loadImage(ImagesList.block).then((image) {
+          Images.blockImage = image;
+          _updateProgress(0.25);
+        }),
+      ];
+
+      await Future.wait(loadTasks);
+
+      setState(() {
+        imagesInitialized = true;
+        isLoading = false;
+      });
+    } catch (e, stackTrace) {
+      debugPrint('Error during image loading: $e');
+      debugPrint(stackTrace.toString());
+      setState(() {
+        isLoading = false;
+        imagesInitialized = false;
+      });
+    }
+  }
+
+  void _updateProgress(double progress) {
+    setState(() {
+      loadingProgress += progress;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +74,24 @@ class CircleJump extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      home: isLoading
+          ? Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Ładowanie: ${(loadingProgress * 100).toStringAsFixed(0)}%',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : const StartScreen(),
       routes: {
-        '/': (context) => const StartScreen(),
         '/game': (context) => const GameScreen(),
         '/game-over': (context) => const GameOverScreen(),
       },

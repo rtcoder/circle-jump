@@ -6,7 +6,6 @@ import '../../Background/animated_background.dart';
 import '../../Painters/obstacle_painter.dart';
 import '../../Painters/platform_painter.dart';
 import '../../Painters/player_painter.dart';
-import '../../images.dart';
 import 'game_screen.dart';
 
 class GameScreenState extends State<GameScreen>
@@ -17,7 +16,6 @@ class GameScreenState extends State<GameScreen>
 
     if (mounted) {
       setState(() {
-        loadImages(context);
         game.init();
       });
     }
@@ -36,9 +34,6 @@ class GameScreenState extends State<GameScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (!imagesInitialized) {
-      return const Center(child: CircularProgressIndicator());
-    }
     final size = MediaQuery.of(context).size;
 
     return Focus(
