@@ -1,10 +1,11 @@
 import 'dart:math';
 
-import 'game.dart';
-import '../utils.dart';
 import '../Enums/obstacle_type.dart';
+import '../utils.dart';
+import 'game.dart';
+import 'movable.dart';
 
-class Obstacle {
+class Obstacle extends Movable {
   double angle;
   final ObstacleType type;
   double oscillationOffset = 0;
@@ -30,6 +31,7 @@ class Obstacle {
         (type == ObstacleType.air) ? Random().nextDouble() * 100 + 50 : 0;
   }
 
+  @override
   void move(double delta) {
     angle -= delta;
 

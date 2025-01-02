@@ -1,6 +1,6 @@
 import 'package:circle_jump/Models/game.dart';
-import 'package:circle_jump/images.dart';
 import 'package:circle_jump/Models/player.dart';
+import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
 
 class PlayerPainter extends CustomPainter {
@@ -15,7 +15,7 @@ class PlayerPainter extends CustomPainter {
     final h = img.height.toDouble();
     final Player player = game.player;
     final playerX = player.playerX;
-    final playerY = (size.height / 2) - player.playerY;
+    final playerY = player.playerYAbsolutePosition;
     final radius = player.radius;
     final playerW = radius * 2;
     final circleOffset = Offset(playerX - radius, playerY - radius);

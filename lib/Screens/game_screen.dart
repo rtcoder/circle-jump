@@ -1,3 +1,4 @@
+import 'package:circle_jump/Painters/point_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -62,6 +63,9 @@ class GameScreenState extends State<GameScreen>
             ),
             CustomPaint(
               painter: PlatformPainter(),
+            ),
+            CustomPaint(
+              painter: PointPainter(),
             ),
             CustomPaint(
               size: size,

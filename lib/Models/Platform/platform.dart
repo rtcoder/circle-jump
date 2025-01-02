@@ -5,9 +5,9 @@ import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils.dart';
-import '../circle_center.dart';
+import '../movable.dart';
 
-class PlatformModel {
+class PlatformModel extends Movable {
   PlatformType type;
   double startHeight;
   double endHeight;
@@ -74,6 +74,7 @@ class PlatformModel {
     this.strokeWidth = 15.0,
   }) : type = PlatformType.ramp;
 
+  @override
   void move(double delta) {
     startAngle = (startAngle - delta) % (2 * pi);
     endAngle = (endAngle - delta) % (2 * pi);

@@ -1,18 +1,24 @@
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Models/player_platform.dart';
+import 'package:circle_jump/Models/player_point.dart';
 
 class Player {
   double _velocityY = 0;
-  final double _jumpPower = -12;
   bool _onGround = true;
   double playerY = 0;
   double playerAngle = 0;
-  final radius = 20.0;
   bool _canDoubleJump = false;
+  int score = 0;
+  final double radius = 20.0;
+  final double _jumpPower = -12;
   final PlayerPlatform playerPlatform = PlayerPlatform();
 
   double get playerX {
     return game.screenSize.width / 2;
+  }
+
+  double get playerYAbsolutePosition {
+    return (game.screenSize.height / 2) - playerY;
   }
 
   void update() {

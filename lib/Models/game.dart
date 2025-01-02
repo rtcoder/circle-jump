@@ -1,9 +1,13 @@
 import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/player.dart';
+import 'package:circle_jump/Models/player_point.dart';
+import 'package:circle_jump/Models/point.dart';
 import 'package:flutter/material.dart';
 
 import '../Generators/obstacle_generator.dart';
 import '../Generators/platform_generator.dart';
+import '../Generators/point_generator.dart';
 import 'circle_center.dart';
 import 'obstacle.dart';
 
@@ -17,6 +21,7 @@ class _Game {
   final circleRadius = 1000.0;
   late List<PlatformModel> platforms;
   late List<Obstacle> obstacles;
+  late List<Point> points;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
@@ -41,18 +46,30 @@ class _Game {
 
     platforms = generatePlatforms(10);
     obstacles = obstacleGenerator(10);
+    points = generatePoints(10);
     gameInitialized = true;
   }
 
   void update() {
     _updateDistance();
-    _updatePlatforms();
+    _moveElements();
     _incrementCircleAngle();
-    _updateObstacles();
     player.update();
+    _collectPoints();
     _updateGameSpeed();
   }
+  void _collectPoints() {
+    final List<Point> collectedPoints = [];
 
+    for (final point in game.points) {
+      if (PlayerPoint.isPointCollected(point, game.player)) {
+        collectedPoints.add(point);
+        game.player.score += 1;
+      }
+    }
+
+    game.points.removeWhere((point) => collectedPoints.contains(point));
+  }
   void _updateDistance() {
     distance += circleAngleDelta * player.radius;
   }
@@ -67,15 +84,10 @@ class _Game {
     circleAngle += circleAngleDelta;
   }
 
-  void _updatePlatforms() {
-    for (final platform in platforms) {
-      platform.move(circleAngleDelta);
-    }
-  }
-
-  void _updateObstacles() {
-    for (var obstacle in game.obstacles) {
-      obstacle.move(circleAngleDelta);
+  void _moveElements() {
+    final List<Movable> elements = [...platforms, ...obstacles, ...points];
+    for (final element in elements) {
+      element.move(circleAngleDelta);
     }
   }
 }
