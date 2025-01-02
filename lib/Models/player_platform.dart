@@ -7,11 +7,11 @@ import '../Enums/platform_type.dart';
 class PlayerPlatform {
   final double _heightThreshold = 20;
 
-  HeightOnPlatform? isOnAnyPlatform(double playerX, double playerY) {
+  HeightOnPlatform? isOnAnyPlatform(double playerY) {
     HeightOnPlatform? highestPlatform;
 
     for (final PlatformModel platform in game.platforms) {
-      final HeightOnPlatform? result = isOnPlatform(platform, playerY);
+      final HeightOnPlatform? result = _isOnPlatform(platform, playerY);
       if (result != null) {
         if (highestPlatform == null || result.height > highestPlatform.height) {
           highestPlatform = result;
@@ -22,7 +22,7 @@ class PlayerPlatform {
     return highestPlatform;
   }
 
-  double getPlayerHeightOnPlatform(PlatformModel platform) {
+  double _getPlayerHeightOnPlatform(PlatformModel platform) {
     if (platform.type == PlatformType.curved) {
       return platform.startHeight;
     }
@@ -39,20 +39,20 @@ class PlayerPlatform {
         (platform.endHeight - platform.startHeight) * playerPercentage;
   }
 
-  HeightOnPlatform? isOnPlatform(PlatformModel platform, double playerY) {
+  HeightOnPlatform? _isOnPlatform(PlatformModel platform, double playerY) {
     final bool isBetweenEdges = _isBetweenEdges(platform);
     if (!isBetweenEdges) {
       return null;
     }
     if (platform.type == PlatformType.ramp) {
-      return isOnRamp(platform, playerY);
+      return _isOnRamp(platform, playerY);
     } else {
-      return isOnCurve(platform, playerY);
+      return _isOnCurve(platform, playerY);
     }
   }
 
-  HeightOnPlatform? isOnRamp(PlatformModel platform, double playerY) {
-    final double expectedHeight = getPlayerHeightOnPlatform(platform);
+  HeightOnPlatform? _isOnRamp(PlatformModel platform, double playerY) {
+    final double expectedHeight = _getPlayerHeightOnPlatform(platform);
 
     final bool withinHeight =
         (playerY - expectedHeight).abs() <= _heightThreshold;
@@ -60,7 +60,7 @@ class PlayerPlatform {
     return withinHeight ? HeightOnPlatform(expectedHeight) : null;
   }
 
-  HeightOnPlatform? isOnCurve(PlatformModel platform, double playerY) {
+  HeightOnPlatform? _isOnCurve(PlatformModel platform, double playerY) {
     final bool isWithinHeight =
         (playerY - platform.startHeight).abs() < _heightThreshold;
     return isWithinHeight ? HeightOnPlatform(platform.startHeight) : null;
