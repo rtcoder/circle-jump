@@ -2,13 +2,13 @@ import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Models/player_platform.dart';
 
 class Player {
-  double velocityY = 0;
-  final double jumpPower = -12;
-  bool onGround = true;
+  double _velocityY = 0;
+  final double _jumpPower = -12;
+  bool _onGround = true;
   double playerY = 0;
   double playerAngle = 0;
   final radius = 20.0;
-  bool canDoubleJump = false;
+  bool _canDoubleJump = false;
   final PlayerPlatform playerPlatform = PlayerPlatform();
 
   double get playerX {
@@ -17,35 +17,39 @@ class Player {
 
   void update() {
     _incrementPlayerAngle();
-    onGround = false;
-    double newY = playerY;
-    velocityY += game.gravity;
-    newY -= velocityY;
-
-    if (velocityY >= 0) {
-      final onAnyPlatform = playerPlatform.isOnAnyPlatform(playerX, newY);
-      if (onAnyPlatform != null) {
-        velocityY = 0;
-        newY = onAnyPlatform.height + radius;
-        onGround = true;
-      }
-    }
-    if (newY <= 0) {
-      velocityY = 0;
-      newY = 0;
-      onGround = true;
-    }
-    playerY = newY;
+    _updatePlayerX();
   }
 
   void jump() {
-    if (onGround) {
-      velocityY = jumpPower;
-      canDoubleJump = true; // Zezwól na podwójny skok
-    } else if (canDoubleJump) {
-      velocityY = jumpPower;
-      canDoubleJump = false; // Wykorzystaj podwójny skok
+    if (_onGround) {
+      _velocityY = _jumpPower;
+      _canDoubleJump = true; // Zezwól na podwójny skok
+    } else if (_canDoubleJump) {
+      _velocityY = _jumpPower;
+      _canDoubleJump = false; // Wykorzystaj podwójny skok
     }
+  }
+
+  void _updatePlayerX() {
+    _onGround = false;
+    double newY = playerY;
+    _velocityY += game.gravity;
+    newY -= _velocityY;
+
+    if (_velocityY >= 0) {
+      final onAnyPlatform = playerPlatform.isOnAnyPlatform(newY);
+      if (onAnyPlatform != null) {
+        _velocityY = 0;
+        newY = onAnyPlatform.height + radius;
+        _onGround = true;
+      }
+    }
+    if (newY <= 0) {
+      _velocityY = 0;
+      newY = 0;
+      _onGround = true;
+    }
+    playerY = newY;
   }
 
   void _incrementPlayerAngle() {
