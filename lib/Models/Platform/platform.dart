@@ -76,14 +76,7 @@ class PlatformModel extends Movable {
 
   @override
   void move(double delta) {
-    startAngle = (startAngle - delta) % (2 * pi);
-    endAngle = (endAngle - delta) % (2 * pi);
-
-    if (startAngle < 0) {
-      startAngle += 2 * pi;
-    }
-    if (endAngle < 0) {
-      endAngle += 2 * pi;
-    }
+    startAngle = updateAngle(startAngle, delta);
+    endAngle = updateAngle(endAngle, delta);
   }
 }

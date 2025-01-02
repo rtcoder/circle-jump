@@ -33,9 +33,7 @@ class Obstacle extends Movable {
 
   @override
   void move(double delta) {
-    angle -= delta;
-
-    angle %= 2 * pi;
+    angle = updateAngle(angle, delta);
 
     if (type == ObstacleType.oscillating) {
       oscillationOffset = cos(angle * 20) * 50;

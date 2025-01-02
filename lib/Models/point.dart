@@ -28,9 +28,7 @@ class Point extends Movable {
 
   @override
   void move(double delta) {
-    angle -= delta;
-
-    angle %= 2 * pi;
+    angle=updateAngle(angle, delta);
     oscillationOffset += _oscillationDirection * 0.5;
     if (oscillationOffset > 10 || oscillationOffset < -10) {
       _oscillationDirection *= -1;
