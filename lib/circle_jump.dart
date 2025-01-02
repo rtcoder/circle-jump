@@ -2,7 +2,7 @@ import 'package:circle_jump/Widgets/loading_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/game_over_screen.dart';
-import 'Screens/GameScreen/game_screen.dart';
+import 'Screens/game_screen.dart';
 import 'Screens/start_screen.dart';
 import 'images.dart';
 

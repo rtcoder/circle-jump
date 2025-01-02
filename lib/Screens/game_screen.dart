@@ -1,12 +1,18 @@
-import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../Background/animated_background.dart';
-import '../../Painters/obstacle_painter.dart';
-import '../../Painters/platform_painter.dart';
-import '../../Painters/player_painter.dart';
-import 'game_screen.dart';
+import '../Background/animated_background.dart';
+import '../Models/game.dart';
+import '../Painters/obstacle_painter.dart';
+import '../Painters/platform_painter.dart';
+import '../Painters/player_painter.dart';
+
+class GameScreen extends StatefulWidget {
+  const GameScreen({super.key});
+
+  @override
+  State<GameScreen> createState() => GameScreenState();
+}
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
