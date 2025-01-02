@@ -71,12 +71,6 @@ class _Game {
     for (final platform in platforms) {
       platform.move(circleAngleDelta);
     }
-
-    // platforms.removeWhere((platform) => platform.endAngle < 0.1);
-
-    if (platforms.length <= 2) {
-      platforms.addAll(generatePlatforms(10));
-    }
   }
 
   void _updateObstacles() {
