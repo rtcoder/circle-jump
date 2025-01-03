@@ -55,21 +55,23 @@ class _Game {
     _moveElements();
     _incrementCircleAngle();
     player.update();
-    _collectPoints();
     _updateGameSpeed();
   }
-  void _collectPoints() {
+
+  List<Point> collectPoints() {
     final List<Point> collectedPoints = [];
 
-    for (final point in game.points) {
-      if (PlayerPoint.isPointCollected(point, game.player)) {
+    for (final point in points) {
+      if (PlayerPoint.isPointCollected(point, player)) {
         collectedPoints.add(point);
-        game.player.score += 1;
+        player.score += 1; // Aktualizacja wyniku gracza
       }
     }
 
-    game.points.removeWhere((point) => collectedPoints.contains(point));
+    points.removeWhere((point) => collectedPoints.contains(point));
+    return collectedPoints; // Zwrócenie zebranych punktów
   }
+
   void _updateDistance() {
     distance += circleAngleDelta * player.radius;
   }

@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 
 import '../Background/animated_background.dart';
 import '../Models/game.dart';
+import '../Models/point.dart';
 import '../Painters/obstacle_painter.dart';
 import '../Painters/platform_painter.dart';
 import '../Painters/player_painter.dart';
+import '../Widgets/collected_point.dart';
 import '../Widgets/points_counter.dart';
 
 class GameScreen extends StatefulWidget {
@@ -18,6 +20,9 @@ class GameScreen extends StatefulWidget {
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
+  int points = 0;
+  final List<Widget> animatedPoints = [];
+
   @override
   void initState() {
     super.initState();
@@ -31,15 +36,43 @@ class GameScreenState extends State<GameScreen>
       await Future.delayed(const Duration(milliseconds: 16));
       if (mounted) {
         setState(() {
-          final size = MediaQuery.of(context).size;
-          game.updateScreenSize(size);
           game.update();
+          handlePointCollection();
         });
       }
       return true;
     });
   }
 
+  void onPointCollected(Offset startPosition) {
+    final UniqueKey key = UniqueKey();
+
+    setState(() {
+      animatedPoints.add(
+        CollectedPoint(
+          key: key,
+          startPosition: startPosition,
+          onAnimationEnd: () {
+            setState(() {
+              animatedPoints.removeWhere((widget) => widget.key == key);
+              points++; // Zwiększenie licznika punktów
+            });
+          },
+        ),
+      );
+    });
+  }
+
+
+
+  void handlePointCollection() {
+    final List<Point> collectedPoints = game.collectPoints();
+
+    for (final point in collectedPoints) {
+      final Offset startPosition = Offset(point.x, point.y);
+      onPointCollected(startPosition);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -72,6 +105,7 @@ class GameScreenState extends State<GameScreen>
               size: size,
               foregroundPainter: PlayerPainter(),
             ),
+            ...animatedPoints,
             PointsCounter(
               points: game.player.score,
             ),
