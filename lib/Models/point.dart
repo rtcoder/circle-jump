@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:circle_jump/Models/movable.dart';
 
 import '../utils.dart';
@@ -10,7 +8,10 @@ class Point extends Movable {
   double airHeight;
   double _oscillationDirection = 1;
   double oscillationOffset = 0;
-  final double radius = 10;
+  int animationFrame = 0;
+  int _animationCounter = 0;
+  final int _animationSpeed = 5;
+  final double radius = 15;
 
   Point({required this.angle, this.airHeight = 0});
 
@@ -33,8 +34,17 @@ class Point extends Movable {
     if (oscillationOffset > 10 || oscillationOffset < -10) {
       _oscillationDirection *= -1;
     }
+    updateAnimation();
   }
 
+  void updateAnimation() {
+    _animationCounter++;
+
+    if (_animationCounter >= _animationSpeed) {
+      animationFrame = (animationFrame + 1) % 16;
+      _animationCounter = 0;
+    }
+  }
   double _calculateRadius(double radius) {
     return radius - oscillationOffset;
   }
