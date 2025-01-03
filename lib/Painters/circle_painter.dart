@@ -6,6 +6,10 @@ import '../images.dart';
 class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    if (Images.circleImage == null) {
+      return;
+    }
+    final image = Images.circleImage!;
     final paint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.stroke
@@ -24,9 +28,9 @@ class CirclePainter extends CustomPainter {
     canvas.rotate(-game.circleAngle);
     canvas.translate(-centerX, -centerY);
     canvas.drawImageRect(
-        Images.circleImage,
-        Rect.fromLTRB(0, 0, Images.circleImage.width.toDouble(),
-            Images.circleImage.height.toDouble()),
+        image,
+        Rect.fromLTRB(0, 0, image.width.toDouble(),
+            image.height.toDouble()),
         Rect.fromLTWH(circleOffset.dx, circleOffset.dy, newSize, newSize),
         paint);
     canvas.restore();

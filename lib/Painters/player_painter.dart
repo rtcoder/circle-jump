@@ -6,11 +6,14 @@ import 'package:flutter/material.dart';
 class PlayerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    if(Images.ballImage == null) {
+      return;
+    }
     final paint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.fill;
 
-    final img = Images.ballImage;
+    final img = Images.ballImage!;
     final w = img.width.toDouble();
     final h = img.height.toDouble();
     final Player player = game.player;

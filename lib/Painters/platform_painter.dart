@@ -10,6 +10,9 @@ import '../Enums/platform_type.dart';
 class PlatformPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    if (Images.blockImage == null) {
+      return;
+    }
     final paint = Paint()..style = PaintingStyle.stroke;
 
     for (final platform in game.platforms) {
@@ -32,7 +35,7 @@ class PlatformPainter extends CustomPainter {
     final double platformRadius = platform.startHeight + center.radius;
     final double startAngle = platform.startAngle;
     final double sweepAngle = platform.sweepAngle;
-    final image = Images.blockImage;
+    final image = Images.blockImage!;
     final double imageWidth = image.width.toDouble();
     final double imageHeight = image.height.toDouble();
     final double platformThickness = platform.strokeWidth;

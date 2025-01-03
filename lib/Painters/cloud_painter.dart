@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,9 @@ class CloudPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (Images.cloudImage == null) {
+      return;
+    }
     final center = game.circleCenter;
     final centerX = center.centerX;
     final centerY = center.centerY;
@@ -20,11 +25,12 @@ class CloudPainter extends CustomPainter {
     for (final cloud in clouds) {
       final x = cloud.calculateX(centerX, radius);
       final y = cloud.calculateY(centerY, radius);
-      _drawCloudImage(canvas, Offset(x, y), cloud);
+      _drawCloudImage(canvas, Offset(x, y), cloud, Images.cloudImage!);
     }
   }
 
-  void _drawCloudImage(Canvas canvas, Offset position, Cloud cloud) {
+  void _drawCloudImage(
+      Canvas canvas, Offset position, Cloud cloud, ui.Image image) {
     final paint = Paint()
       ..color = Color.fromARGB((cloud.opacity * 255).toInt(), 255, 255, 255);
     canvas.save();
@@ -32,9 +38,8 @@ class CloudPainter extends CustomPainter {
     canvas.rotate(cloud.angle + degreesToRadians(90));
     canvas.translate(-position.dx, -position.dy);
     canvas.drawImageRect(
-      Images.cloudImage,
-      Rect.fromLTWH(0, 0, Images.cloudImage.width.toDouble(),
-          Images.cloudImage.height.toDouble()),
+      image,
+      Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
       Rect.fromCenter(
         center: position,
         width: cloud.size * 1.5,

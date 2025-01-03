@@ -13,10 +13,11 @@ class ImagesList {
 }
 
 class Images {
-  static late ui.Image cloudImage;
-  static late ui.Image circleImage;
-  static late ui.Image ballImage;
-  static late ui.Image blockImage;
+  static ui.Image? cloudImage;
+  static ui.Image? circleImage;
+  static ui.Image? ballImage;
+  static ui.Image? blockImage;
+  static ui.Image? coinImage;
 }
 
 class ImageLoader {
