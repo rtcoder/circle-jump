@@ -9,6 +9,7 @@ class ImagesList {
   static const String cloud = 'assets/images/cloud.png';
   static const String ball = 'assets/images/ball.png';
   static const String block = 'assets/images/block.png';
+  static const String coin = 'assets/images/coin.png';
 }
 
 class Images {
