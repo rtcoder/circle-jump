@@ -5,7 +5,7 @@ import '../utils.dart';
 import 'game.dart';
 import 'movable.dart';
 
-class Obstacle extends Movable {
+class Obstacle extends Movable{
   double angle;
   final ObstacleType type;
   double oscillationOffset = 0;
