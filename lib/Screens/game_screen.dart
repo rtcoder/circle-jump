@@ -7,6 +7,7 @@ import '../Models/game.dart';
 import '../Painters/obstacle_painter.dart';
 import '../Painters/platform_painter.dart';
 import '../Painters/player_painter.dart';
+import '../Widgets/points_counter.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -70,6 +71,9 @@ class GameScreenState extends State<GameScreen>
             CustomPaint(
               size: size,
               foregroundPainter: PlayerPainter(),
+            ),
+            PointsCounter(
+              points: game.player.score,
             ),
             // distanceText(game.distanceHuman),
           ],
