@@ -44,7 +44,7 @@ class _Game {
       return;
     }
 
-    platforms = generatePlatforms(10);
+    platforms = generatePlatforms(10, 4);
     obstacles = obstacleGenerator(10);
     points = generatePoints(10);
     gameInitialized = true;
