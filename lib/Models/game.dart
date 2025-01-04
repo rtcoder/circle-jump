@@ -1,7 +1,7 @@
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/Player/player.dart';
-import 'package:circle_jump/Models/Player/player_coin.dart';
+import 'package:circle_jump/Services/player_coin_collision.dart';
 import 'package:circle_jump/Models/coin.dart';
 import 'package:flutter/material.dart';
 
@@ -62,7 +62,7 @@ class _Game {
     final List<Coin> collectedCoins = [];
 
     for (final coin in coins) {
-      if (PlayerCoin.isCoinCollected(coin, player)) {
+      if (PlayerCoinCollision.isCoinCollected(coin, player)) {
         collectedCoins.add(coin);
         player.score += 1; // Aktualizacja wyniku gracza
       }

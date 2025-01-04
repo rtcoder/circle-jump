@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:circle_jump/Models/Player/player.dart';
 import 'package:circle_jump/Models/coin.dart';
 
-class PlayerCoin {
+class PlayerCoinCollision {
   static bool isCoinCollected(Coin coin, Player player) {
     final double dx = player.playerX - coin.x;
     final double dy = player.playerYAbsolutePosition - coin.y;
