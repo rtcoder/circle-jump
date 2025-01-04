@@ -1,6 +1,5 @@
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Models/player_platform.dart';
-import 'package:circle_jump/Models/player_point.dart';
 
 class Player {
   double _velocityY = 0;
@@ -23,7 +22,7 @@ class Player {
 
   void update() {
     _incrementPlayerAngle();
-    _updatePlayerX();
+    _updatePlayerY();
   }
 
   void jump() {
@@ -36,25 +35,35 @@ class Player {
     }
   }
 
-  void _updatePlayerX() {
+  void _updatePlayerY() {
     _onGround = false;
     double newY = playerY;
+
     _velocityY += game.gravity;
     newY -= _velocityY;
 
-    if (_velocityY >= 0) {
-      final onAnyPlatform = playerPlatform.isOnAnyPlatform(newY);
-      if (onAnyPlatform != null) {
-        _velocityY = 0;
-        newY = onAnyPlatform.height + radius;
-        _onGround = true;
+    final platformCollision = playerPlatform.isOnAnyPlatform(newY);
+    if (platformCollision != null) {
+      if (_velocityY >= 0) {
+        if (playerY > platformCollision.height) {
+          _velocityY = 0;
+          newY = platformCollision.height + radius;
+          _onGround = true;
+        }
+      } else {
+        if (playerY < platformCollision.height) {
+          _velocityY = -_velocityY * 0.5;
+          newY = platformCollision.height - radius;
+        }
       }
     }
+
     if (newY <= 0) {
       _velocityY = 0;
       newY = 0;
       _onGround = true;
     }
+
     playerY = newY;
   }
 
