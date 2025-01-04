@@ -7,6 +7,7 @@ import 'movable.dart';
 
 class Obstacle extends Movable{
   double angle;
+  double angleDeg;
   final ObstacleType type;
   double oscillationOffset = 0;
   double airHeight = 0;
@@ -25,6 +26,7 @@ class Obstacle extends Movable{
 
   Obstacle({
     required this.angle,
+    required this.angleDeg,
     required this.type,
   }) {
     airHeight =
@@ -34,6 +36,7 @@ class Obstacle extends Movable{
   @override
   void move(double delta) {
     angle = updateAngle(angle, delta);
+    angleDeg = updateAngleDeg(angleDeg, delta);
 
     if (type == ObstacleType.oscillating) {
       oscillationOffset = cos(angle * 20) * 50;

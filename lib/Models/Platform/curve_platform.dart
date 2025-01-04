@@ -50,6 +50,8 @@ class CurvePlatform extends PlatformModel {
     required this.height,
     required super.startAngle,
     required super.endAngle,
+    required super.startAngleDeg,
+    required super.endAngleDeg,
     super.color = Colors.green,
     super.strokeWidth,
   });
@@ -58,5 +60,7 @@ class CurvePlatform extends PlatformModel {
   void move(double delta) {
     startAngle = updateAngle(startAngle, delta);
     endAngle = updateAngle(endAngle, delta);
+    startAngleDeg = updateAngleDeg(startAngleDeg, delta);
+    endAngleDeg = updateAngleDeg(endAngleDeg, delta);
   }
 }

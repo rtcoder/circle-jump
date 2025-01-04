@@ -1,9 +1,24 @@
 import 'dart:math';
 
-import 'package:circle_jump/Models/player.dart';
 import 'package:circle_jump/Models/coin.dart';
+import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Models/player.dart';
 
 class PlayerCoinCollision {
+  static List<Coin> collectCoins() {
+    final List<Coin> collectedCoins = [];
+
+    for (final coin in game.visibleCoins) {
+      if (PlayerCoinCollision.isCoinCollected(coin, game.player)) {
+        collectedCoins.add(coin);
+        game.player.score += 1;
+      }
+    }
+
+    game.coins.removeWhere((coin) => collectedCoins.contains(coin));
+    return collectedCoins;
+  }
+
   static bool isCoinCollected(Coin coin, Player player) {
     final double dx = player.playerX - coin.x;
     final double dy = player.playerYAbsolutePosition - coin.y;

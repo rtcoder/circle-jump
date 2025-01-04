@@ -47,6 +47,8 @@ class RampPlatform extends PlatformModel {
     required this.endHeight,
     required super.startAngle,
     required super.endAngle,
+    required super.startAngleDeg,
+    required super.endAngleDeg,
     super.color = Colors.green,
     super.strokeWidth,
   });
@@ -55,5 +57,7 @@ class RampPlatform extends PlatformModel {
   void move(double delta) {
     startAngle = updateAngle(startAngle, delta);
     endAngle = updateAngle(endAngle, delta);
+    startAngleDeg = updateAngleDeg(startAngleDeg, delta);
+    endAngleDeg = updateAngleDeg(endAngleDeg, delta);
   }
 }

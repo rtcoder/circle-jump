@@ -1,4 +1,5 @@
 import 'package:circle_jump/Painters/coins_painter.dart';
+import 'package:circle_jump/Services/player_coin_collision.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -63,10 +64,8 @@ class GameScreenState extends State<GameScreen>
     });
   }
 
-
-
   void handleCoinCollection() {
-    final List<Coin> collectedCoins = game.collectCoins();
+    final List<Coin> collectedCoins = PlayerCoinCollision.collectCoins();
 
     for (final coin in collectedCoins) {
       final Offset startPosition = Offset(coin.x, coin.y);

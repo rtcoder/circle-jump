@@ -26,7 +26,9 @@ List<PlatformModel> generatePlatforms(int groupCount, int platformsPerGroup) {
        if (i % 2 == 0) {
         platforms.add(RampPlatform(
           startAngle: startAngleRad,
+          startAngleDeg: startAngle,
           endAngle: endAngleRad,
+          endAngleDeg: endAngle,
           startHeight: -20,
           endHeight: 100,
           color: Colors.green,
@@ -34,7 +36,9 @@ List<PlatformModel> generatePlatforms(int groupCount, int platformsPerGroup) {
       } else {
         platforms.add(CurvePlatform(
           startAngle: startAngleRad,
+          startAngleDeg: startAngle,
           endAngle: endAngleRad,
+          endAngleDeg: endAngle,
           height: height,
         ));
       }

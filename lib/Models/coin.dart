@@ -5,6 +5,7 @@ import 'game.dart';
 
 class Coin extends Movable {
   double angle;
+  double angleDeg;
   double airHeight;
   double _oscillationDirection = 1;
   double oscillationOffset = 0;
@@ -13,7 +14,7 @@ class Coin extends Movable {
   final int _animationSpeed = 5;
   final double radius = 15;
 
-  Coin({required this.angle, this.airHeight = 0});
+  Coin({required this.angle, required this.angleDeg, this.airHeight = 0});
 
   get x {
     final center = game.circleCenter;
@@ -29,7 +30,8 @@ class Coin extends Movable {
 
   @override
   void move(double delta) {
-    angle=updateAngle(angle, delta);
+    angle = updateAngle(angle, delta);
+    angleDeg = updateAngleDeg(angleDeg, delta);
     oscillationOffset += _oscillationDirection * 0.5;
     if (oscillationOffset > 10 || oscillationOffset < -10) {
       _oscillationDirection *= -1;
@@ -45,6 +47,7 @@ class Coin extends Movable {
       _animationCounter = 0;
     }
   }
+
   double _calculateRadius(double radius) {
     return radius - oscillationOffset;
   }

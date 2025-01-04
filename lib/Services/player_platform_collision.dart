@@ -1,8 +1,8 @@
+import 'package:circle_jump/Models/Platform/curve_platform.dart';
 import 'package:circle_jump/Models/Platform/height_on_platform.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
 import 'package:circle_jump/Models/game.dart';
-import 'package:circle_jump/Models/Platform/curve_platform.dart';
 
 class PlayerPlatformCollision {
   final double _heightThreshold = 20;
@@ -11,7 +11,7 @@ class PlayerPlatformCollision {
     HeightOnPlatform? closestPlatform;
     double closestDistance = double.infinity;
 
-    for (final PlatformModel platform in game.platforms) {
+    for (final PlatformModel platform in game.visiblePlatforms) {
       final HeightOnPlatform? result = _isOnPlatform(platform, playerY);
 
       if (result != null) {

@@ -11,7 +11,7 @@ class CoinsPainter extends CustomPainter {
     }
 
     final coinImage = Images.coinImage!;
-    for (final coin in game.coins) {
+    for (final coin in game.visibleCoins) {
       const int frameWidth = 64;
       const int frameHeight = 64;
 

@@ -1,15 +1,11 @@
+import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
-import 'package:circle_jump/Models/movable.dart';
-import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/Services/player_coin_collision.dart';
+import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/coin.dart';
+import 'package:circle_jump/Models/movable.dart';
+import 'package:circle_jump/Models/obstacle.dart';
+import 'package:circle_jump/Models/player.dart';
 import 'package:flutter/material.dart';
-
-import '../Generators/obstacle_generator.dart';
-import '../Generators/platform_generator.dart';
-import '../Generators/coin_generator.dart';
-import 'circle_center.dart';
-import 'obstacle.dart';
 
 class _Game {
   final double gravity = 0.5;
@@ -19,13 +15,32 @@ class _Game {
   double circleAngleDelta = 0.001;
   double circleAngle = 0;
   final circleRadius = 1000.0;
-  late List<PlatformModel> platforms;
-  late List<Obstacle> obstacles;
+  List<PlatformModel> platforms = [];
+  List<Obstacle> obstacles = [];
   late List<Coin> coins;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
   bool gameInitialized = false;
+
+  Iterable<PlatformModel> get visiblePlatforms {
+    return platforms.where((platform) {
+      return (platform.startAngleDeg <= 0 && platform.startAngleDeg >= -180) ||
+          platform.endAngleDeg <= 0 && platform.endAngleDeg >= -180;
+    });
+  }
+
+  Iterable<Coin> get visibleCoins {
+    return coins.where((coin) {
+      return coin.angleDeg <= 0 && coin.angleDeg >= -180;
+    });
+  }
+
+  Iterable<Obstacle> get visibleObstacles {
+    return obstacles.where((obstacle) {
+      return obstacle.angleDeg <= 0 && obstacle.angleDeg >= -180;
+    });
+  }
 
   String get distanceHuman {
     if (distance < 1000) {
@@ -44,9 +59,9 @@ class _Game {
       return;
     }
 
-    platforms = generatePlatforms(10, 4);
-    obstacles = obstacleGenerator(10);
-    coins = generateCoins(10);
+    // platforms = generatePlatforms(10, 4);
+    // obstacles = obstacleGenerator(10);
+    coins = generateCoins(1, 100, 0, 360);
     gameInitialized = true;
   }
 
@@ -56,20 +71,6 @@ class _Game {
     _incrementCircleAngle();
     player.update();
     _updateGameSpeed();
-  }
-
-  List<Coin> collectCoins() {
-    final List<Coin> collectedCoins = [];
-
-    for (final coin in coins) {
-      if (PlayerCoinCollision.isCoinCollected(coin, player)) {
-        collectedCoins.add(coin);
-        player.score += 1; // Aktualizacja wyniku gracza
-      }
-    }
-
-    coins.removeWhere((coin) => collectedCoins.contains(coin));
-    return collectedCoins; // Zwrócenie zebranych punktów
   }
 
   void _updateDistance() {
