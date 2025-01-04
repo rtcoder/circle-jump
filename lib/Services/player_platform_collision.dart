@@ -1,8 +1,8 @@
-import 'package:circle_jump/Models/Platform/platform.dart';
-import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Models/Platform/height_on_platform.dart';
-
-import '../Enums/platform_type.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/Platform/ramp_platform.dart';
+import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Models/Platform/curve_platform.dart';
 
 class PlayerPlatformCollision {
   final double _heightThreshold = 20;
@@ -28,10 +28,20 @@ class PlayerPlatformCollision {
   }
 
   double _getPlayerHeightOnPlatform(PlatformModel platform) {
-    if (platform.type == PlatformType.curved) {
-      return platform.startHeight;
+    if (platform is CurvePlatform) {
+      return _getPlayerHeightOnPlatformCurve(platform);
     }
+    if (platform is RampPlatform) {
+      return _getPlayerHeightOnPlatformRamp(platform);
+    }
+    return 0;
+  }
 
+  double _getPlayerHeightOnPlatformCurve(CurvePlatform platform) {
+    return platform.height;
+  }
+
+  double _getPlayerHeightOnPlatformRamp(RampPlatform platform) {
     final double totalWidth = platform.endX - platform.startX;
     if (totalWidth == 0) {
       return platform.startHeight;
@@ -49,14 +59,16 @@ class PlayerPlatformCollision {
     if (!isBetweenEdges) {
       return null;
     }
-    if (platform.type == PlatformType.ramp) {
+    if (platform is RampPlatform) {
       return _isOnRamp(platform, playerY);
-    } else {
+    }
+    if (platform is CurvePlatform) {
       return _isOnCurve(platform, playerY);
     }
+    return null;
   }
 
-  HeightOnPlatform? _isOnRamp(PlatformModel platform, double playerY) {
+  HeightOnPlatform? _isOnRamp(RampPlatform platform, double playerY) {
     final double expectedHeight = _getPlayerHeightOnPlatform(platform);
 
     final bool withinHeight =
@@ -67,11 +79,11 @@ class PlayerPlatformCollision {
         : null;
   }
 
-  HeightOnPlatform? _isOnCurve(PlatformModel platform, double playerY) {
+  HeightOnPlatform? _isOnCurve(CurvePlatform platform, double playerY) {
     final bool isWithinHeight =
-        (playerY - platform.startHeight).abs() < _heightThreshold;
+        (playerY - platform.height).abs() < _heightThreshold;
     return isWithinHeight
-        ? HeightOnPlatform(platform.startHeight, platform.strokeWidth)
+        ? HeightOnPlatform(platform.height, platform.strokeWidth)
         : null;
   }
 
@@ -79,5 +91,4 @@ class PlayerPlatformCollision {
     final double playerX = game.player.playerX;
     return playerX >= platform.startX && playerX <= platform.endX;
   }
-
 }

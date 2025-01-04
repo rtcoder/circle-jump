@@ -1,11 +1,11 @@
 import 'dart:math';
 
+import 'package:circle_jump/Models/Platform/curve_platform.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/Platform/ramp_platform.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
-
-import '../Enums/platform_type.dart';
 
 class PlatformPainter extends CustomPainter {
   @override
@@ -21,18 +21,19 @@ class PlatformPainter extends CustomPainter {
   }
 
   void _drawPlatform(Canvas canvas, PlatformModel platform, Paint paint) {
-    if (platform.type == PlatformType.ramp) {
+    if (platform is RampPlatform) {
       _drawRamp(canvas, platform, paint);
-    } else {
+    }
+    if (platform is CurvePlatform) {
       _drawCurve(canvas, platform, paint);
     }
     return;
   }
 
-  void _drawCurve(Canvas canvas, PlatformModel platform, Paint paint) {
+  void _drawCurve(Canvas canvas, CurvePlatform platform, Paint paint) {
     final center = game.circleCenter;
 
-    final double platformRadius = platform.startHeight + center.radius;
+    final double platformRadius = platform.height + center.radius;
     final double startAngle = platform.startAngle;
     final double sweepAngle = platform.sweepAngle;
     final image = Images.blockImage!;
@@ -64,7 +65,7 @@ class PlatformPainter extends CustomPainter {
     }
   }
 
-  void _drawRamp(Canvas canvas, PlatformModel platform, Paint paint) {
+  void _drawRamp(Canvas canvas, RampPlatform platform, Paint paint) {
     paint.color = platform.color;
     paint.strokeWidth = platform.strokeWidth;
     final Path rampPath = Path()

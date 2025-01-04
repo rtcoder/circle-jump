@@ -1,82 +1,25 @@
-import 'dart:math';
-
-import 'package:circle_jump/Enums/platform_type.dart';
-import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils.dart';
 import '../movable.dart';
 
-class PlatformModel extends Movable {
-  PlatformType type;
-  double startHeight;
-  double endHeight;
+abstract class PlatformModel extends Movable {
   double startAngle;
   double endAngle;
-
   Color color;
   double strokeWidth;
 
-  get _startHeightRadius {
-    final center = game.circleCenter;
-    return center.radius + startHeight;
-  }
+  get startX;
 
-  get _endHeightRadius {
-    final center = game.circleCenter;
-    return center.radius + endHeight;
-  }
+  get startY;
 
-  get sweepAngle {
-    double angle = (endAngle - startAngle) % (2 * pi);
-    if (angle <= 0) {
-      angle += 2 * pi;
-    }
-    return angle;
-  }
+  get endX;
 
-  get startX {
-    final center = game.circleCenter;
-    return getXPosOnCircle(center.centerX, _startHeightRadius, startAngle);
-  }
+  get endY;
 
-  get startY {
-    final center = game.circleCenter;
-    return getYPosOnCircle(center.centerY, _startHeightRadius, startAngle);
-  }
-
-  get endX {
-    final center = game.circleCenter;
-    return getXPosOnCircle(center.centerX, _endHeightRadius, endAngle);
-  }
-
-  get endY {
-    final center = game.circleCenter;
-    return getYPosOnCircle(center.centerY, _endHeightRadius, endAngle);
-  }
-
-  PlatformModel.curved({
-    required height,
+  PlatformModel({
     required this.startAngle,
     required this.endAngle,
     this.color = Colors.brown,
     this.strokeWidth = 15.0,
-  })  : type = PlatformType.curved,
-        startHeight = height,
-        endHeight = height;
-
-  PlatformModel.ramp({
-    required this.startHeight,
-    required this.endHeight,
-    required this.startAngle,
-    required this.endAngle,
-    this.color = Colors.green,
-    this.strokeWidth = 15.0,
-  }) : type = PlatformType.ramp;
-
-  @override
-  void move(double delta) {
-    startAngle = updateAngle(startAngle, delta);
-    endAngle = updateAngle(endAngle, delta);
-  }
+  });
 }
