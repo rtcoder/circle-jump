@@ -1,6 +1,7 @@
 import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Models/Coin/coin_collector.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/Platform/platform_collector.dart';
 import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/obstacle.dart';
@@ -15,20 +16,13 @@ class _Game {
   double circleAngleDelta = 0.001;
   double circleAngle = 0;
   final circleRadius = 1000.0;
-  List<PlatformModel> platforms = [];
   List<Obstacle> obstacles = [];
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
   bool gameInitialized = false;
   final CoinCollector coinCollector = CoinCollector();
-
-  Iterable<PlatformModel> get visiblePlatforms {
-    return platforms.where((platform) {
-      return (platform.startAngleDeg <= 0 && platform.startAngleDeg >= -180) ||
-          platform.endAngleDeg <= 0 && platform.endAngleDeg >= -180;
-    });
-  }
+  final PlatformCollector platformCollector = PlatformCollector();
 
   Iterable<Obstacle> get visibleObstacles {
     return obstacles.where((obstacle) {
@@ -83,7 +77,7 @@ class _Game {
 
   void _moveElements() {
     final List<Movable> elements = [
-      ...platforms,
+      ...platformCollector.items,
       ...obstacles,
       ...coinCollector.items
     ];
