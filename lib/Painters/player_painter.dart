@@ -1,5 +1,5 @@
 import 'package:circle_jump/Models/game.dart';
-import 'package:circle_jump/Models/Player/player.dart';
+import 'package:circle_jump/Models/player.dart';
 import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
 
