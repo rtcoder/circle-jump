@@ -1,20 +1,24 @@
-import 'dart:math';
-
 import '../Models/coin.dart';
 import '../utils.dart';
 
-List<Coin> generateCoins(int count, double height, double startAngle, double endAngle) {
-  final rand = Random();
+List<Coin> generateCoins(
+    int count, double height, double startAngleDeg, double endAngleDeg) {
   final List<Coin> coins = [];
+  final angleRange = endAngleDeg - startAngleDeg;
+  final angleStep = angleRange / (count - 1);
+
   for (int i = 0; i < count; i++) {
-    final angle = -95.00;//rand.nextInt(360).toDouble();
-    final startAngleRad = degreesToRadians(angle);
-    final height = 100 + rand.nextDouble() * 50;
-    coins.add(Coin(
-      angle: startAngleRad,
-      angleDeg: angle,
-      airHeight: height,
-    ));
+    final angleDeg = startAngleDeg + i * angleStep;
+    final angleRad = degreesToRadians(angleDeg);
+
+    coins.add(
+      Coin(
+        angle: angleRad,
+        angleDeg: angleDeg,
+        airHeight: height,
+      ),
+    );
   }
+
   return coins;
 }
