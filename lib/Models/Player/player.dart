@@ -1,5 +1,5 @@
 import 'package:circle_jump/Models/game.dart';
-import 'package:circle_jump/Models/player_platform.dart';
+import 'package:circle_jump/Models/Player/player_platform.dart';
 
 class Player {
   double _velocityY = 0;

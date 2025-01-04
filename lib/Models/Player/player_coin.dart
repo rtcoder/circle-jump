@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:circle_jump/Models/player.dart';
+import 'package:circle_jump/Models/Player/player.dart';
 import 'package:circle_jump/Models/coin.dart';
 
 class PlayerCoin {

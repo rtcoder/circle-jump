@@ -1,7 +1,7 @@
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/movable.dart';
-import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/Models/player_coin.dart';
+import 'package:circle_jump/Models/Player/player.dart';
+import 'package:circle_jump/Models/Player/player_coin.dart';
 import 'package:circle_jump/Models/coin.dart';
 import 'package:flutter/material.dart';
 
