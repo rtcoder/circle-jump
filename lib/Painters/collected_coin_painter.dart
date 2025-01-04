@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../images.dart';
 
-class CoinPainter extends CustomPainter {
+class CollectedCoinPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (Images.coinImage == null) {

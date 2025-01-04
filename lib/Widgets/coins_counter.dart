@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../Painters/coin_painter.dart';
+import '../Painters/collected_coin_painter.dart';
 
-class PointsCounter extends StatelessWidget {
-  final int points;
+class CoinsCounter extends StatelessWidget {
+  final int coins;
 
-  const PointsCounter({
+  const CoinsCounter({
     super.key,
-    required this.points,
+    required this.coins,
   });
 
   @override
@@ -26,11 +26,11 @@ class PointsCounter extends StatelessWidget {
           children: [
             CustomPaint(
               size: const Size(20, 20),
-              painter: CoinPainter(),
+              painter: CollectedCoinPainter(),
             ),
             const SizedBox(width: 8),
             Text(
-              points.toString(),
+              coins.toString(),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,

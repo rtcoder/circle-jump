@@ -1,15 +1,15 @@
-import 'package:circle_jump/Painters/point_painter.dart';
+import 'package:circle_jump/Painters/coins_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../Background/animated_background.dart';
 import '../Models/game.dart';
-import '../Models/point.dart';
+import '../Models/coin.dart';
 import '../Painters/obstacle_painter.dart';
 import '../Painters/platform_painter.dart';
 import '../Painters/player_painter.dart';
-import '../Widgets/collected_point.dart';
-import '../Widgets/points_counter.dart';
+import '../Widgets/collected_coin.dart';
+import '../Widgets/coins_counter.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -20,8 +20,8 @@ class GameScreen extends StatefulWidget {
 
 class GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
-  int points = 0;
-  final List<Widget> animatedPoints = [];
+  int coins = 0;
+  final List<Widget> animatedCoins = [];
 
   @override
   void initState() {
@@ -37,25 +37,25 @@ class GameScreenState extends State<GameScreen>
       if (mounted) {
         setState(() {
           game.update();
-          handlePointCollection();
+          handleCoinCollection();
         });
       }
       return true;
     });
   }
 
-  void onPointCollected(Offset startPosition) {
+  void onCoinCollected(Offset startPosition) {
     final UniqueKey key = UniqueKey();
 
     setState(() {
-      animatedPoints.add(
-        CollectedPoint(
+      animatedCoins.add(
+        CollectedCoin(
           key: key,
           startPosition: startPosition,
           onAnimationEnd: () {
             setState(() {
-              animatedPoints.removeWhere((widget) => widget.key == key);
-              points++; // Zwiększenie licznika punktów
+              animatedCoins.removeWhere((widget) => widget.key == key);
+              coins++; // Zwiększenie licznika punktów
             });
           },
         ),
@@ -65,12 +65,12 @@ class GameScreenState extends State<GameScreen>
 
 
 
-  void handlePointCollection() {
-    final List<Point> collectedPoints = game.collectPoints();
+  void handleCoinCollection() {
+    final List<Coin> collectedCoins = game.collectCoins();
 
-    for (final point in collectedPoints) {
-      final Offset startPosition = Offset(point.x, point.y);
-      onPointCollected(startPosition);
+    for (final coin in collectedCoins) {
+      final Offset startPosition = Offset(coin.x, coin.y);
+      onCoinCollected(startPosition);
     }
   }
   @override
@@ -99,15 +99,15 @@ class GameScreenState extends State<GameScreen>
               painter: PlatformPainter(),
             ),
             CustomPaint(
-              painter: PointPainter(),
+              painter: CoinsPainter(),
             ),
             CustomPaint(
               size: size,
               foregroundPainter: PlayerPainter(),
             ),
-            ...animatedPoints,
-            PointsCounter(
-              points: game.player.score,
+            ...animatedCoins,
+            CoinsCounter(
+              coins: game.player.score,
             ),
             // distanceText(game.distanceHuman),
           ],

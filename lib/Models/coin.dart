@@ -3,7 +3,7 @@ import 'package:circle_jump/Models/movable.dart';
 import '../utils.dart';
 import 'game.dart';
 
-class Point extends Movable {
+class Coin extends Movable {
   double angle;
   double airHeight;
   double _oscillationDirection = 1;
@@ -13,7 +13,7 @@ class Point extends Movable {
   final int _animationSpeed = 5;
   final double radius = 15;
 
-  Point({required this.angle, this.airHeight = 0});
+  Coin({required this.angle, this.airHeight = 0});
 
   get x {
     final center = game.circleCenter;
@@ -51,6 +51,6 @@ class Point extends Movable {
 
   @override
   String toString() {
-    return 'Point(angle: $angle, airHeight: $airHeight)';
+    return 'Coin(angle: $angle, airHeight: $airHeight)';
   }
 }

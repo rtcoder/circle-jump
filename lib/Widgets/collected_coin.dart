@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-import '../Painters/coin_painter.dart';
+import '../Painters/collected_coin_painter.dart';
 
-class CollectedPoint extends StatefulWidget {
+class CollectedCoin extends StatefulWidget {
   final Offset startPosition;
   final VoidCallback onAnimationEnd;
 
-  const CollectedPoint({
+  const CollectedCoin({
     super.key,
     required this.startPosition,
     required this.onAnimationEnd,
   });
 
   @override
-  State<CollectedPoint> createState() => _CollectedPointState();
+  State<CollectedCoin> createState() => _CollectedCoinState();
 }
 
-class _CollectedPointState extends State<CollectedPoint> {
+class _CollectedCoinState extends State<CollectedCoin> {
   late Offset currentPosition;
 
   @override
@@ -41,7 +41,7 @@ class _CollectedPointState extends State<CollectedPoint> {
       onEnd: widget.onAnimationEnd,
       child: CustomPaint(
         size: const Size(30, 30),
-        painter: CoinPainter(),
+        painter: CollectedCoinPainter(),
       ),
     );
   }

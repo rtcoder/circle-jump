@@ -1,13 +1,13 @@
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/Models/player_point.dart';
-import 'package:circle_jump/Models/point.dart';
+import 'package:circle_jump/Models/player_coin.dart';
+import 'package:circle_jump/Models/coin.dart';
 import 'package:flutter/material.dart';
 
 import '../Generators/obstacle_generator.dart';
 import '../Generators/platform_generator.dart';
-import '../Generators/point_generator.dart';
+import '../Generators/coin_generator.dart';
 import 'circle_center.dart';
 import 'obstacle.dart';
 
@@ -21,7 +21,7 @@ class _Game {
   final circleRadius = 1000.0;
   late List<PlatformModel> platforms;
   late List<Obstacle> obstacles;
-  late List<Point> points;
+  late List<Coin> coins;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
@@ -46,7 +46,7 @@ class _Game {
 
     platforms = generatePlatforms(10, 4);
     obstacles = obstacleGenerator(10);
-    points = generatePoints(10);
+    coins = generateCoins(10);
     gameInitialized = true;
   }
 
@@ -58,18 +58,18 @@ class _Game {
     _updateGameSpeed();
   }
 
-  List<Point> collectPoints() {
-    final List<Point> collectedPoints = [];
+  List<Coin> collectCoins() {
+    final List<Coin> collectedCoins = [];
 
-    for (final point in points) {
-      if (PlayerPoint.isPointCollected(point, player)) {
-        collectedPoints.add(point);
+    for (final coin in coins) {
+      if (PlayerCoin.isCoinCollected(coin, player)) {
+        collectedCoins.add(coin);
         player.score += 1; // Aktualizacja wyniku gracza
       }
     }
 
-    points.removeWhere((point) => collectedPoints.contains(point));
-    return collectedPoints; // Zwrócenie zebranych punktów
+    coins.removeWhere((coin) => collectedCoins.contains(coin));
+    return collectedCoins; // Zwrócenie zebranych punktów
   }
 
   void _updateDistance() {
@@ -87,7 +87,7 @@ class _Game {
   }
 
   void _moveElements() {
-    final List<Movable> elements = [...platforms, ...obstacles, ...points];
+    final List<Movable> elements = [...platforms, ...obstacles, ...coins];
     for (final element in elements) {
       element.move(circleAngleDelta);
     }
