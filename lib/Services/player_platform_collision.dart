@@ -2,9 +2,9 @@ import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Models/Platform/height_on_platform.dart';
 
-import '../../Enums/platform_type.dart';
+import '../Enums/platform_type.dart';
 
-class PlayerPlatform {
+class PlayerPlatformCollision {
   final double _heightThreshold = 20;
 
   HeightOnPlatform? isOnAnyPlatform(double playerY) {

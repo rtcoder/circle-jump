@@ -1,5 +1,5 @@
 import 'package:circle_jump/Models/game.dart';
-import 'package:circle_jump/Models/Player/player_platform.dart';
+import 'package:circle_jump/Services/player_platform_collision.dart';
 
 class Player {
   double _velocityY = 0;
@@ -10,7 +10,7 @@ class Player {
   int score = 0;
   final double radius = 20.0;
   final double _jumpPower = -12;
-  final PlayerPlatform playerPlatform = PlayerPlatform();
+  final PlayerPlatformCollision playerPlatformCollision = PlayerPlatformCollision();
 
   double get playerX {
     return game.screenSize.width / 2;
@@ -42,7 +42,7 @@ class Player {
     _velocityY += game.gravity;
     newY -= _velocityY;
 
-    final platformCollision = playerPlatform.isOnAnyPlatform(newY);
+    final platformCollision = playerPlatformCollision.isOnAnyPlatform(newY);
     if (platformCollision != null) {
       if (_velocityY >= 0) {
         if (playerY > platformCollision.height) {
