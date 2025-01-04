@@ -1,4 +1,4 @@
-import 'package:circle_jump/Models/obstacle.dart';
+import 'package:circle_jump/Models/Obstacle/obstacle.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 

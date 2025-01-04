@@ -4,7 +4,7 @@ import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/platform_collector.dart';
 import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/movable.dart';
-import 'package:circle_jump/Models/obstacle.dart';
+import 'package:circle_jump/Models/Obstacle/obstacle.dart';
 import 'package:circle_jump/Models/player.dart';
 import 'package:flutter/material.dart';
 

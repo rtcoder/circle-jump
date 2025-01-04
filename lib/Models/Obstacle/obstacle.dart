@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import '../Enums/obstacle_type.dart';
-import '../utils.dart';
-import 'game.dart';
-import 'movable.dart';
+import '../../Enums/obstacle_type.dart';
+import '../../utils.dart';
+import '../game.dart';
+import '../movable.dart';
 
 class Obstacle extends Movable{
   double angle;
