@@ -57,13 +57,17 @@ class PlayerPlatform {
     final bool withinHeight =
         (playerY - expectedHeight).abs() <= _heightThreshold;
 
-    return withinHeight ? HeightOnPlatform(expectedHeight) : null;
+    return withinHeight
+        ? HeightOnPlatform(expectedHeight, platform.strokeWidth)
+        : null;
   }
 
   HeightOnPlatform? _isOnCurve(PlatformModel platform, double playerY) {
     final bool isWithinHeight =
         (playerY - platform.startHeight).abs() < _heightThreshold;
-    return isWithinHeight ? HeightOnPlatform(platform.startHeight) : null;
+    return isWithinHeight
+        ? HeightOnPlatform(platform.startHeight, platform.strokeWidth)
+        : null;
   }
 
   bool _isBetweenEdges(PlatformModel platform) {
