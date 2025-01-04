@@ -8,18 +8,23 @@ class PlayerPlatform {
   final double _heightThreshold = 20;
 
   HeightOnPlatform? isOnAnyPlatform(double playerY) {
-    HeightOnPlatform? highestPlatform;
+    HeightOnPlatform? closestPlatform;
+    double closestDistance = double.infinity;
 
     for (final PlatformModel platform in game.platforms) {
       final HeightOnPlatform? result = _isOnPlatform(platform, playerY);
+
       if (result != null) {
-        if (highestPlatform == null || result.height > highestPlatform.height) {
-          highestPlatform = result;
+        final double distance = (playerY - result.height).abs();
+
+        if (distance < closestDistance) {
+          closestPlatform = result;
+          closestDistance = distance;
         }
       }
     }
 
-    return highestPlatform;
+    return closestPlatform;
   }
 
   double _getPlayerHeightOnPlatform(PlatformModel platform) {
