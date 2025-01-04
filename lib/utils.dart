@@ -9,12 +9,16 @@ Offset angleToPositionOnCircle(
   final angleRad = degreesToRadians(angleDeg);
   final radius = center.radius + radiusOffset;
   double x = getXPosOnCircle(center.centerX, radius, angleRad);
-  double y = getYPosOnCircle(center.centerY, radius, angleRad);;
+  double y = getYPosOnCircle(center.centerY, radius, angleRad);
   return Offset(x, y);
 }
 
 double degreesToRadians(double degrees) {
   return degrees * (pi / 180.0);
+}
+
+double radiansToDegrees(double radians) {
+  return radians * (180.0 / pi);
 }
 
 double getXPosOnCircle(double centerX, double radius, double angle) {
