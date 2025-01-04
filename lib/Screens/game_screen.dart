@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../Background/animated_background.dart';
 import '../Models/game.dart';
-import '../Models/coin.dart';
+import '../Models/Coin/coin.dart';
 import '../Painters/obstacle_painter.dart';
 import '../Painters/platform_painter.dart';
 import '../Painters/player_painter.dart';

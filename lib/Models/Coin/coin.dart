@@ -1,7 +1,7 @@
 import 'package:circle_jump/Models/movable.dart';
 
-import '../utils.dart';
-import 'game.dart';
+import '../../utils.dart';
+import '../game.dart';
 
 class Coin extends Movable {
   double angle;

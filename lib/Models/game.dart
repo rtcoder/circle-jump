@@ -1,7 +1,7 @@
 import 'package:circle_jump/Generators/coin_generator.dart';
+import 'package:circle_jump/Models/Coin/coin_collector.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/circle_center.dart';
-import 'package:circle_jump/Models/coin.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/obstacle.dart';
 import 'package:circle_jump/Models/player.dart';
@@ -17,22 +17,16 @@ class _Game {
   final circleRadius = 1000.0;
   List<PlatformModel> platforms = [];
   List<Obstacle> obstacles = [];
-  late List<Coin> coins;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
   bool gameInitialized = false;
+  final CoinCollector coinCollector = CoinCollector();
 
   Iterable<PlatformModel> get visiblePlatforms {
     return platforms.where((platform) {
       return (platform.startAngleDeg <= 0 && platform.startAngleDeg >= -180) ||
           platform.endAngleDeg <= 0 && platform.endAngleDeg >= -180;
-    });
-  }
-
-  Iterable<Coin> get visibleCoins {
-    return coins.where((coin) {
-      return coin.angleDeg <= 0 && coin.angleDeg >= -180;
     });
   }
 
@@ -61,7 +55,7 @@ class _Game {
 
     // platforms = generatePlatforms(10, 4);
     // obstacles = obstacleGenerator(10);
-    coins = generateCoins(1, 100, 0, 360);
+    coinCollector.collectAll(generateCoins(1, 100, 0, 360));
     gameInitialized = true;
   }
 
@@ -88,7 +82,11 @@ class _Game {
   }
 
   void _moveElements() {
-    final List<Movable> elements = [...platforms, ...obstacles, ...coins];
+    final List<Movable> elements = [
+      ...platforms,
+      ...obstacles,
+      ...coinCollector.items
+    ];
     for (final element in elements) {
       element.move(circleAngleDelta);
     }

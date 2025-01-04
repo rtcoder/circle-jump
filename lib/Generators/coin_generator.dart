@@ -1,4 +1,4 @@
-import '../Models/coin.dart';
+import '../Models/Coin/coin.dart';
 import '../utils.dart';
 
 List<Coin> generateCoins(
