@@ -8,4 +8,11 @@ class CoinCollector extends Collector<Coin> {
       return coin.angleDeg <= 0 && coin.angleDeg >= -180;
     });
   }
+
+  @override
+  void removeUnnecessaryItems() {
+    items.removeWhere((coin){
+      return coin.angleDeg < -180;
+    });
+  }
 }

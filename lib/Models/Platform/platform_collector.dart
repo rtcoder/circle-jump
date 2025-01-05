@@ -10,4 +10,11 @@ class PlatformCollector extends Collector<PlatformModel> {
           platform.endAngleDeg <= 0 && platform.endAngleDeg >= -180;
     });
   }
+
+  @override
+  void removeUnnecessaryItems() {
+    items.removeWhere((platform) {
+      return platform.endAngleDeg < -180;
+    });
+  }
 }

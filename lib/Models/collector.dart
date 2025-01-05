@@ -14,4 +14,5 @@ abstract class Collector<T> {
   void remove(T item) {
     items.remove(item);
   }
+  void removeUnnecessaryItems();
 }
