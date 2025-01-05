@@ -14,8 +14,10 @@ WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
   double nextStartAngle = startAngleDeg;
   while (nextStartAngle + 4 < endAngleDeg) {
     final randWorldPart = randomWorldPart(nextStartAngle);
-    worldPart.add(randWorldPart);
     nextStartAngle = _getWorldPartEndAngleDeg(randWorldPart) + 3;
+    if (nextStartAngle <= endAngleDeg) {
+      worldPart.add(randWorldPart);
+    }
   }
   return worldPart;
 }

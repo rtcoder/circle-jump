@@ -62,6 +62,10 @@ class _Game {
     platformCollector.collectAll(worldPart.platforms);
     obstacleCollector.collectAll(worldPart.obstacles);
 
+    coinCollector.removeUnnecessaryItems();
+    platformCollector.removeUnnecessaryItems();
+    obstacleCollector.removeUnnecessaryItems();
+
     print(platformCollector.items.length);
   }
 
