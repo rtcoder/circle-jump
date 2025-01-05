@@ -1,19 +1,23 @@
-import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Models/Coin/coin_collector.dart';
 import 'package:circle_jump/Models/Obstacle/obstacle_collector.dart';
 import 'package:circle_jump/Models/Platform/platform_collector.dart';
 import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/player.dart';
+import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
+
+import '../Generators/world_generator.dart';
 
 class _Game {
   final double gravity = 0.5;
   double distance = 0;
-  final double _baseCircleAngleDelta = 0.005;
-  final double _maxCircleAngleDelta = 0.015;
-  double circleAngleDelta = 0.001;
+  final double _baseCircleAngleDelta = 0.002;
+  final double _maxCircleAngleDelta = 0.005;
+  double circleAngleDelta = 0.002;
   double circleAngle = 0;
+  double circleAngleDeg = 0;
+  double lastWorldUpdateAngleDeg = 0;
   final circleRadius = 1000.0;
   Player player = Player();
   late Size screenSize;
@@ -39,8 +43,7 @@ class _Game {
     if (gameInitialized) {
       return;
     }
-
-    coinCollector.collectAll(generateCoins(1, 100, 0, 360));
+    _updateWorld(-85, 90);
     gameInitialized = true;
   }
 
@@ -50,6 +53,23 @@ class _Game {
     _incrementCircleAngle();
     player.update();
     _updateGameSpeed();
+    _updateWorldCycle();
+  }
+
+  void _updateWorld([double startAngleDeg = 5, double endAngleDeg = 90]) {
+    final worldPart = generateWorldPart(startAngleDeg, endAngleDeg);
+    coinCollector.collectAll(worldPart.coins);
+    platformCollector.collectAll(worldPart.platforms);
+    obstacleCollector.collectAll(worldPart.obstacles);
+
+    print(platformCollector.items.length);
+  }
+
+  void _updateWorldCycle() {
+    if (circleAngleDeg - lastWorldUpdateAngleDeg > 90) {
+      lastWorldUpdateAngleDeg = circleAngleDeg;
+      _updateWorld();
+    }
   }
 
   void _updateDistance() {
@@ -58,12 +78,13 @@ class _Game {
 
   void _updateGameSpeed() {
     if (distance > 10 && circleAngleDelta < _maxCircleAngleDelta) {
-      // circleAngleDelta = _baseCircleAngleDelta * (1 + (distance / 1000) * 2);
+      circleAngleDelta = _baseCircleAngleDelta * (1 + (distance / 1000) * 2);
     }
   }
 
   void _incrementCircleAngle() {
     circleAngle += circleAngleDelta;
+    circleAngleDeg = radiansToDegrees(circleAngle);
   }
 
   void _moveElements() {
