@@ -49,7 +49,7 @@ class Coin extends Movable {
   }
 
   double _calculateRadius(double radius) {
-    return radius - oscillationOffset;
+    return radius + airHeight - oscillationOffset;
   }
 
   @override
