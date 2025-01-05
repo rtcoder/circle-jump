@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Generators/platform_generator.dart';
+import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/world_part.dart';
 
 WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
@@ -91,48 +92,39 @@ double _getWorldPartEndAngleDeg(WorldPart worldPart) {
 }
 
 WorldPart randomWorldPart(double startAngleDeg) {
-  final Map<String, WorldPart Function(double startAngleDeg)> worldParts = {
-    // 'threePlatformsWithCoins': threePlatformsWithCoins,
-    // 'threePlatforms': threePlatforms,
+  final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
+      worldParts = {
+    'threePlatforms': threePlatforms,
     'platformAndRamp': platformAndRamp,
   };
   final keys = worldParts.keys.toList();
   final randomIndex = Random().nextInt(keys.length);
   final randomKey = keys[randomIndex];
-  final WorldPart randomWorldPart = worldParts[randomKey]!(startAngleDeg);
+  final bool withCoins = Random().nextInt(100) % 2 == 0;
+  final fn = worldParts[randomKey]!;
+  final WorldPart randomWorldPart = fn(startAngleDeg, withCoins);
   return randomWorldPart;
 }
 
-WorldPart threePlatformsWithCoins(double startAngleDeg) {
+WorldPart threePlatforms(double startAngleDeg, bool withCoins) {
   final platforms = [
     getCurvePlatform(startAngleDeg, 5, 50),
     getCurvePlatform(startAngleDeg + 5, 5, 100),
     getCurvePlatform(startAngleDeg + 10, 5, 150),
   ];
-  final coins = [
-    ...generateCoins(2, 80, startAngleDeg + 1, 3),
-    ...generateCoins(2, 130, startAngleDeg + 6, 3),
-    ...generateCoins(2, 180, startAngleDeg + 11, 3),
-  ];
 
+  final List<Coin> coins =
+      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
   return WorldPart(platforms: platforms, coins: coins, obstacles: []);
 }
 
-WorldPart threePlatforms(double startAngleDeg) {
-  final platforms = [
-    getCurvePlatform(startAngleDeg, 5, 50),
-    getCurvePlatform(startAngleDeg + 5, 5, 100),
-    getCurvePlatform(startAngleDeg + 10, 5, 150),
-  ];
-
-  return WorldPart(platforms: platforms, coins: [], obstacles: []);
-}
-
-WorldPart platformAndRamp(double startAngleDeg) {
+WorldPart platformAndRamp(double startAngleDeg, bool withCoins) {
   final platforms = [
     getRampPlatform(startAngleDeg, 7, 30, 105),
     getCurvePlatform(startAngleDeg + 7, 15, 135),
   ];
 
-  return WorldPart(platforms: platforms, coins: [], obstacles: []);
+  final List<Coin> coins =
+      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
+  return WorldPart(platforms: platforms, coins: coins, obstacles: []);
 }
