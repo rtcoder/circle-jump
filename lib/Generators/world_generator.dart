@@ -5,17 +5,29 @@ import 'package:circle_jump/Generators/platform_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/world_part.dart';
 
+final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
+    _worldParts = {
+  'threePlatforms': threePlatforms,
+  'platformAndRamp': platformAndRamp,
+  'onlyCoins': onlyCoins,
+};
+
 WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
   final worldPart = WorldPart(
     platforms: [],
     coins: [],
     obstacles: [],
   );
-
+  String lastWorldName = '';
+  String worldName = '';
   double nextStartAngle = startAngleDeg;
-  while (nextStartAngle + 4 < endAngleDeg) {
-    final randWorldPart = randomWorldPart(nextStartAngle);
-    nextStartAngle = _getWorldPartEndAngleDeg(randWorldPart) + 3;
+  while (nextStartAngle + 6 < endAngleDeg) {
+    while (worldName == lastWorldName) {
+      worldName = _randomWorldPartKey();
+    }
+    final randWorldPart = randomWorldPart(nextStartAngle, worldName);
+    nextStartAngle = _getWorldPartEndAngleDeg(randWorldPart) + 5;
+    lastWorldName = worldName;
     if (nextStartAngle <= endAngleDeg) {
       worldPart.add(randWorldPart);
     }
@@ -91,17 +103,16 @@ double _getWorldPartEndAngleDeg(WorldPart worldPart) {
   return angleEnd;
 }
 
-WorldPart randomWorldPart(double startAngleDeg) {
-  final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
-      worldParts = {
-    'threePlatforms': threePlatforms,
-    'platformAndRamp': platformAndRamp,
-  };
-  final keys = worldParts.keys.toList();
+String _randomWorldPartKey() {
+  final keys = _worldParts.keys.toList();
   final randomIndex = Random().nextInt(keys.length);
   final randomKey = keys[randomIndex];
+  return randomKey;
+}
+
+WorldPart randomWorldPart(double startAngleDeg, String randomKey) {
   final bool withCoins = Random().nextInt(100) % 2 == 0;
-  final fn = worldParts[randomKey]!;
+  final fn = _worldParts[randomKey]!;
   final WorldPart randomWorldPart = fn(startAngleDeg, withCoins);
   return randomWorldPart;
 }
@@ -127,4 +138,14 @@ WorldPart platformAndRamp(double startAngleDeg, bool withCoins) {
   final List<Coin> coins =
       withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
   return WorldPart(platforms: platforms, coins: coins, obstacles: []);
+}
+
+WorldPart onlyCoins(double startAngleDeg, bool withCoins) {
+  final List<Coin> coins = [
+    ...generateCoins(2, 5, startAngleDeg, 5),
+    ...generateCoins(2, 60, startAngleDeg + 10, 5),
+    ...generateCoins(2, 120, startAngleDeg + 20, 5),
+    ...generateCoins(2, 150, startAngleDeg + 30, 5),
+  ];
+  return WorldPart(platforms: [], coins: coins, obstacles: []);
 }
