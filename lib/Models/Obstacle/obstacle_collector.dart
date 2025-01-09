@@ -1,6 +1,5 @@
 import 'package:circle_jump/Models/Obstacle/obstacle.dart';
-
-import '../collector.dart';
+import 'package:circle_jump/Models/collector.dart';
 
 class ObstacleCollector extends Collector<Obstacle> {
   @override

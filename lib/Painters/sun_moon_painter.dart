@@ -1,8 +1,7 @@
+import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../Models/circle_center.dart';
-import '../utils.dart';
 
 void drawMoon(Canvas canvas, Paint paint, Size size, double angleDeg) {
   final CircleCenter center = game.circleCenter;

@@ -1,8 +1,7 @@
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils.dart';
 
 class RampPlatform extends PlatformModel {
   double startHeight;

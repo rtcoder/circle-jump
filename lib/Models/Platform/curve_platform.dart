@@ -2,9 +2,8 @@ import 'dart:math';
 
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils.dart';
 
 class CurvePlatform extends PlatformModel {
   final double height;

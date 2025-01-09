@@ -1,8 +1,7 @@
 import 'dart:math';
 
+import 'package:circle_jump/Models/circle_center.dart';
 import 'package:flutter/material.dart';
-
-import 'Models/circle_center.dart';
 
 Offset angleToPositionOnCircle(
     CircleCenter center, double angleDeg, double radiusOffset) {

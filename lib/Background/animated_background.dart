@@ -1,11 +1,10 @@
+import 'package:circle_jump/Background/Cloud/cloud.dart';
 import 'package:circle_jump/Background/Cloud/cloud_generator.dart';
+import 'package:circle_jump/Background/background_color.dart';
+import 'package:circle_jump/Painters/circle_painter.dart';
+import 'package:circle_jump/Painters/cloud_painter.dart';
+import 'package:circle_jump/Painters/sun_moon_painter.dart';
 import 'package:flutter/material.dart';
-
-import '../Painters/circle_painter.dart';
-import '../Painters/cloud_painter.dart';
-import '../Painters/sun_moon_painter.dart';
-import 'Cloud/cloud.dart';
-import 'background_color.dart';
 
 class AnimatedBackground extends StatefulWidget {
   const AnimatedBackground({super.key});

@@ -1,7 +1,9 @@
 import 'package:circle_jump/Models/Coin/coin.dart';
+import 'package:circle_jump/Models/Coin/coin_collector.dart';
 import 'package:circle_jump/Models/Obstacle/obstacle.dart';
-
-import 'Platform/platform.dart';
+import 'package:circle_jump/Models/Obstacle/obstacle_collector.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/Platform/platform_collector.dart';
 
 class WorldPart {
   final List<PlatformModel> platforms;

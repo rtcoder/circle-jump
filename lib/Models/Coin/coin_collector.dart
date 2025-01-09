@@ -1,4 +1,4 @@
-import '../collector.dart';
+import 'package:circle_jump/Models/collector.dart';
 import 'coin.dart';
 
 class CoinCollector extends Collector<Coin> {

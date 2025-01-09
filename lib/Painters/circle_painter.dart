@@ -1,7 +1,6 @@
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
-
-import '../images.dart';
 
 class CirclePainter extends CustomPainter {
   @override
@@ -29,8 +28,7 @@ class CirclePainter extends CustomPainter {
     canvas.translate(-centerX, -centerY);
     canvas.drawImageRect(
         image,
-        Rect.fromLTRB(0, 0, image.width.toDouble(),
-            image.height.toDouble()),
+        Rect.fromLTRB(0, 0, image.width.toDouble(), image.height.toDouble()),
         Rect.fromLTWH(circleOffset.dx, circleOffset.dy, newSize, newSize),
         paint);
     canvas.restore();

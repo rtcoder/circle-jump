@@ -1,6 +1,5 @@
 import 'package:circle_jump/Models/Platform/platform.dart';
-
-import '../collector.dart';
+import 'package:circle_jump/Models/collector.dart';
 
 class PlatformCollector extends Collector<PlatformModel> {
   @override

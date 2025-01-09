@@ -1,11 +1,10 @@
 import 'dart:ui' as ui;
 
+import 'package:circle_jump/Background/Cloud/cloud.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/images.dart';
+import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../Background/Cloud/cloud.dart';
-import '../utils.dart';
 
 class CloudPainter extends CustomPainter {
   final List<Cloud> clouds;

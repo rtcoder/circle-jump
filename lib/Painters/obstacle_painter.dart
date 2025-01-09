@@ -1,8 +1,7 @@
+import 'package:circle_jump/Enums/obstacle_type.dart';
 import 'package:circle_jump/Models/Obstacle/obstacle.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
-
-import '../Enums/obstacle_type.dart';
 
 class ObstaclePainter extends CustomPainter {
   @override

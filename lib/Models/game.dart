@@ -1,13 +1,10 @@
-import 'package:circle_jump/Models/Coin/coin_collector.dart';
-import 'package:circle_jump/Models/Obstacle/obstacle_collector.dart';
-import 'package:circle_jump/Models/Platform/platform_collector.dart';
 import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/player.dart';
+import 'package:circle_jump/Models/world.dart';
+import 'package:circle_jump/Models/world_part.dart';
 import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../Generators/world_generator.dart';
 
 class _Game {
   final double gravity = 0.5;

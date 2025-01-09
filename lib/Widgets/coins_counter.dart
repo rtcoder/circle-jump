@@ -1,6 +1,5 @@
+import 'package:circle_jump/Painters/collected_coin_painter.dart';
 import 'package:flutter/material.dart';
-
-import '../Painters/collected_coin_painter.dart';
 
 class CoinsCounter extends StatelessWidget {
   final int coins;

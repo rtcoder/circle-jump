@@ -1,10 +1,9 @@
 import 'dart:math';
 
 import 'package:circle_jump/Models/Platform/curve_platform.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
-
-import '../Models/Platform/platform.dart';
-import '../utils.dart';
+import 'package:circle_jump/utils.dart';
 
 List<PlatformModel> generatePlatforms(int groupCount, int platformsPerGroup) {
   final rand = Random();

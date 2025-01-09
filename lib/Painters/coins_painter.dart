@@ -1,7 +1,6 @@
+import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
-
-import '../Models/game.dart';
-import '../images.dart';
 
 class CoinsPainter extends CustomPainter {
   @override

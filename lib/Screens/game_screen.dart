@@ -1,16 +1,15 @@
+import 'package:circle_jump/Background/animated_background.dart';
+import 'package:circle_jump/Models/Coin/coin.dart';
+import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Painters/coins_painter.dart';
+import 'package:circle_jump/Painters/obstacle_painter.dart';
+import 'package:circle_jump/Painters/platform_painter.dart';
+import 'package:circle_jump/Painters/player_painter.dart';
 import 'package:circle_jump/Services/player_coin_collision.dart';
+import 'package:circle_jump/Widgets/coins_counter.dart';
+import 'package:circle_jump/Widgets/collected_coin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../Background/animated_background.dart';
-import '../Models/game.dart';
-import '../Models/Coin/coin.dart';
-import '../Painters/obstacle_painter.dart';
-import '../Painters/platform_painter.dart';
-import '../Painters/player_painter.dart';
-import '../Widgets/collected_coin.dart';
-import '../Widgets/coins_counter.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -72,6 +71,7 @@ class GameScreenState extends State<GameScreen>
       onCoinCollected(startPosition);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

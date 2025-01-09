@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import '../../Enums/obstacle_type.dart';
-import '../../utils.dart';
-import '../game.dart';
-import '../movable.dart';
+import 'package:circle_jump/Enums/obstacle_type.dart';
+import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Models/movable.dart';
+import 'package:circle_jump/utils.dart';
 
-class Obstacle extends Movable{
+class Obstacle extends Movable {
   double angle;
   double angleDeg;
   final ObstacleType type;

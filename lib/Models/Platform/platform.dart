@@ -1,6 +1,5 @@
+import 'package:circle_jump/Models/movable.dart';
 import 'package:flutter/material.dart';
-
-import '../movable.dart';
 
 abstract class PlatformModel extends Movable {
   double startAngle;

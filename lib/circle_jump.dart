@@ -1,11 +1,10 @@
+import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Screens/game_over_screen.dart';
+import 'package:circle_jump/Screens/game_screen.dart';
+import 'package:circle_jump/Screens/start_screen.dart';
 import 'package:circle_jump/Widgets/loading_screen.dart';
+import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
-
-import 'Models/game.dart';
-import 'Screens/game_over_screen.dart';
-import 'Screens/game_screen.dart';
-import 'Screens/start_screen.dart';
-import 'images.dart';
 
 class CircleJump extends StatefulWidget {
   const CircleJump({super.key});

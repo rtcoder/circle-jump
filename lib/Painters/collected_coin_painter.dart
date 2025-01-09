@@ -1,6 +1,5 @@
+import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
-
-import '../images.dart';
 
 class CollectedCoinPainter extends CustomPainter {
   @override

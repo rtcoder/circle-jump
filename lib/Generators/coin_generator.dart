@@ -1,8 +1,7 @@
+import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Platform/curve_platform.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
-
-import '../Models/Coin/coin.dart';
-import '../utils.dart';
+import 'package:circle_jump/utils.dart';
 
 List<Coin> generateCoins(
     int count, double height, double startAngleDeg, double lengthDeg) {
@@ -28,13 +27,14 @@ List<Coin> generateCoins(
 List<Coin> generateCoinsForCurvePlatform(CurvePlatform platform) {
   final double startAngleDeg = platform.startAngleDeg + 1;
   final double length = platform.endAngleDeg - platform.startAngleDeg - 2;
-  final int count = (length/1.5).floor();
+  final int count = (length / 1.5).floor();
   return generateCoins(count, platform.height + 30, startAngleDeg, length);
 }
+
 List<Coin> generateCoinsForCurvePlatforms(List<PlatformModel> platforms) {
   final List<Coin> coins = [];
-  for(final platform in platforms){
-    if(platform is CurvePlatform){
+  for (final platform in platforms) {
+    if (platform is CurvePlatform) {
       coins.addAll(generateCoinsForCurvePlatform(platform));
     }
   }
