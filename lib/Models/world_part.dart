@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_collector.dart';
 import 'package:circle_jump/Models/Obstacle/obstacle.dart';
@@ -43,58 +45,29 @@ class WorldPart {
     double angleStart = double.infinity;
 
     final platformsList = platformCollector.items;
-    if (platformsList.isNotEmpty) {
-      final firstPlatform = platformsList.first;
-      if (firstPlatform.startAngleDeg < angleStart) {
-        angleStart = firstPlatform.startAngleDeg;
-      }
-    }
-
     final obstaclesList = obstacleCollector.items;
-    if (obstaclesList.isNotEmpty) {
-      final firstObstacle = obstaclesList.first;
-      if (firstObstacle.angleDeg < angleStart) {
-        angleStart = firstObstacle.angleDeg;
-      }
-    }
-
     final coinsList = coinCollector.items;
-    if (coinsList.isNotEmpty) {
-      final firstCoin = coinsList.first;
-      if (firstCoin.angleDeg < angleStart) {
-        angleStart = firstCoin.angleDeg;
-      }
-    }
-    return angleStart;
+
+    final minStartAngle = [
+      ...platformsList.map((p) => p.startAngleDeg),
+      ...obstaclesList.map((p) => p.angleDeg),
+      ...coinsList.map((p) => p.angleDeg),
+    ].reduce(min);
+
+    return minStartAngle;
   }
 
   double getEndAngleDeg() {
-    double angleEnd = -double.infinity;
-
     final platformsList = platformCollector.items;
-    if (platformsList.isNotEmpty) {
-      final lastPlatform = platformsList.last;
-      if (lastPlatform.endAngleDeg > angleEnd) {
-        angleEnd = lastPlatform.endAngleDeg;
-      }
-    }
-
     final obstaclesList = obstacleCollector.items;
-    if (obstaclesList.isNotEmpty) {
-      final lastObstacle = obstaclesList.last;
-      if (lastObstacle.angleDeg > angleEnd) {
-        angleEnd = lastObstacle.angleDeg;
-      }
-    }
-
     final coinsList = coinCollector.items;
-    if (coinsList.isNotEmpty) {
-      final lastCoin = coinsList.last;
-      if (lastCoin.angleDeg > angleEnd) {
-        angleEnd = lastCoin.angleDeg;
-      }
-    }
 
-    return angleEnd;
+    final maxEndAngle = [
+      ...platformsList.map((p) => p.endAngleDeg),
+      ...obstaclesList.map((p) => p.angleDeg),
+      ...coinsList.map((p) => p.angleDeg),
+    ].reduce(max);
+
+    return maxEndAngle;
   }
 }
