@@ -8,11 +8,11 @@ import 'package:circle_jump/Models/world_part.dart';
 
 final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
     _worldParts = {
-  // 'threePlatforms': _threePlatforms,
-  // 'platformAndRamp': _platformAndRamp,
-  // 'onlyCoins': _onlyCoins,
-  // 'zigZagPlatforms': _zigZagPlatforms,
-  // 'multiLevelPlatforms': _multiLevelPlatforms,
+  'threePlatforms': _threePlatforms,
+  'platformAndRamp': _platformAndRamp,
+  'onlyCoins': _onlyCoins,
+  'zigZagPlatforms': _zigZagPlatforms,
+  'multiLevelPlatforms': _multiLevelPlatforms,
   'manyFloors': _manyFloors,
 };
 
@@ -30,7 +30,6 @@ WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
         ? randWorldPart.getEndAngleDeg()
         : worldPart.getEndAngleDeg();
     nextStartAngle = worldEndAngleDeg + 5;
-    print(nextStartAngle);
     lastWorldName = worldName;
     if (nextStartAngle <= endAngleDeg) {
       worldPart.add(randWorldPart);
@@ -113,12 +112,20 @@ WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
 }
 
 WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
+  final CurvePlatform longPlatform1 = getCurvePlatform(startAngleDeg, 60, 50);
+  final CurvePlatform longPlatform2 = getCurvePlatform(startAngleDeg, 60, 250);
   final platforms = [
-    getCurvePlatform(startAngleDeg, 60, 50),
-    getCurvePlatform(startAngleDeg + 3, 12, 150),
-    getCurvePlatform(startAngleDeg + 6, 12, 250),
+    longPlatform1,
+    longPlatform2,
+    getCurvePlatform(startAngleDeg + 3, 5, 120),
+    getCurvePlatform(startAngleDeg + 10, 12, 150),
+    getCurvePlatform(startAngleDeg + 24, 5, 120),
+    getCurvePlatform(startAngleDeg + 31, 12, 150),
+    getCurvePlatform(startAngleDeg + 45, 5, 120),
+    getCurvePlatform(startAngleDeg + 52, 12, 150),
   ];
+  withCoins = true;
   final List<Coin> coins =
-      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
+      withCoins ? generateCoinsForCurvePlatforms([longPlatform1]) : [];
   return WorldPart(platforms: platforms, coins: coins);
 }
