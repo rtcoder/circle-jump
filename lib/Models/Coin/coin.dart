@@ -31,14 +31,18 @@ class Coin extends Movable {
   void move(double delta) {
     angle = updateAngle(angle, delta);
     angleDeg = updateAngleDeg(angleDeg, delta);
+    _updateOscillation();
+    _updateAnimation();
+  }
+
+  void _updateOscillation() {
     oscillationOffset += _oscillationDirection * 0.5;
     if (oscillationOffset > 5 || oscillationOffset < -5) {
       _oscillationDirection *= -1;
     }
-    updateAnimation();
   }
 
-  void updateAnimation() {
+  void _updateAnimation() {
     _animationCounter++;
 
     if (_animationCounter >= _animationSpeed) {
