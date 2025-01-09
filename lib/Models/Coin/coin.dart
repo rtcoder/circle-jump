@@ -32,7 +32,7 @@ class Coin extends Movable {
     angle = updateAngle(angle, delta);
     angleDeg = updateAngleDeg(angleDeg, delta);
     oscillationOffset += _oscillationDirection * 0.5;
-    if (oscillationOffset > 10 || oscillationOffset < -10) {
+    if (oscillationOffset > 5 || oscillationOffset < -5) {
       _oscillationDirection *= -1;
     }
     updateAnimation();
