@@ -72,6 +72,6 @@ class Player {
   }
 
   double _calculatePlayerAngleDelta() {
-    return game.circleAngleDelta * game.circleRadius / radius;
+    return game.gameCircle.angleDelta * game.gameCircle.radius / radius;
   }
 }

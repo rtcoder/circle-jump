@@ -11,9 +11,9 @@ class CircleCenter {
 
   static CircleCenter getCenterOfCircle(Size size) {
     final centerX = size.width / 2;
-    final centerY = size.height / 2 + game.circleRadius;
+    final centerY = size.height / 2 + game.gameCircle.radius;
 
     return CircleCenter(
-        centerX: centerX, centerY: centerY, radius: game.circleRadius);
+        centerX: centerX, centerY: centerY, radius: game.gameCircle.radius);
   }
 }
