@@ -6,9 +6,12 @@ import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/Models/world_part.dart';
 
+import 'Coin/coin_oscillation.dart';
+
 class World {
   final WorldPart _worldPart = WorldPart();
   double _lastWorldUpdateAngleDeg = 0;
+  final CoinOscillation coinOscillation=CoinOscillation();
 
   Iterable<PlatformModel> getPlatforms({onlyVisible = false}) {
     if (onlyVisible) {
@@ -34,6 +37,7 @@ class World {
   void update(GameCircle gameCircle) {
     _moveWorldElements(gameCircle.angleDelta);
     _updateWorldCycle(gameCircle.angleDeg);
+    coinOscillation.updateOscillation();
   }
 
   void initWorld(double startAngleDeg, double endAngleDeg) {

@@ -1,3 +1,4 @@
+import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/utils.dart';
@@ -6,8 +7,6 @@ class Coin extends Movable {
   double angle;
   double angleDeg;
   double airHeight;
-  double _oscillationDirection = 1;
-  double oscillationOffset = 0;
   int animationFrame = 0;
   int _animationCounter = 0;
   final int _animationSpeed = 5;
@@ -31,15 +30,7 @@ class Coin extends Movable {
   void move(double delta) {
     angle = updateAngle(angle, delta);
     angleDeg = updateAngleDeg(angleDeg, delta);
-    _updateOscillation();
     _updateAnimation();
-  }
-
-  void _updateOscillation() {
-    oscillationOffset += _oscillationDirection * 0.5;
-    if (oscillationOffset > 5 || oscillationOffset < -5) {
-      _oscillationDirection *= -1;
-    }
   }
 
   void _updateAnimation() {
@@ -52,7 +43,7 @@ class Coin extends Movable {
   }
 
   double _calculateRadius(double radius) {
-    return radius + airHeight - oscillationOffset;
+    return radius + airHeight - CoinOscillation.oscillationOffset;
   }
 
   @override
