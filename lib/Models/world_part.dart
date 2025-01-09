@@ -48,8 +48,6 @@ class WorldPart {
   }
 
   double getStartAngleDeg() {
-    double angleStart = double.infinity;
-
     final platformsList = platformCollector.items;
     final obstaclesList = obstacleCollector.items;
     final coinsList = coinCollector.items;
