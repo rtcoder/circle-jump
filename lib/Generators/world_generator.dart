@@ -26,7 +26,11 @@ WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
     worldName = _randomWorldPartKey();
     // }
     final randWorldPart = _randomWorldPart(nextStartAngle, worldName);
-    nextStartAngle = worldPart.getEndAngleDeg() + 5;
+    double worldEndAngleDeg = worldPart.isEmpty()
+        ? randWorldPart.getEndAngleDeg()
+        : worldPart.getEndAngleDeg();
+    nextStartAngle = worldEndAngleDeg + 5;
+    print(nextStartAngle);
     lastWorldName = worldName;
     if (nextStartAngle <= endAngleDeg) {
       worldPart.add(randWorldPart);
@@ -107,14 +111,14 @@ WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
       withCoins ? generateCoinsForCurvePlatforms([p3]) : [];
   return WorldPart(platforms: platforms, coins: coins);
 }
+
 WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
   final platforms = [
     getCurvePlatform(startAngleDeg, 60, 50),
-    getCurvePlatform(startAngleDeg+3, 12, 150),
-    getCurvePlatform(startAngleDeg+6, 12, 250),
+    getCurvePlatform(startAngleDeg + 3, 12, 150),
+    getCurvePlatform(startAngleDeg + 6, 12, 250),
   ];
   final List<Coin> coins =
       withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
   return WorldPart(platforms: platforms, coins: coins);
 }
-

@@ -22,6 +22,12 @@ class WorldPart {
     coinCollector.collectAll(coins);
   }
 
+  bool isEmpty() {
+    return platformCollector.items.isEmpty &&
+        coinCollector.items.isEmpty &&
+        obstacleCollector.items.isEmpty;
+  }
+
   void add(WorldPart worldPart) {
     platformCollector.join(worldPart.platformCollector);
     coinCollector.join(worldPart.coinCollector);
