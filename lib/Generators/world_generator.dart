@@ -4,7 +4,7 @@ import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Generators/platform_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Platform/curve_platform.dart';
-import 'package:circle_jump/Models/world_part.dart';
+import 'package:circle_jump/Models/World/world_part.dart';
 
 final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
     _worldParts = {

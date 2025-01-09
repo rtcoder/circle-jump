@@ -1,17 +1,16 @@
 import 'package:circle_jump/Generators/world_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
+import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
 import 'package:circle_jump/Models/Obstacle/obstacle.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/World/world_part.dart';
 import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/movable.dart';
-import 'package:circle_jump/Models/world_part.dart';
-
-import 'Coin/coin_oscillation.dart';
 
 class World {
   final WorldPart _worldPart = WorldPart();
   double _lastWorldUpdateAngleDeg = 0;
-  final CoinOscillation coinOscillation=CoinOscillation();
+  final CoinOscillation coinOscillation = CoinOscillation();
 
   Iterable<PlatformModel> getPlatforms({onlyVisible = false}) {
     if (onlyVisible) {
@@ -40,8 +39,8 @@ class World {
     coinOscillation.updateOscillation();
   }
 
-  void initWorld(double startAngleDeg, double endAngleDeg) {
-    final worldPart = generateWorldPart(startAngleDeg, endAngleDeg);
+  void initWorld() {
+    final worldPart = generateWorldPart(-85, 90);
     _worldPart.add(worldPart);
   }
 

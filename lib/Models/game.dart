@@ -1,7 +1,7 @@
 import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/Models/world.dart';
+import 'package:circle_jump/Models/World/world.dart';
 import 'package:flutter/material.dart';
 
 class _Game {
@@ -24,7 +24,7 @@ class _Game {
     if (gameInitialized) {
       return;
     }
-    world.initWorld(-85, 90);
+    world.initWorld();
     gameInitialized = true;
   }
 
