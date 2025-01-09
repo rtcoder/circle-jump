@@ -7,7 +7,7 @@ class ObstaclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
-    for (final obstacle in game.obstacleCollector.visibleItems) {
+    for (final obstacle in game.world.getObstacles(onlyVisible: true)) {
       drawSingleObstacle(canvas, paint, obstacle);
     }
   }

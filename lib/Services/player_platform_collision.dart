@@ -11,7 +11,8 @@ class PlayerPlatformCollision {
     HeightOnPlatform? closestPlatform;
     double closestDistance = double.infinity;
 
-    for (final PlatformModel platform in game.platformCollector.visibleItems) {
+    for (final PlatformModel platform
+        in game.world.getPlatforms(onlyVisible: true)) {
       final HeightOnPlatform? result = _isOnPlatform(platform, playerY);
 
       if (result != null) {

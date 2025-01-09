@@ -3,104 +3,36 @@ import 'dart:math';
 import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Generators/platform_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
+import 'package:circle_jump/Models/Platform/curve_platform.dart';
 import 'package:circle_jump/Models/world_part.dart';
 
 final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
     _worldParts = {
-  'threePlatforms': threePlatforms,
-  'platformAndRamp': platformAndRamp,
-  'onlyCoins': onlyCoins,
+  // 'threePlatforms': _threePlatforms,
+  // 'platformAndRamp': _platformAndRamp,
+  // 'onlyCoins': _onlyCoins,
+  // 'zigZagPlatforms': _zigZagPlatforms,
+  // 'multiLevelPlatforms': _multiLevelPlatforms,
+  'manyFloors': _manyFloors,
 };
 
 WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
-  final worldPart = WorldPart(
-    platforms: [],
-    coins: [],
-    obstacles: [],
-  );
+  final worldPart = WorldPart();
   String lastWorldName = '';
   String worldName = '';
   double nextStartAngle = startAngleDeg;
   while (nextStartAngle + 6 < endAngleDeg) {
-    while (worldName == lastWorldName) {
-      worldName = _randomWorldPartKey();
-    }
-    final randWorldPart = randomWorldPart(nextStartAngle, worldName);
-    nextStartAngle = _getWorldPartEndAngleDeg(randWorldPart) + 5;
+    // while (worldName == lastWorldName) {
+    worldName = _randomWorldPartKey();
+    // }
+    final randWorldPart = _randomWorldPart(nextStartAngle, worldName);
+    nextStartAngle = worldPart.getEndAngleDeg() + 5;
     lastWorldName = worldName;
     if (nextStartAngle <= endAngleDeg) {
       worldPart.add(randWorldPart);
     }
   }
   return worldPart;
-}
-
-double _getWorldPartLengthInDegrees(WorldPart worldPart) {
-  double angleStart = _getWorldPartStartAngleDeg(worldPart);
-  double angleEnd = _getWorldPartEndAngleDeg(worldPart);
-
-  return angleEnd - angleStart;
-}
-
-double _getWorldPartStartAngleDeg(WorldPart worldPart) {
-  double angleStart = double.infinity;
-
-  final obstacles = worldPart.obstacles;
-  final platforms = worldPart.platforms;
-  final coins = worldPart.coins;
-
-  if (platforms.isNotEmpty) {
-    final firstPlatform = platforms[0];
-    if (firstPlatform.startAngleDeg < angleStart) {
-      angleStart = firstPlatform.startAngleDeg;
-    }
-  }
-
-  if (obstacles.isNotEmpty) {
-    final firstObstacle = obstacles[0];
-    if (firstObstacle.angleDeg < angleStart) {
-      angleStart = firstObstacle.angleDeg;
-    }
-  }
-
-  if (coins.isNotEmpty) {
-    final firstCoin = coins[0];
-    if (firstCoin.angleDeg < angleStart) {
-      angleStart = firstCoin.angleDeg;
-    }
-  }
-  return angleStart;
-}
-
-double _getWorldPartEndAngleDeg(WorldPart worldPart) {
-  double angleEnd = -double.infinity;
-
-  final obstacles = worldPart.obstacles;
-  final platforms = worldPart.platforms;
-  final coins = worldPart.coins;
-
-  if (platforms.isNotEmpty) {
-    final lastPlatform = platforms[platforms.length - 1];
-    if (lastPlatform.endAngleDeg > angleEnd) {
-      angleEnd = lastPlatform.endAngleDeg;
-    }
-  }
-
-  if (obstacles.isNotEmpty) {
-    final lastObstacle = obstacles[obstacles.length - 1];
-    if (lastObstacle.angleDeg > angleEnd) {
-      angleEnd = lastObstacle.angleDeg;
-    }
-  }
-
-  if (coins.isNotEmpty) {
-    final lastCoin = coins[coins.length - 1];
-    if (lastCoin.angleDeg > angleEnd) {
-      angleEnd = lastCoin.angleDeg;
-    }
-  }
-
-  return angleEnd;
 }
 
 String _randomWorldPartKey() {
@@ -110,14 +42,14 @@ String _randomWorldPartKey() {
   return randomKey;
 }
 
-WorldPart randomWorldPart(double startAngleDeg, String randomKey) {
+WorldPart _randomWorldPart(double startAngleDeg, String randomKey) {
   final bool withCoins = Random().nextInt(100) % 2 == 0;
   final fn = _worldParts[randomKey]!;
-  final WorldPart randomWorldPart = fn(startAngleDeg, withCoins);
-  return randomWorldPart;
+  final WorldPart randWorldPart = fn(startAngleDeg, withCoins);
+  return randWorldPart;
 }
 
-WorldPart threePlatforms(double startAngleDeg, bool withCoins) {
+WorldPart _threePlatforms(double startAngleDeg, bool withCoins) {
   final platforms = [
     getCurvePlatform(startAngleDeg, 5, 50),
     getCurvePlatform(startAngleDeg + 5, 5, 100),
@@ -126,10 +58,10 @@ WorldPart threePlatforms(double startAngleDeg, bool withCoins) {
 
   final List<Coin> coins =
       withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
-  return WorldPart(platforms: platforms, coins: coins, obstacles: []);
+  return WorldPart(platforms: platforms, coins: coins);
 }
 
-WorldPart platformAndRamp(double startAngleDeg, bool withCoins) {
+WorldPart _platformAndRamp(double startAngleDeg, bool withCoins) {
   final platforms = [
     getRampPlatform(startAngleDeg, 7, 30, 105),
     getCurvePlatform(startAngleDeg + 7, 15, 135),
@@ -137,15 +69,52 @@ WorldPart platformAndRamp(double startAngleDeg, bool withCoins) {
 
   final List<Coin> coins =
       withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
-  return WorldPart(platforms: platforms, coins: coins, obstacles: []);
+  return WorldPart(platforms: platforms, coins: coins);
 }
 
-WorldPart onlyCoins(double startAngleDeg, bool withCoins) {
+WorldPart _onlyCoins(double startAngleDeg, bool withCoins) {
   final List<Coin> coins = [
     ...generateCoins(2, 5, startAngleDeg, 5),
     ...generateCoins(2, 60, startAngleDeg + 10, 5),
     ...generateCoins(2, 120, startAngleDeg + 20, 5),
     ...generateCoins(2, 150, startAngleDeg + 30, 5),
   ];
-  return WorldPart(platforms: [], coins: coins, obstacles: []);
+  return WorldPart(coins: coins);
 }
+
+WorldPart _zigZagPlatforms(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 15, 100),
+    getRampPlatform(startAngleDeg + 14, 6, 100, 150),
+    getCurvePlatform(startAngleDeg + 20, 10, 250),
+    getRampPlatform(startAngleDeg + 29.5, 15, 247, -270),
+  ];
+
+  final List<Coin> coins =
+      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+
+WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
+  CurvePlatform p3 = getCurvePlatform(startAngleDeg + 25, 10, 200);
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 8, 50),
+    getCurvePlatform(startAngleDeg + 10, 8, 100),
+    getRampPlatform(startAngleDeg + 20, 5, 80, 120),
+    p3,
+  ];
+  final List<Coin> coins =
+      withCoins ? generateCoinsForCurvePlatforms([p3]) : [];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 60, 50),
+    getCurvePlatform(startAngleDeg+3, 12, 150),
+    getCurvePlatform(startAngleDeg+6, 12, 250),
+  ];
+  final List<Coin> coins =
+      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+

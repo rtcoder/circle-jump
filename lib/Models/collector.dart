@@ -7,6 +7,10 @@ abstract class Collector<T> {
     this.items.addAll(items);
   }
 
+  void join(Collector<T> collector) {
+    this.items.addAll(collector.items);
+  }
+
   void removeMany(List<T> items) {
     this.items.removeWhere((item) => items.contains(item));
   }
@@ -14,5 +18,6 @@ abstract class Collector<T> {
   void remove(T item) {
     items.remove(item);
   }
+
   void removeUnnecessaryItems();
 }

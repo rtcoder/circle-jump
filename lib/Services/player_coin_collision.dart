@@ -8,14 +8,14 @@ class PlayerCoinCollision {
   static List<Coin> collectCoins() {
     final List<Coin> collectedCoins = [];
 
-    for (final coin in game.coinCollector.visibleItems) {
+    for (final coin in game.world.getCoins(onlyVisible: true)) {
       if (PlayerCoinCollision.isCoinCollected(coin, game.player)) {
         collectedCoins.add(coin);
         game.player.score += 1;
       }
     }
 
-    game.coinCollector.removeMany(collectedCoins);
+    game.world.removeCollectedCoins(collectedCoins);
     return collectedCoins;
   }
 

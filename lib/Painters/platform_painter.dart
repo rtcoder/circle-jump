@@ -15,7 +15,7 @@ class PlatformPainter extends CustomPainter {
     }
     final paint = Paint()..style = PaintingStyle.stroke;
 
-    for (final platform in game.platformCollector.visibleItems) {
+    for (final platform in game.world.getPlatforms(onlyVisible: true)) {
       _drawPlatform(canvas, platform, paint);
     }
   }

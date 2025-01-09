@@ -20,9 +20,7 @@ class _Game {
   late Size screenSize;
   late CircleCenter circleCenter;
   bool gameInitialized = false;
-  final CoinCollector coinCollector = CoinCollector();
-  final PlatformCollector platformCollector = PlatformCollector();
-  final ObstacleCollector obstacleCollector = ObstacleCollector();
+  final World world = World();
 
   String get distanceHuman {
     if (distance < 1000) {
@@ -40,7 +38,7 @@ class _Game {
     if (gameInitialized) {
       return;
     }
-    _updateWorld(-85, 90);
+    world.initWorld(-85, 90);
     gameInitialized = true;
   }
 
@@ -53,23 +51,10 @@ class _Game {
     _updateWorldCycle();
   }
 
-  void _updateWorld([double startAngleDeg = 5, double endAngleDeg = 90]) {
-    final worldPart = generateWorldPart(startAngleDeg, endAngleDeg);
-    coinCollector.collectAll(worldPart.coins);
-    platformCollector.collectAll(worldPart.platforms);
-    obstacleCollector.collectAll(worldPart.obstacles);
-
-    coinCollector.removeUnnecessaryItems();
-    platformCollector.removeUnnecessaryItems();
-    obstacleCollector.removeUnnecessaryItems();
-
-    print(platformCollector.items.length);
-  }
-
   void _updateWorldCycle() {
     if (circleAngleDeg - lastWorldUpdateAngleDeg > 90) {
       lastWorldUpdateAngleDeg = circleAngleDeg;
-      _updateWorld();
+      world.updateWorld(90);
     }
   }
 
@@ -90,9 +75,9 @@ class _Game {
 
   void _moveElements() {
     final List<Movable> elements = [
-      ...platformCollector.items,
-      ...obstacleCollector.items,
-      ...coinCollector.items
+      ...world.getPlatforms(),
+      ...world.getObstacles(),
+      ...world.getCoins()
     ];
     for (final element in elements) {
       element.move(circleAngleDelta);
