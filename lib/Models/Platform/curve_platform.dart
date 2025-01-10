@@ -55,6 +55,7 @@ class CurvePlatform extends PlatformModel {
     super.strokeWidth,
     super.isDanger,
     super.dangerPlatformType,
+    super.rotatePlatformImageAngle,
   });
 
   @override

@@ -52,6 +52,7 @@ class RampPlatform extends PlatformModel {
     super.strokeWidth,
     super.isDanger,
     super.dangerPlatformType,
+    super.rotatePlatformImageAngle,
   });
 
   @override

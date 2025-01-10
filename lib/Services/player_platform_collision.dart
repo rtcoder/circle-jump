@@ -76,7 +76,8 @@ class PlayerPlatformCollision {
         (playerY - expectedHeight).abs() <= _heightThreshold;
 
     return withinHeight
-        ? HeightOnPlatform(expectedHeight, platform.strokeWidth)
+        ? HeightOnPlatform(
+            expectedHeight, platform.strokeWidth, platform.isDanger)
         : null;
   }
 
@@ -84,7 +85,8 @@ class PlayerPlatformCollision {
     final bool isWithinHeight =
         (playerY - platform.height).abs() < _heightThreshold;
     return isWithinHeight
-        ? HeightOnPlatform(platform.height, platform.strokeWidth)
+        ? HeightOnPlatform(
+            platform.height, platform.strokeWidth, platform.isDanger)
         : null;
   }
 

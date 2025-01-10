@@ -9,8 +9,9 @@ abstract class PlatformModel extends Movable {
   double endAngleDeg;
   Color color;
   double strokeWidth;
-  bool isDanger;
-  DangerPlatformType? dangerPlatformType;
+  final bool isDanger;
+  final DangerPlatformType? dangerPlatformType;
+  final double rotatePlatformImageAngle;
 
   get startX;
 
@@ -29,6 +30,7 @@ abstract class PlatformModel extends Movable {
     this.strokeWidth = 15.0,
     this.isDanger = false,
     this.dangerPlatformType,
+    this.rotatePlatformImageAngle = 0,
   }) : assert(
           !isDanger || dangerPlatformType != null,
           'dangerPlatformType must be provided when isDanger is true',
