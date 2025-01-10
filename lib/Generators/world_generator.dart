@@ -52,9 +52,9 @@ WorldPart _randomWorldPart(double startAngleDeg, String randomKey) {
 
 WorldPart _threePlatforms(double startAngleDeg, bool withCoins) {
   final platforms = [
-    getCurvePlatform(startAngleDeg, 5, 50, null),
-    getCurvePlatform(startAngleDeg + 5, 5, 100, null),
-    getCurvePlatform(startAngleDeg + 10, 5, 150, null),
+    getCurvePlatform(startAngleDeg, 5, 50),
+    getCurvePlatform(startAngleDeg + 5, 5, 100),
+    getCurvePlatform(startAngleDeg + 10, 5, 150),
   ];
 
   final List<Coin> coins =
@@ -64,8 +64,8 @@ WorldPart _threePlatforms(double startAngleDeg, bool withCoins) {
 
 WorldPart _platformAndRamp(double startAngleDeg, bool withCoins) {
   final platforms = [
-    getRampPlatform(startAngleDeg, 7, 30, 105, null),
-    getCurvePlatform(startAngleDeg + 7, 15, 135, null),
+    getRampPlatform(startAngleDeg, 7, 30, 105),
+    getCurvePlatform(startAngleDeg + 7, 15, 135),
   ];
 
   final List<Coin> coins =
@@ -85,10 +85,10 @@ WorldPart _onlyCoins(double startAngleDeg, bool withCoins) {
 
 WorldPart _zigZagPlatforms(double startAngleDeg, bool withCoins) {
   final platforms = [
-    getCurvePlatform(startAngleDeg, 15, 100, null),
-    getRampPlatform(startAngleDeg + 14, 6, 100, 150, null),
-    getCurvePlatform(startAngleDeg + 20, 10, 250, null),
-    getRampPlatform(startAngleDeg + 29.5, 15, 247, -270, null),
+    getCurvePlatform(startAngleDeg, 15, 100),
+    getRampPlatform(startAngleDeg + 14, 6, 100, 150),
+    getCurvePlatform(startAngleDeg + 20, 10, 250),
+    getRampPlatform(startAngleDeg + 29.5, 15, 247, -270),
   ];
 
   final List<Coin> coins =
@@ -97,11 +97,11 @@ WorldPart _zigZagPlatforms(double startAngleDeg, bool withCoins) {
 }
 
 WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
-  CurvePlatform p3 = getCurvePlatform(startAngleDeg + 25, 10, 200, null);
+  CurvePlatform p3 = getCurvePlatform(startAngleDeg + 25, 10, 200);
   final platforms = [
-    getCurvePlatform(startAngleDeg, 8, 50, null),
-    getCurvePlatform(startAngleDeg + 10, 8, 100, null),
-    getRampPlatform(startAngleDeg + 20, 5, 80, 120, null),
+    getCurvePlatform(startAngleDeg, 8, 50),
+    getCurvePlatform(startAngleDeg + 10, 8, 100),
+    getRampPlatform(startAngleDeg + 20, 5, 80, 120),
     p3,
   ];
   final List<Coin> coins =
@@ -111,18 +111,18 @@ WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
 
 WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
   final CurvePlatform longPlatform1 =
-      getCurvePlatform(startAngleDeg, 60, 50, null);
+      getCurvePlatform(startAngleDeg, 60, 50);
   final CurvePlatform longPlatform2 =
-      getCurvePlatform(startAngleDeg, 60, 250, null);
+      getCurvePlatform(startAngleDeg, 60, 250);
   final platforms = [
     longPlatform1,
     longPlatform2,
-    getCurvePlatform(startAngleDeg + 3, 5, 120, null),
-    getCurvePlatform(startAngleDeg + 10, 12, 150, null),
-    getCurvePlatform(startAngleDeg + 24, 5, 120, null),
-    getCurvePlatform(startAngleDeg + 31, 12, 150, null),
-    getCurvePlatform(startAngleDeg + 45, 5, 120, null),
-    getCurvePlatform(startAngleDeg + 52, 12, 150, null),
+    getCurvePlatform(startAngleDeg + 3, 5, 120),
+    getCurvePlatform(startAngleDeg + 10, 12, 150),
+    getCurvePlatform(startAngleDeg + 24, 5, 120),
+    getCurvePlatform(startAngleDeg + 31, 12, 150),
+    getCurvePlatform(startAngleDeg + 45, 5, 120),
+    getCurvePlatform(startAngleDeg + 52, 12, 150),
   ];
   withCoins = true;
   final List<Coin> coins =
