@@ -41,26 +41,35 @@ class _CircleJumpState extends State<CircleJump> {
     }
     try {
       final loader = ImageLoader(context);
+      final int progressStep = (100 / 7).ceil();
       final List<Future<void>> loadTasks = [
         loader.loadImage(ImagesList.cloud).then((image) {
           Images.cloudImage = image;
-          _updateProgress(20);
+          _updateProgress(progressStep);
         }),
         loader.loadImage(ImagesList.circle).then((image) {
           Images.circleImage = image;
-          _updateProgress(20);
+          _updateProgress(progressStep);
         }),
         loader.loadImage(ImagesList.ball).then((image) {
           Images.ballImage = image;
-          _updateProgress(20);
+          _updateProgress(progressStep);
         }),
         loader.loadImage(ImagesList.block).then((image) {
           Images.blockImage = image;
-          _updateProgress(20);
+          _updateProgress(progressStep);
         }),
         loader.loadImage(ImagesList.coin).then((image) {
           Images.coinImage = image;
-          _updateProgress(20);
+          _updateProgress(progressStep);
+        }),
+        loader.loadImage(ImagesList.longSpike).then((image) {
+          Images.longSpikeImage = image;
+          _updateProgress(progressStep);
+        }),
+        loader.loadImage(ImagesList.smallSpike).then((image) {
+          Images.smallSpikeImage = image;
+          _updateProgress(progressStep);
         }),
       ];
 
@@ -80,9 +89,12 @@ class _CircleJumpState extends State<CircleJump> {
     }
   }
 
-  void _updateProgress(double progress) {
+  void _updateProgress(int progress) {
     setState(() {
       loadingProgress += progress;
+      if (loadingProgress > 100) {
+        loadingProgress = 100;
+      }
     });
   }
 

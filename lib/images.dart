@@ -10,6 +10,8 @@ class ImagesList {
   static const String ball = 'assets/images/ball.png';
   static const String block = 'assets/images/block.png';
   static const String coin = 'assets/images/coin.png';
+  static const String longSpike = 'assets/images/long_metal_spike.png';
+  static const String smallSpike = 'assets/images/small_metal_spike.png';
 }
 
 class Images {
@@ -18,6 +20,8 @@ class Images {
   static ui.Image? ballImage;
   static ui.Image? blockImage;
   static ui.Image? coinImage;
+  static ui.Image? longSpikeImage;
+  static ui.Image? smallSpikeImage;
 }
 
 class ImageLoader {
@@ -29,19 +33,4 @@ class ImageLoader {
     final data = await DefaultAssetBundle.of(_context).load(assetPath);
     return await decodeImageFromList(data.buffer.asUint8List());
   }
-}
-
-Future<void> loadImages(BuildContext context) async {
-  final loader = ImageLoader(context);
-  final cloudImage = await loader.loadImage(ImagesList.cloud);
-  final circleImage = await loader.loadImage(ImagesList.circle);
-  final ballImage = await loader.loadImage(ImagesList.ball);
-  final block = await loader.loadImage(ImagesList.block);
-
-  Images.cloudImage = cloudImage;
-  Images.circleImage = circleImage;
-  Images.ballImage = ballImage;
-  Images.blockImage = block;
-
-  imagesInitialized = true;
 }
