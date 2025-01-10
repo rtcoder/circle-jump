@@ -40,7 +40,7 @@ class World {
   }
 
   void initWorld() {
-    final worldPart = generateWorldPart(-85, 90);
+    final worldPart = generateWorldPart(-85, 180);
     _worldPart.add(worldPart);
   }
 
@@ -48,10 +48,9 @@ class World {
     _worldPart.coinCollector.removeMany(collectedCoins);
   }
 
-  void _updateWorldData(double length) {
+  void _updateWorldData() {
     final double startAngleDeg = _worldPart.getEndAngleDeg();
-    final double endAngleDeg = startAngleDeg + length;
-    final worldPart = generateWorldPart(startAngleDeg, endAngleDeg);
+    final worldPart = generateWorldPart(startAngleDeg, 180);
     _worldPart.add(worldPart);
     _worldPart.removeUnnecessaryItems();
   }
@@ -70,7 +69,7 @@ class World {
   void _updateWorldCycle(double angleDeg) {
     if (angleDeg - _lastWorldUpdateAngleDeg > 90) {
       _lastWorldUpdateAngleDeg = angleDeg;
-      _updateWorldData(90);
+      _updateWorldData();
     }
   }
 }

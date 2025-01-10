@@ -22,13 +22,11 @@ WorldPart generateWorldPart(double startAngleDeg, double endAngleDeg) {
   String worldName = '';
   double nextStartAngle = startAngleDeg;
   while (nextStartAngle + 6 < endAngleDeg) {
-    // while (worldName == lastWorldName) {
-    worldName = _randomWorldPartKey();
-    // }
+    while (worldName == lastWorldName) {
+      worldName = _randomWorldPartKey();
+    }
     final randWorldPart = _randomWorldPart(nextStartAngle, worldName);
-    double worldEndAngleDeg = worldPart.isEmpty()
-        ? randWorldPart.getEndAngleDeg()
-        : worldPart.getEndAngleDeg();
+    double worldEndAngleDeg = randWorldPart.getEndAngleDeg();
     nextStartAngle = worldEndAngleDeg + 5;
     lastWorldName = worldName;
     if (nextStartAngle <= endAngleDeg) {
