@@ -1,7 +1,6 @@
 import 'package:circle_jump/Generators/world_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
-import 'package:circle_jump/Models/Obstacle/obstacle.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/World/world_part.dart';
 import 'package:circle_jump/Models/game_circle.dart';
@@ -17,13 +16,6 @@ class World {
       return _worldPart.platformCollector.visibleItems;
     }
     return _worldPart.platformCollector.items;
-  }
-
-  Iterable<Obstacle> getObstacles({onlyVisible = false}) {
-    if (onlyVisible) {
-      return _worldPart.obstacleCollector.visibleItems;
-    }
-    return _worldPart.obstacleCollector.items;
   }
 
   Iterable<Coin> getCoins({onlyVisible = false}) {
@@ -56,11 +48,7 @@ class World {
   }
 
   void _moveWorldElements(double angleDelta) {
-    final List<Movable> elements = [
-      ...getPlatforms(),
-      ...getObstacles(),
-      ...getCoins()
-    ];
+    final List<Movable> elements = [...getPlatforms(), ...getCoins()];
     for (final element in elements) {
       element.move(angleDelta);
     }

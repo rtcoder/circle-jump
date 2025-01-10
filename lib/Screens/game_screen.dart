@@ -2,7 +2,6 @@ import 'package:circle_jump/Background/animated_background.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Painters/coins_painter.dart';
-import 'package:circle_jump/Painters/obstacle_painter.dart';
 import 'package:circle_jump/Painters/platform_painter.dart';
 import 'package:circle_jump/Painters/player_painter.dart';
 import 'package:circle_jump/Services/player_coin_collision.dart';
@@ -90,10 +89,6 @@ class GameScreenState extends State<GameScreen>
         child: Stack(
           children: [
             const AnimatedBackground(),
-            CustomPaint(
-              size: size,
-              foregroundPainter: ObstaclePainter(),
-            ),
             CustomPaint(
               painter: PlatformPainter(),
             ),

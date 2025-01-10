@@ -2,42 +2,33 @@ import 'dart:math';
 
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_collector.dart';
-import 'package:circle_jump/Models/Obstacle/obstacle.dart';
-import 'package:circle_jump/Models/Obstacle/obstacle_collector.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/platform_collector.dart';
 
 class WorldPart {
   final CoinCollector coinCollector = CoinCollector();
   final PlatformCollector platformCollector = PlatformCollector();
-  final ObstacleCollector obstacleCollector = ObstacleCollector();
 
   WorldPart({
     List<PlatformModel> platforms = const [],
     List<Coin> coins = const [],
-    List<Obstacle> obstacles = const [],
   }) {
-    obstacleCollector.collectAll(obstacles);
     platformCollector.collectAll(platforms);
     coinCollector.collectAll(coins);
   }
 
   bool isEmpty() {
-    return platformCollector.items.isEmpty &&
-        coinCollector.items.isEmpty &&
-        obstacleCollector.items.isEmpty;
+    return platformCollector.items.isEmpty && coinCollector.items.isEmpty;
   }
 
   void add(WorldPart worldPart) {
     platformCollector.join(worldPart.platformCollector);
     coinCollector.join(worldPart.coinCollector);
-    obstacleCollector.join(worldPart.obstacleCollector);
   }
 
   void removeUnnecessaryItems() {
     coinCollector.removeUnnecessaryItems();
     platformCollector.removeUnnecessaryItems();
-    obstacleCollector.removeUnnecessaryItems();
   }
 
   double getLengthInDegrees() {
@@ -49,12 +40,10 @@ class WorldPart {
 
   double getStartAngleDeg() {
     final platformsList = platformCollector.items;
-    final obstaclesList = obstacleCollector.items;
     final coinsList = coinCollector.items;
 
     final minStartAngle = [
       ...platformsList.map((p) => p.startAngleDeg),
-      ...obstaclesList.map((p) => p.angleDeg),
       ...coinsList.map((p) => p.angleDeg),
     ].reduce(min);
 
@@ -63,12 +52,10 @@ class WorldPart {
 
   double getEndAngleDeg() {
     final platformsList = platformCollector.items;
-    final obstaclesList = obstacleCollector.items;
     final coinsList = coinCollector.items;
 
     final maxEndAngle = [
       ...platformsList.map((p) => p.endAngleDeg),
-      ...obstaclesList.map((p) => p.angleDeg),
       ...coinsList.map((p) => p.angleDeg),
     ].reduce(max);
 
