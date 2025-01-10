@@ -5,9 +5,8 @@ import 'package:circle_jump/Models/player.dart';
 import 'package:flutter/material.dart';
 
 class _Game {
+  bool isGameOver = false;
   final double gravity = 0.5;
-  double distance = 0;
-  double lastWorldUpdateAngleDeg = 0;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
@@ -28,7 +27,19 @@ class _Game {
     gameInitialized = true;
   }
 
+  void restart() {
+    gameInitialized = false;
+    gameCircle.clear();
+    world.clear();
+    player.restart();
+    init();
+    isGameOver = false;
+  }
+
   void update(BuildContext context) {
+    if (isGameOver) {
+      return;
+    }
     gameCircle.update(player);
     world.update(gameCircle);
     player.update(context);

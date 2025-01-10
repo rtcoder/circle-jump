@@ -28,7 +28,7 @@ class GameScreenState extends State<GameScreen>
 
     if (mounted) {
       setState(() {
-        game.init();
+        game.restart();
       });
     }
     Future.doWhile(() async {
@@ -38,6 +38,9 @@ class GameScreenState extends State<GameScreen>
           game.update(context);
           handleCoinCollection();
         });
+        if(game.isGameOver){
+          return false;
+        }
       }
       return true;
     });

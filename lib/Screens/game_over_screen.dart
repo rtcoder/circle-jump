@@ -8,8 +8,7 @@ class GameOverScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(ModalRoute.of(context)!.settings.arguments);
-    final int score = ModalRoute.of(context)!.settings.arguments as int;
+    final int score = ModalRoute.of(context)?.settings.arguments as int? ?? 0;
 
     return Scaffold(
       body: Center(

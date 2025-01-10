@@ -17,6 +17,13 @@ class GameCircle {
     return '${(_distance / 1000).toStringAsFixed(2)}km';
   }
 
+  void clear() {
+    _distance = 0;
+    angleDelta = 0.002;
+    angle = 0;
+    angleDeg = 0;
+  }
+
   void update(Player player) {
     _updateDistance(player.radius);
     _updateAngleDelta();

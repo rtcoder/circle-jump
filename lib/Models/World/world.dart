@@ -25,6 +25,11 @@ class World {
     return _worldPart.coinCollector.items;
   }
 
+  void clear() {
+    _lastWorldUpdateAngleDeg=0;
+    _worldPart.clear();
+  }
+
   void update(GameCircle gameCircle) {
     _moveWorldElements(gameCircle.angleDelta);
     _updateWorldCycle(gameCircle.angleDeg);

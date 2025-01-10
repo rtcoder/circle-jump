@@ -17,6 +17,11 @@ class WorldPart {
     coinCollector.collectAll(coins);
   }
 
+  void clear() {
+    coinCollector.items.clear();
+    platformCollector.items.clear();
+  }
+
   bool isEmpty() {
     return platformCollector.items.isEmpty && coinCollector.items.isEmpty;
   }

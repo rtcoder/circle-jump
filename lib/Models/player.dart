@@ -22,6 +22,15 @@ class Player {
     return (game.screenSize.height / 2) - playerY;
   }
 
+  void restart() {
+    _velocityY = 0;
+    _onGround = true;
+    playerY = 0;
+    playerAngle = 0;
+    _canDoubleJump = false;
+    score = 0;
+  }
+
   void update(BuildContext context) {
     _incrementPlayerAngle();
     _updatePlayerY(context);
@@ -46,7 +55,8 @@ class Player {
 
     final platformCollision = playerPlatformCollision.isOnAnyPlatform(newY);
     if (platformCollision != null) {
-      if (!platformCollision.isDanger) {
+      if (platformCollision.isDanger) {
+        game.isGameOver = true;
         Navigator.pushNamed(context, '/game-over', arguments: score);
         return;
       }
