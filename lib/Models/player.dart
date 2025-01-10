@@ -1,5 +1,6 @@
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Services/player_platform_collision.dart';
+import 'package:flutter/material.dart';
 
 class Player {
   double _velocityY = 0;
@@ -10,7 +11,8 @@ class Player {
   int score = 0;
   final double radius = 20.0;
   final double _jumpPower = -12;
-  final PlayerPlatformCollision playerPlatformCollision = PlayerPlatformCollision();
+  final PlayerPlatformCollision playerPlatformCollision =
+      PlayerPlatformCollision();
 
   double get playerX {
     return game.screenSize.width / 2;
@@ -20,9 +22,9 @@ class Player {
     return (game.screenSize.height / 2) - playerY;
   }
 
-  void update() {
+  void update(BuildContext context) {
     _incrementPlayerAngle();
-    _updatePlayerY();
+    _updatePlayerY(context);
   }
 
   void jump() {
@@ -35,7 +37,7 @@ class Player {
     }
   }
 
-  void _updatePlayerY() {
+  void _updatePlayerY(BuildContext context) {
     _onGround = false;
     double newY = playerY;
 
@@ -44,6 +46,10 @@ class Player {
 
     final platformCollision = playerPlatformCollision.isOnAnyPlatform(newY);
     if (platformCollision != null) {
+      if (!platformCollision.isDanger) {
+        Navigator.pushNamed(context, '/game-over', arguments: score);
+        return;
+      }
       if (_velocityY >= 0) {
         if (playerY > platformCollision.height) {
           _velocityY = 0;

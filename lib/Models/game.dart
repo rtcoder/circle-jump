@@ -1,7 +1,7 @@
+import 'package:circle_jump/Models/World/world.dart';
 import 'package:circle_jump/Models/circle_center.dart';
 import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/Models/World/world.dart';
 import 'package:flutter/material.dart';
 
 class _Game {
@@ -28,10 +28,10 @@ class _Game {
     gameInitialized = true;
   }
 
-  void update() {
+  void update(BuildContext context) {
     gameCircle.update(player);
     world.update(gameCircle);
-    player.update();
+    player.update(context);
   }
 }
 

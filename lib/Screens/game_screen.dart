@@ -35,7 +35,7 @@ class GameScreenState extends State<GameScreen>
       await Future.delayed(const Duration(milliseconds: 16));
       if (mounted) {
         setState(() {
-          game.update();
+          game.update(context);
           handleCoinCollection();
         });
       }
