@@ -53,6 +53,8 @@ class CurvePlatform extends PlatformModel {
     required super.endAngleDeg,
     super.color = Colors.green,
     super.strokeWidth,
+    super.isDanger,
+    super.dangerPlatformType,
   });
 
   @override
