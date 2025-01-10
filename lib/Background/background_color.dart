@@ -6,10 +6,13 @@ const darkBlue2 = Color(0xFF01012F);
 const darkBlue3 = Color(0xFF010117);
 const blue = Color(0xFF0000A8);
 
-late final List<Color> precomputedColors;
+final List<Color> precomputedColors = [];
 
 void initializeBackgroundColors(int steps) {
-  precomputedColors = List.generate(steps, (index) {
+  if (precomputedColors.isNotEmpty) {
+    return;
+  }
+  precomputedColors.addAll(List.generate(steps, (index) {
     final time = index / steps;
     if (time <= 0.125) {
       return Color.lerp(darkBlue, lightBlue, time * 8)!;
@@ -33,7 +36,7 @@ void initializeBackgroundColors(int steps) {
       return Color.lerp(darkBlue3, darkBlue, (time - 0.75) * 8)!;
     }
     return darkBlue;
-  });
+  }));
 }
 
 Color getBackgroundColor(double time) {
