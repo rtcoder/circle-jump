@@ -83,7 +83,9 @@ class PlayerPlatformCollision {
 
   HeightOnPlatform? _isOnCurve(CurvePlatform platform, double playerY) {
     final bool isWithinHeight =
-        (playerY - platform.height).abs() < _heightThreshold;
+        (playerY - platform.height).abs() < _heightThreshold ||
+            (playerY <= platform.height &&
+                playerY >= platform.height - platform.strokeWidth);
     return isWithinHeight
         ? HeightOnPlatform(
             platform.height, platform.strokeWidth, platform.isDanger)

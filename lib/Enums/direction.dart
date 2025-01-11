@@ -1,6 +1,6 @@
 enum Direction {
-  up,
-  down,
-  left,
-  right,
+  none,
+  rotate90,
+  rotate180,
+  rotate270,
 }

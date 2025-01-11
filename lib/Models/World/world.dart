@@ -37,7 +37,7 @@ class World {
   }
 
   void initWorld() {
-    final worldPart = generateWorldPart(-85, 180);
+    final worldPart = generateWorldPart(-80, 180);
     _worldPart.add(worldPart);
   }
 

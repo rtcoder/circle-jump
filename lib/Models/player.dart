@@ -57,6 +57,7 @@ class Player {
     if (platformCollision != null) {
       if (platformCollision.isDanger) {
         game.isGameOver = true;
+        print(platformCollision.height);
         Navigator.pushNamed(context, '/game-over', arguments: score);
         return;
       }

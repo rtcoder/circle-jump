@@ -4,27 +4,14 @@ import 'package:circle_jump/Models/Platform/curve_platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
 import 'package:circle_jump/utils.dart';
 
-double getRotationAngle(Direction? direction) {
-  switch (direction) {
-    case null:
-    case Direction.up:
-      return 0;
-    case Direction.down:
-      return 180;
-    case Direction.left:
-      return 90;
-    case Direction.right:
-      return 270;
-  }
-}
-
 CurvePlatform getCurvePlatform(
     double startAngleDeg, double lengthDeg, double height,
-    {DangerPlatformType? dangerPlatformType, Direction? direction}) {
+    {DangerPlatformType? dangerPlatformType,
+    Direction? direction,
+    double strokeWidth = 15}) {
   final startAngleRad = degreesToRadians(startAngleDeg);
   final endAngle = startAngleDeg + lengthDeg;
   final endAngleRad = degreesToRadians(endAngle.toDouble());
-  final double rotatePlatformImageAngle = getRotationAngle(direction);
 
   return CurvePlatform(
     startAngle: startAngleRad,
@@ -34,17 +21,19 @@ CurvePlatform getCurvePlatform(
     height: height,
     isDanger: dangerPlatformType != null,
     dangerPlatformType: dangerPlatformType,
-    rotatePlatformImageAngle: degreesToRadians(rotatePlatformImageAngle),
+    imageDirection: direction,
+    strokeWidth: strokeWidth,
   );
 }
 
 RampPlatform getRampPlatform(
     double startAngleDeg, double lengthDeg, double airHeight, double height,
-    {DangerPlatformType? dangerPlatformType, Direction? direction}) {
+    {DangerPlatformType? dangerPlatformType,
+    Direction? direction,
+    double strokeWidth = 15}) {
   final startAngleRad = degreesToRadians(startAngleDeg);
   final endAngle = startAngleDeg + lengthDeg;
   final endAngleRad = degreesToRadians(endAngle.toDouble());
-  final double rotatePlatformImageAngle = getRotationAngle(direction);
 
   return RampPlatform(
     startAngle: startAngleRad,
@@ -55,6 +44,7 @@ RampPlatform getRampPlatform(
     endHeight: height + airHeight,
     isDanger: dangerPlatformType != null,
     dangerPlatformType: dangerPlatformType,
-    rotatePlatformImageAngle: degreesToRadians(rotatePlatformImageAngle),
+    imageDirection: direction,
+    strokeWidth: strokeWidth,
   );
 }

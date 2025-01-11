@@ -5,9 +5,9 @@ import 'package:circle_jump/Enums/danger_platform_type.dart';
 import 'package:circle_jump/Models/Platform/curve_platform.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
+import 'package:circle_jump/Models/direction_rotation.dart';
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/images.dart';
-import 'package:circle_jump/utils.dart';
 import 'package:flutter/material.dart';
 
 class PlatformPainter extends CustomPainter {
@@ -25,7 +25,8 @@ class PlatformPainter extends CustomPainter {
 
   void _drawPlatform(Canvas canvas, PlatformModel platform, Paint paint) {
     if (platform is RampPlatform) {
-      _drawRamp(canvas, platform, paint);
+      ui.Image? texture = getPlatformImage(platform);
+      _drawRamp(canvas, platform, paint, texture);
     }
     if (platform is CurvePlatform) {
       _drawCurve(canvas, platform, paint);
@@ -44,29 +45,45 @@ class PlatformPainter extends CustomPainter {
     final double imageHeight = image.height.toDouble();
     final double platformThickness = platform.strokeWidth;
     final double arcLength = platformRadius * sweepAngle;
-    final int imageCount = (arcLength / imageWidth).ceil();
+
+    // Obliczenie skali, aby dopasować wysokość obrazka do grubości platformy
+    final double scale = platformThickness / imageHeight;
+    final double scaledImageWidth = imageWidth * scale;
+
+    // Liczba obrazków potrzebnych do wypełnienia łuku
+    final int imageCount = (arcLength / scaledImageWidth).ceil();
 
     for (int i = 0; i < imageCount; i++) {
-      final double angle = startAngle + (i * imageWidth / platformRadius);
+      // Kąt dla bieżącej pozycji obrazka
+      final double angle = startAngle + (i * scaledImageWidth / platformRadius);
+
+      // Pozycja obrazka na okręgu
       final double x = center.centerX + platformRadius * cos(angle);
       final double y = center.centerY + platformRadius * sin(angle);
-      final double rotation = angle + pi / 2 + platform.rotatePlatformImageAngle;
+
+      // Obrót obrazka na podstawie kąta łuku i kierunku
+      final double rotation = angle + pi / 2 + DirectionRotation.getRotationAngle(platform.imageDirection);
 
       canvas.save();
       canvas.translate(x, y);
       canvas.rotate(rotation);
 
+      // Obszar źródłowy (cały obrazek)
       final Rect src = Rect.fromLTWH(0, 0, imageWidth, imageHeight);
+
+      // Obszar docelowy (proporcjonalne skalowanie obrazka)
       final Rect dst = Rect.fromCenter(
         center: const Offset(0, 0),
-        width: imageWidth,
-        height: platformThickness,
+        width: scaledImageWidth, // Proporcjonalna szerokość
+        height: platformThickness, // Grubość platformy
       );
 
+      // Rysowanie obrazka na canvas
       canvas.drawImageRect(image, src, dst, paint);
       canvas.restore();
     }
   }
+
 
   ui.Image getPlatformImage(PlatformModel platform) {
     if (!platform.isDanger) {
@@ -76,33 +93,62 @@ class PlatformPainter extends CustomPainter {
     switch (platform.dangerPlatformType) {
       case null:
         return Images.blockImage!;
-      case DangerPlatformType.longSpikeUp:
+      case DangerPlatformType.longSpike:
         return Images.longSpikeImage!;
-      case DangerPlatformType.smallSpikeUp:
-        return Images.smallSpikeImage!;
-      case DangerPlatformType.longSpikeDown:
-        return Images.longSpikeImage!;
-      case DangerPlatformType.smallSpikeDown:
-        return Images.smallSpikeImage!;
-      case DangerPlatformType.longSpikeLeft:
-        return Images.longSpikeImage!;
-      case DangerPlatformType.smallSpikeLeft:
-        return Images.smallSpikeImage!;
-      case DangerPlatformType.longSpikeRight:
-        return Images.longSpikeImage!;
-      case DangerPlatformType.smallSpikeRight:
+      case DangerPlatformType.smallSpike:
         return Images.smallSpikeImage!;
     }
   }
 
-  void _drawRamp(Canvas canvas, RampPlatform platform, Paint paint) {
-    paint.color = platform.color;
-    paint.strokeWidth = platform.strokeWidth;
-    final Path rampPath = Path()
-      ..moveTo(platform.startX, platform.startY)
-      ..lineTo(platform.endX, platform.endY);
+  void _drawRamp(
+      Canvas canvas, RampPlatform platform, Paint paint, ui.Image? texture) {
+    final double centerX = (platform.startX + platform.endX) / 2;
+    final double centerY = (platform.startY + platform.endY) / 2;
+    final double angle =
+        atan2(platform.endY - platform.startY, platform.endX - platform.startX);
+    final double rampLength = sqrt(pow(platform.endX - platform.startX, 2) +
+        pow(platform.endY - platform.startY, 2));
+    canvas.save();
+    canvas.translate(centerX, centerY);
+    canvas.rotate(angle);
 
-    canvas.drawPath(rampPath, paint);
+    final Rect rampRect = Rect.fromCenter(
+      center: const Offset(0, 0),
+      width: rampLength,
+      height: platform.strokeWidth,
+    );
+
+    if (texture != null) {
+      final double imageWidth = texture.width.toDouble();
+      final double imageHeight = texture.height.toDouble();
+      final double scale = platform.strokeWidth / imageHeight;
+      final double scaledImageWidth = imageWidth * scale;
+      final int imageCount = (rampLength / scaledImageWidth).ceil();
+
+      for (int i = 0; i < imageCount; i++) {
+        final Rect src = Rect.fromLTWH(0, 0, imageWidth, imageHeight);
+        final Rect dst = Rect.fromLTWH(
+          -rampLength / 2 + i * scaledImageWidth,
+          -platform.strokeWidth / 2,
+          scaledImageWidth,
+          platform.strokeWidth,
+        );
+
+        canvas.save();
+        canvas.translate(dst.center.dx, dst.center.dy);
+        if (platform.imageDirection != null) {
+          canvas.rotate(
+           DirectionRotation.getRotationAngle(platform.imageDirection));
+        }
+        canvas.drawImageRect(texture, src, dst.shift(-dst.center), paint);
+        canvas.restore();
+      }
+    } else {
+      paint.color = platform.color;
+      paint.style = PaintingStyle.fill;
+      canvas.drawRect(rampRect, paint);
+    }
+    canvas.restore();
   }
 
   @override

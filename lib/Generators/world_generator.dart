@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:circle_jump/Enums/danger_platform_type.dart';
+import 'package:circle_jump/Enums/direction.dart';
 import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Generators/platform_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
@@ -8,11 +10,11 @@ import 'package:circle_jump/Models/World/world_part.dart';
 
 final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
     _worldParts = {
-  'threePlatforms': _threePlatforms,
+  // 'threePlatforms': _threePlatforms,
   'platformAndRamp': _platformAndRamp,
-  'onlyCoins': _onlyCoins,
-  'zigZagPlatforms': _zigZagPlatforms,
-  'multiLevelPlatforms': _multiLevelPlatforms,
+  // 'onlyCoins': _onlyCoins,
+  // 'zigZagPlatforms': _zigZagPlatforms,
+  // 'multiLevelPlatforms': _multiLevelPlatforms,
   'manyFloors': _manyFloors,
 };
 
@@ -88,6 +90,8 @@ WorldPart _zigZagPlatforms(double startAngleDeg, bool withCoins) {
     getCurvePlatform(startAngleDeg, 15, 100),
     getRampPlatform(startAngleDeg + 14, 6, 100, 150),
     getCurvePlatform(startAngleDeg + 20, 10, 250),
+    getCurvePlatform(startAngleDeg + 20, 15, 0,
+        dangerPlatformType: DangerPlatformType.smallSpike),
     getRampPlatform(startAngleDeg + 29.5, 15, 247, -270),
   ];
 
@@ -101,7 +105,7 @@ WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
   final platforms = [
     getCurvePlatform(startAngleDeg, 8, 50),
     getCurvePlatform(startAngleDeg + 10, 8, 100),
-    getRampPlatform(startAngleDeg + 20, 5, 80, 120),
+    getRampPlatform(startAngleDeg + 17, 8, 30, 164),
     p3,
   ];
   final List<Coin> coins =
@@ -110,19 +114,25 @@ WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
 }
 
 WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
-  final CurvePlatform longPlatform1 =
-      getCurvePlatform(startAngleDeg, 60, 50);
-  final CurvePlatform longPlatform2 =
-      getCurvePlatform(startAngleDeg, 60, 250);
+  final CurvePlatform longPlatform1 = getCurvePlatform(startAngleDeg, 60, 50);
+  final CurvePlatform longPlatform2 = getCurvePlatform(startAngleDeg, 60, 250);
+  final CurvePlatform longPlatform2Danger = getCurvePlatform(startAngleDeg, 60, 265, dangerPlatformType: DangerPlatformType.longSpike);
   final platforms = [
     longPlatform1,
     longPlatform2,
+    longPlatform2Danger,
     getCurvePlatform(startAngleDeg + 3, 5, 120),
-    getCurvePlatform(startAngleDeg + 10, 12, 150),
+    getCurvePlatform(startAngleDeg + 3, 5, 135, dangerPlatformType: DangerPlatformType.longSpike),
+    getCurvePlatform(startAngleDeg + 10, 12, 165),
+    getCurvePlatform(startAngleDeg + 10, 12, 150, dangerPlatformType: DangerPlatformType.longSpike,direction: Direction.rotate180),
     getCurvePlatform(startAngleDeg + 24, 5, 120),
-    getCurvePlatform(startAngleDeg + 31, 12, 150),
+    getCurvePlatform(startAngleDeg + 24, 5, 135, dangerPlatformType: DangerPlatformType.longSpike),
+    getCurvePlatform(startAngleDeg + 31, 12, 165),
+    getCurvePlatform(startAngleDeg + 31, 12, 150, dangerPlatformType: DangerPlatformType.longSpike,direction: Direction.rotate180),
     getCurvePlatform(startAngleDeg + 45, 5, 120),
-    getCurvePlatform(startAngleDeg + 52, 12, 150),
+    getCurvePlatform(startAngleDeg + 45, 5, 135, dangerPlatformType: DangerPlatformType.longSpike),
+    getCurvePlatform(startAngleDeg + 52, 12, 165),
+    getCurvePlatform(startAngleDeg + 52, 12, 150, dangerPlatformType: DangerPlatformType.longSpike,direction: Direction.rotate180),
   ];
   withCoins = true;
   final List<Coin> coins =
