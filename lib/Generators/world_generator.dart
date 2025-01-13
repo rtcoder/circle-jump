@@ -10,11 +10,11 @@ import 'package:circle_jump/Models/World/world_part.dart';
 
 final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
     _worldParts = {
-  // 'threePlatforms': _threePlatforms,
+  'threePlatforms': _threePlatforms,
   'platformAndRamp': _platformAndRamp,
-  // 'onlyCoins': _onlyCoins,
-  // 'zigZagPlatforms': _zigZagPlatforms,
-  // 'multiLevelPlatforms': _multiLevelPlatforms,
+  'onlyCoins': _onlyCoins,
+  'zigZagPlatforms': _zigZagPlatforms,
+  'multiLevelPlatforms': _multiLevelPlatforms,
   'manyFloors': _manyFloors,
 };
 
@@ -58,10 +58,14 @@ WorldPart _threePlatforms(double startAngleDeg, bool withCoins) {
     getCurvePlatform(startAngleDeg + 5, 5, 100),
     getCurvePlatform(startAngleDeg + 10, 5, 150),
   ];
+  final dangerPlatforms = [
+    getCurvePlatform(startAngleDeg + 16, 5, 150, dangerPlatformType: DangerPlatformType.smallSpike),
+    getCurvePlatform(startAngleDeg + 16, 5, 140, dangerPlatformType: DangerPlatformType.smallSpike, direction: Direction.rotate180),
+  ];
 
   final List<Coin> coins =
       withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
-  return WorldPart(platforms: platforms, coins: coins);
+  return WorldPart(platforms: [...platforms,...dangerPlatforms], coins: coins);
 }
 
 WorldPart _platformAndRamp(double startAngleDeg, bool withCoins) {
