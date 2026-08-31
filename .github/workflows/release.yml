@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Tag to publish, for example v0.1'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -17,6 +22,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.release_tag || github.ref }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -26,6 +33,9 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Enable macOS desktop
+        run: flutter config --enable-macos-desktop
 
       - name: Analyze
         run: flutter analyze
@@ -37,7 +47,13 @@ jobs:
         run: flutter build macos --release
 
       - name: Package macOS app
-        run: ditto -c -k --sequesterRsrc --keepParent build/macos/Build/Products/Release/circle_jump.app circle-jump-macos.zip
+        run: |
+          APP_PATH="$(find build/macos/Build/Products/Release -maxdepth 1 -name '*.app' -type d | head -n 1)"
+          if [[ -z "$APP_PATH" ]]; then
+            echo "No macOS .app found in build/macos/Build/Products/Release"
+            exit 1
+          fi
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" circle-jump-macos.zip
 
       - name: Upload macOS app
         uses: actions/upload-artifact@v4
@@ -46,8 +62,9 @@ jobs:
           path: circle-jump-macos.zip
 
       - name: Create GitHub release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
           files: circle-jump-macos.zip
+          fail_on_unmatched_files: true
           generate_release_notes: true
