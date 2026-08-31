@@ -3,12 +3,12 @@ abstract class Collector<T> {
 
   Iterable<T> get visibleItems;
 
-  void collectAll(List<T> items) {
-    this.items.addAll(items);
+  void collectAll(List<T> newItems) {
+    items.addAll(newItems);
   }
 
   void join(Collector<T> collector) {
-    this.items.addAll(collector.items);
+    items.addAll(collector.items);
   }
 
   void removeMany(List<T> items) {

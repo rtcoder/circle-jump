@@ -138,8 +138,6 @@ WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
     getCurvePlatform(startAngleDeg + 52, 12, 165),
     getCurvePlatform(startAngleDeg + 52, 12, 150, dangerPlatformType: DangerPlatformType.longSpike,direction: Direction.rotate180),
   ];
-  withCoins = true;
-  final List<Coin> coins =
-      withCoins ? generateCoinsForCurvePlatforms([longPlatform1]) : [];
+  final List<Coin> coins = generateCoinsForCurvePlatforms([longPlatform1]);
   return WorldPart(platforms: platforms, coins: coins);
 }

@@ -1,6 +1,23 @@
 import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Services/player_platform_collision.dart';
-import 'package:flutter/material.dart';
+
+class PlayerPhysics {
+  final double gravity;
+  final double jumpPower;
+  final double ceilingBounceFactor;
+
+  const PlayerPhysics({
+    required this.gravity,
+    required this.jumpPower,
+    required this.ceilingBounceFactor,
+  });
+
+  static const standard = PlayerPhysics(
+    gravity: 0.5,
+    jumpPower: -12,
+    ceilingBounceFactor: 0.5,
+  );
+}
 
 class Player {
   double _velocityY = 0;
@@ -9,10 +26,16 @@ class Player {
   double playerAngle = 0;
   bool _canDoubleJump = false;
   int score = 0;
+  final PlayerPhysics physics;
   final double radius = 20.0;
-  final double _jumpPower = -12;
   final PlayerPlatformCollision playerPlatformCollision =
       PlayerPlatformCollision();
+
+  Player({this.physics = PlayerPhysics.standard});
+
+  double get velocityY {
+    return _velocityY;
+  }
 
   double get playerX {
     return game.screenSize.width / 2;
@@ -31,48 +54,47 @@ class Player {
     score = 0;
   }
 
-  void update(BuildContext context) {
-    _incrementPlayerAngle();
-    _updatePlayerY(context);
+  void update(double frameScale) {
+    _incrementPlayerAngle(frameScale);
+    _updatePlayerY(frameScale);
   }
 
   void jump() {
     if (_onGround) {
-      _velocityY = _jumpPower;
-      _canDoubleJump = true; // Zezwól na podwójny skok
+      _velocityY = physics.jumpPower;
+      _canDoubleJump = true;
     } else if (_canDoubleJump) {
-      _velocityY = _jumpPower;
-      _canDoubleJump = false; // Wykorzystaj podwójny skok
+      _velocityY = physics.jumpPower;
+      _canDoubleJump = false;
     }
   }
 
-  void _updatePlayerY(BuildContext context) {
+  void _updatePlayerY(double frameScale) {
     _onGround = false;
     double newY = playerY;
 
-    _velocityY += game.gravity;
-    newY -= _velocityY;
+    _velocityY += physics.gravity * frameScale;
+    newY -= _velocityY * frameScale;
 
-    final platformCollision = playerPlatformCollision.isOnAnyPlatform(newY);
-    if (platformCollision != null) {
-      if (platformCollision.isDanger) {
-        game.isGameOver = true;
-        print(platformCollision.height);
-        Navigator.pushNamed(context, '/game-over', arguments: score);
+    final platformCollision = playerPlatformCollision.resolve(
+      previousPlayerY: playerY,
+      nextPlayerY: newY,
+      velocityY: _velocityY,
+    );
+
+    switch (platformCollision.type) {
+      case PlayerPlatformCollisionType.hitDanger:
+        game.endGame();
         return;
-      }
-      if (_velocityY >= 0) {
-        if (playerY > platformCollision.height) {
-          _velocityY = 0;
-          newY = platformCollision.height + radius;
-          _onGround = true;
-        }
-      } else {
-        if (playerY < platformCollision.height) {
-          _velocityY = -_velocityY * 0.5;
-          newY = platformCollision.height - radius;
-        }
-      }
+      case PlayerPlatformCollisionType.landed:
+        _velocityY = 0;
+        newY = platformCollision.height + radius;
+        _onGround = true;
+      case PlayerPlatformCollisionType.hitCeiling:
+        _velocityY = -_velocityY * physics.ceilingBounceFactor;
+        newY = platformCollision.height - radius;
+      case PlayerPlatformCollisionType.none:
+        break;
     }
 
     if (newY <= 0) {
@@ -84,8 +106,8 @@ class Player {
     playerY = newY;
   }
 
-  void _incrementPlayerAngle() {
-    playerAngle += _calculatePlayerAngleDelta();
+  void _incrementPlayerAngle(double frameScale) {
+    playerAngle += _calculatePlayerAngleDelta() * frameScale;
   }
 
   double _calculatePlayerAngleDelta() {

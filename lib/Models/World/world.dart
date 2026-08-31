@@ -3,8 +3,8 @@ import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/World/world_part.dart';
-import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/movable.dart';
+import 'package:circle_jump/utils.dart';
 
 class World {
   final WorldPart _worldPart = WorldPart();
@@ -30,10 +30,10 @@ class World {
     _worldPart.clear();
   }
 
-  void update(GameCircle gameCircle) {
-    _moveWorldElements(gameCircle.angleDelta);
-    _updateWorldCycle(gameCircle.angleDeg);
-    coinOscillation.updateOscillation();
+  void update(double angleDelta, double frameScale) {
+    _moveWorldElements(angleDelta);
+    _updateWorldCycle(angleDelta);
+    coinOscillation.updateOscillation(frameScale);
   }
 
   void initWorld() {
@@ -59,9 +59,10 @@ class World {
     }
   }
 
-  void _updateWorldCycle(double angleDeg) {
-    if (angleDeg - _lastWorldUpdateAngleDeg > 90) {
-      _lastWorldUpdateAngleDeg = angleDeg;
+  void _updateWorldCycle(double angleDelta) {
+    _lastWorldUpdateAngleDeg += radiansToDegrees(angleDelta);
+    if (_lastWorldUpdateAngleDeg > 90) {
+      _lastWorldUpdateAngleDeg = 0;
       _updateWorldData();
     }
   }

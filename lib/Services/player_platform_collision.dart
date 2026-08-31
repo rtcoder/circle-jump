@@ -4,8 +4,72 @@ import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
 import 'package:circle_jump/Models/game.dart';
 
+enum PlayerPlatformCollisionType { none, landed, hitCeiling, hitDanger }
+
+class PlayerPlatformCollisionResult {
+  final PlayerPlatformCollisionType type;
+  final double height;
+  final double strokeWidth;
+
+  const PlayerPlatformCollisionResult({
+    required this.type,
+    this.height = 0,
+    this.strokeWidth = 0,
+  });
+
+  factory PlayerPlatformCollisionResult.fromContact(
+    HeightOnPlatform? contact, {
+    required double previousPlayerY,
+    required double velocityY,
+  }) {
+    if (contact == null) {
+      return const PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.none,
+      );
+    }
+    if (contact.isDanger) {
+      return PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.hitDanger,
+        height: contact.height,
+        strokeWidth: contact.strokeWidth,
+      );
+    }
+    if (velocityY >= 0 && previousPlayerY > contact.height) {
+      return PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.landed,
+        height: contact.height,
+        strokeWidth: contact.strokeWidth,
+      );
+    }
+    if (velocityY < 0 && previousPlayerY < contact.height) {
+      return PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.hitCeiling,
+        height: contact.height,
+        strokeWidth: contact.strokeWidth,
+      );
+    }
+    return PlayerPlatformCollisionResult(
+      type: PlayerPlatformCollisionType.none,
+      height: contact.height,
+      strokeWidth: contact.strokeWidth,
+    );
+  }
+}
+
 class PlayerPlatformCollision {
   final double _heightThreshold = 20;
+
+  PlayerPlatformCollisionResult resolve({
+    required double previousPlayerY,
+    required double nextPlayerY,
+    required double velocityY,
+  }) {
+    return PlayerPlatformCollisionResult.fromContact(
+      isOnAnyPlatform(nextPlayerY),
+      previousPlayerY: previousPlayerY,
+      velocityY: velocityY,
+    );
+  }
 
   HeightOnPlatform? isOnAnyPlatform(double playerY) {
     HeightOnPlatform? closestPlatform;

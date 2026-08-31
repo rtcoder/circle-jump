@@ -4,15 +4,40 @@ import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/player.dart';
 import 'package:flutter/material.dart';
 
+enum GameState { playing, paused, gameOver }
+
 class _Game {
-  bool isGameOver = false;
-  final double gravity = 0.5;
+  GameState state = GameState.playing;
   Player player = Player();
   late Size screenSize;
   late CircleCenter circleCenter;
   bool gameInitialized = false;
   final World world = World();
   final GameCircle gameCircle = GameCircle();
+
+  bool get isGameOver {
+    return state == GameState.gameOver;
+  }
+
+  String get distanceHuman {
+    return gameCircle.distanceHuman;
+  }
+
+  void endGame() {
+    state = GameState.gameOver;
+  }
+
+  void pause() {
+    if (state == GameState.playing) {
+      state = GameState.paused;
+    }
+  }
+
+  void resume() {
+    if (state == GameState.paused) {
+      state = GameState.playing;
+    }
+  }
 
   void updateScreenSize(Size newVal) {
     screenSize = newVal;
@@ -33,16 +58,16 @@ class _Game {
     world.clear();
     player.restart();
     init();
-    isGameOver = false;
+    state = GameState.playing;
   }
 
-  void update(BuildContext context) {
-    if (isGameOver) {
+  void update(Duration frameDuration) {
+    if (state != GameState.playing) {
       return;
     }
-    gameCircle.update(player);
-    world.update(gameCircle);
-    player.update(context);
+    gameCircle.update(player, frameDuration);
+    world.update(gameCircle.frameAngleDelta, gameCircle.frameScale);
+    player.update(gameCircle.frameScale);
   }
 }
 
