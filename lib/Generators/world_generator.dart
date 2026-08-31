@@ -5,45 +5,97 @@ import 'package:circle_jump/Enums/direction.dart';
 import 'package:circle_jump/Generators/coin_generator.dart';
 import 'package:circle_jump/Generators/platform_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
-import 'package:circle_jump/Models/Platform/curve_platform.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/World/world_part.dart';
 
-final Map<String, WorldPart Function(double startAngleDeg, bool withCoins)>
-    _worldParts = {
-  'threePlatforms': _threePlatforms,
-  'platformAndRamp': _platformAndRamp,
-  'onlyCoins': _onlyCoins,
-  'zigZagPlatforms': _zigZagPlatforms,
-  'multiLevelPlatforms': _multiLevelPlatforms,
-  'manyFloors': _manyFloors,
-  'stairClimb': _stairClimb,
-  'rampWave': _rampWave,
-  'coinArc': _coinArc,
-  'lowSpikeHop': _lowSpikeHop,
-  'splitFloors': _splitFloors,
-  'ceilingTunnel': _ceilingTunnel,
+typedef _WorldPartFactory = WorldPart Function(
+  double startAngleDeg,
+  bool withCoins,
+);
+
+final Map<String, _WorldPartFactory> _worldParts = {
+  'rollingDunes': _rollingDunes,
+  'iceSwitchbacks': _iceSwitchbacks,
+  'volcanicPulse': _volcanicPulse,
+  'ruinedStairfall': _ruinedStairfall,
+  'springVaults': _springVaults,
+  'crumblingSpine': _crumblingSpine,
+  'lowTunnelRun': _lowTunnelRun,
+  'coinCrescent': _coinCrescent,
+  'stoneSerpentine': _stoneSerpentine,
+  'splitDecision': _splitDecision,
+  'hazardSqueeze': _hazardSqueeze,
+  'skyBridge': _skyBridge,
+  'bounceCanyon': _bounceCanyon,
+  'brokenAqueduct': _brokenAqueduct,
+  'slowClimb': _slowClimb,
+};
+
+const Map<TerrainTheme, List<String>> _terrainWorldParts = {
+  TerrainTheme.grass: [
+    'rollingDunes',
+    'springVaults',
+    'coinCrescent',
+    'skyBridge',
+    'bounceCanyon',
+  ],
+  TerrainTheme.stone: [
+    'stoneSerpentine',
+    'splitDecision',
+    'lowTunnelRun',
+    'brokenAqueduct',
+    'skyBridge',
+  ],
+  TerrainTheme.ice: [
+    'iceSwitchbacks',
+    'slowClimb',
+    'rollingDunes',
+    'splitDecision',
+    'coinCrescent',
+  ],
+  TerrainTheme.volcanic: [
+    'volcanicPulse',
+    'hazardSqueeze',
+    'lowTunnelRun',
+    'bounceCanyon',
+    'stoneSerpentine',
+  ],
+  TerrainTheme.ruins: [
+    'ruinedStairfall',
+    'crumblingSpine',
+    'brokenAqueduct',
+    'hazardSqueeze',
+    'splitDecision',
+  ],
 };
 
 List<String> get worldPartPatternNames {
   return List.unmodifiable(_worldParts.keys);
 }
 
+List<String> worldPartPatternNamesForTerrain(TerrainTheme terrain) {
+  return List.unmodifiable(_terrainWorldParts[terrain]!);
+}
+
 WorldPart generateWorldPart(
   double startAngleDeg,
   double endAngleDeg, {
   Random? random,
+  TerrainTheme? terrain,
 }) {
   final rand = random ?? Random();
+  final selectedTerrain = terrain ?? _randomTerrain(rand);
   final worldPart = WorldPart();
   String lastWorldName = '';
   String worldName = '';
   double nextStartAngle = startAngleDeg;
   while (nextStartAngle + 6 < endAngleDeg) {
     while (worldName == lastWorldName) {
-      worldName = _randomWorldPartKey(rand);
+      worldName = _randomWorldPartKey(rand, selectedTerrain);
     }
-    final randWorldPart = _randomWorldPart(nextStartAngle, worldName, rand);
-    double worldEndAngleDeg = randWorldPart.getEndAngleDeg();
+    final randWorldPart = _randomWorldPart(nextStartAngle, worldName, rand)
+      ..applyTerrain(selectedTerrain);
+    final worldEndAngleDeg = randWorldPart.getEndAngleDeg();
     nextStartAngle = worldEndAngleDeg + 5;
     lastWorldName = worldName;
     if (nextStartAngle <= endAngleDeg) {
@@ -53,11 +105,14 @@ WorldPart generateWorldPart(
   return worldPart;
 }
 
-String _randomWorldPartKey(Random random) {
-  final keys = _worldParts.keys.toList();
+TerrainTheme _randomTerrain(Random random) {
+  return TerrainTheme.values[random.nextInt(TerrainTheme.values.length)];
+}
+
+String _randomWorldPartKey(Random random, TerrainTheme terrain) {
+  final keys = worldPartPatternNamesForTerrain(terrain);
   final randomIndex = random.nextInt(keys.length);
-  final randomKey = keys[randomIndex];
-  return randomKey;
+  return keys[randomIndex];
 }
 
 WorldPart _randomWorldPart(
@@ -65,204 +120,321 @@ WorldPart _randomWorldPart(
   String randomKey,
   Random random,
 ) {
-  final bool withCoins = random.nextBool();
+  final withCoins = random.nextBool();
   final fn = _worldParts[randomKey]!;
-  final WorldPart randWorldPart = fn(startAngleDeg, withCoins);
-  return randWorldPart;
+  return fn(startAngleDeg, withCoins);
 }
 
-WorldPart _threePlatforms(double startAngleDeg, bool withCoins) {
+List<Coin> _coinsForPlatforms(
+  List<PlatformModel> platforms,
+  bool withCoins,
+) {
+  return withCoins ? generateCoinsForCurvePlatforms(platforms) : <Coin>[];
+}
+
+WorldPart _rollingDunes(double startAngleDeg, bool withCoins) {
   final platforms = [
-    getCurvePlatform(startAngleDeg, 5, 50),
-    getCurvePlatform(startAngleDeg + 5, 5, 100),
-    getCurvePlatform(startAngleDeg + 10, 5, 150),
-  ];
-  final dangerPlatforms = [
-    getCurvePlatform(startAngleDeg + 16, 5, 150,
-        dangerPlatformType: DangerPlatformType.smallSpike),
-    getCurvePlatform(startAngleDeg + 16, 5, 140,
-        dangerPlatformType: DangerPlatformType.smallSpike,
-        direction: Direction.rotate180),
-  ];
-
-  final List<Coin> coins =
-      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
-  return WorldPart(platforms: [...platforms, ...dangerPlatforms], coins: coins);
-}
-
-WorldPart _platformAndRamp(double startAngleDeg, bool withCoins) {
-  final platforms = [
-    getRampPlatform(startAngleDeg, 7, 30, 105),
-    getCurvePlatform(startAngleDeg + 7, 15, 135),
-  ];
-
-  final List<Coin> coins =
-      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
-  return WorldPart(platforms: platforms, coins: coins);
-}
-
-WorldPart _onlyCoins(double startAngleDeg, bool withCoins) {
-  final List<Coin> coins = [
-    ...generateCoins(2, 5, startAngleDeg, 5),
-    ...generateCoins(2, 60, startAngleDeg + 10, 5),
-    ...generateCoins(2, 120, startAngleDeg + 20, 5),
-    ...generateCoins(2, 150, startAngleDeg + 30, 5),
-  ];
-  return WorldPart(coins: coins);
-}
-
-WorldPart _zigZagPlatforms(double startAngleDeg, bool withCoins) {
-  final platforms = [
-    getCurvePlatform(startAngleDeg, 15, 100),
-    getRampPlatform(startAngleDeg + 14, 6, 100, 150),
-    getCurvePlatform(startAngleDeg + 20, 10, 250),
-    getCurvePlatform(startAngleDeg + 20, 15, 0,
-        dangerPlatformType: DangerPlatformType.smallSpike),
-    getRampPlatform(startAngleDeg + 29.5, 15, 247, -270),
-  ];
-
-  final List<Coin> coins =
-      withCoins ? generateCoinsForCurvePlatforms(platforms) : [];
-  return WorldPart(platforms: platforms, coins: coins);
-}
-
-WorldPart _multiLevelPlatforms(double startAngleDeg, bool withCoins) {
-  CurvePlatform p3 = getCurvePlatform(startAngleDeg + 25, 10, 200);
-  final platforms = [
-    getCurvePlatform(startAngleDeg, 8, 50),
-    getCurvePlatform(startAngleDeg + 10, 8, 100),
-    getRampPlatform(startAngleDeg + 17, 8, 30, 164),
-    p3,
-  ];
-  final List<Coin> coins =
-      withCoins ? generateCoinsForCurvePlatforms([p3]) : [];
-  return WorldPart(platforms: platforms, coins: coins);
-}
-
-WorldPart _manyFloors(double startAngleDeg, bool withCoins) {
-  final CurvePlatform longPlatform1 = getCurvePlatform(startAngleDeg, 60, 50);
-  final CurvePlatform longPlatform2 = getCurvePlatform(startAngleDeg, 60, 250);
-  final CurvePlatform longPlatform2Danger = getCurvePlatform(
-      startAngleDeg, 60, 265,
-      dangerPlatformType: DangerPlatformType.longSpike);
-  final platforms = [
-    longPlatform1,
-    longPlatform2,
-    longPlatform2Danger,
-    getCurvePlatform(startAngleDeg + 3, 5, 120),
-    getCurvePlatform(startAngleDeg + 3, 5, 135,
-        dangerPlatformType: DangerPlatformType.longSpike),
-    getCurvePlatform(startAngleDeg + 10, 12, 165),
-    getCurvePlatform(startAngleDeg + 10, 12, 150,
-        dangerPlatformType: DangerPlatformType.longSpike,
-        direction: Direction.rotate180),
-    getCurvePlatform(startAngleDeg + 24, 5, 120),
-    getCurvePlatform(startAngleDeg + 24, 5, 135,
-        dangerPlatformType: DangerPlatformType.longSpike),
-    getCurvePlatform(startAngleDeg + 31, 12, 165),
-    getCurvePlatform(startAngleDeg + 31, 12, 150,
-        dangerPlatformType: DangerPlatformType.longSpike,
-        direction: Direction.rotate180),
-    getCurvePlatform(startAngleDeg + 45, 5, 120),
-    getCurvePlatform(startAngleDeg + 45, 5, 135,
-        dangerPlatformType: DangerPlatformType.longSpike),
-    getCurvePlatform(startAngleDeg + 52, 12, 165),
-    getCurvePlatform(startAngleDeg + 52, 12, 150,
-        dangerPlatformType: DangerPlatformType.longSpike,
-        direction: Direction.rotate180),
-  ];
-  final List<Coin> coins = generateCoinsForCurvePlatforms([longPlatform1]);
-  return WorldPart(platforms: platforms, coins: coins);
-}
-
-WorldPart _stairClimb(double startAngleDeg, bool withCoins) {
-  final platforms = [
-    getCurvePlatform(startAngleDeg, 6, 40),
-    getCurvePlatform(startAngleDeg + 8, 6, 85),
-    getCurvePlatform(startAngleDeg + 16, 6, 130),
-    getCurvePlatform(startAngleDeg + 24, 10, 175),
+    getRampPlatform(startAngleDeg, 10, 30, 85),
+    getRampPlatform(startAngleDeg + 12, 9, 125, -70),
+    getCurvePlatform(startAngleDeg + 23, 12, 62),
+    getRampPlatform(startAngleDeg + 38, 11, 60, 95),
   ];
   final coins =
-      withCoins ? generateCoinsForCurvePlatforms(platforms) : <Coin>[];
+      withCoins ? generateCoins(6, 150, startAngleDeg + 10, 26) : <Coin>[];
   return WorldPart(platforms: platforms, coins: coins);
 }
 
-WorldPart _rampWave(double startAngleDeg, bool withCoins) {
+WorldPart _iceSwitchbacks(double startAngleDeg, bool withCoins) {
   final platforms = [
-    getRampPlatform(startAngleDeg, 9, 20, 110),
-    getRampPlatform(startAngleDeg + 11, 9, 130, -90),
-    getRampPlatform(startAngleDeg + 22, 9, 35, 130),
-    getCurvePlatform(startAngleDeg + 33, 12, 155),
+    getCurvePlatform(startAngleDeg, 10, 58, effect: PlatformEffect.slow),
+    getRampPlatform(startAngleDeg + 12, 10, 75, 95),
+    getCurvePlatform(startAngleDeg + 25, 9, 190, effect: PlatformEffect.slow),
+    getRampPlatform(startAngleDeg + 36, 12, 180, -120),
+    getCurvePlatform(startAngleDeg + 50, 8, 68),
   ];
-  final coins =
-      withCoins ? generateCoinsForCurvePlatforms(platforms) : <Coin>[];
+  final coins = withCoins
+      ? [
+          ...generateCoins(3, 125, startAngleDeg + 12, 8),
+          ...generateCoins(3, 235, startAngleDeg + 26, 8),
+        ]
+      : <Coin>[];
   return WorldPart(platforms: platforms, coins: coins);
 }
 
-WorldPart _coinArc(double startAngleDeg, bool withCoins) {
-  final platforms = [
-    getCurvePlatform(startAngleDeg, 8, 40),
-    getCurvePlatform(startAngleDeg + 34, 8, 40),
-  ];
-  final coins = [
-    ...generateCoins(4, 80, startAngleDeg + 8, 10),
-    ...generateCoins(4, 140, startAngleDeg + 18, 10),
-  ];
-  return WorldPart(platforms: platforms, coins: coins);
-}
-
-WorldPart _lowSpikeHop(double startAngleDeg, bool withCoins) {
+WorldPart _volcanicPulse(double startAngleDeg, bool withCoins) {
   final safePlatforms = [
-    getCurvePlatform(startAngleDeg, 12, 45),
-    getCurvePlatform(startAngleDeg + 23, 12, 45),
+    getCurvePlatform(startAngleDeg, 11, 55),
+    getCurvePlatform(startAngleDeg + 24, 11, 78),
+    getCurvePlatform(startAngleDeg + 48, 12, 92),
   ];
   final dangerPlatforms = [
     getCurvePlatform(
-      startAngleDeg + 14,
+      startAngleDeg + 13,
       7,
-      45,
+      56,
+      dangerPlatformType: DangerPlatformType.smallSpike,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 37,
+      7,
+      80,
       dangerPlatformType: DangerPlatformType.smallSpike,
     ),
   ];
   final coins =
-      withCoins ? generateCoins(3, 95, startAngleDeg + 23, 8) : <Coin>[];
+      withCoins ? generateCoins(4, 140, startAngleDeg + 23, 15) : <Coin>[];
   return WorldPart(
     platforms: [...safePlatforms, ...dangerPlatforms],
     coins: coins,
   );
 }
 
-WorldPart _splitFloors(double startAngleDeg, bool withCoins) {
-  final lower = getCurvePlatform(startAngleDeg, 42, 55);
-  final upper = getCurvePlatform(startAngleDeg + 8, 18, 190);
-  final upperDanger = getCurvePlatform(
-    startAngleDeg + 28,
-    10,
-    190,
-    dangerPlatformType: DangerPlatformType.longSpike,
-  );
+WorldPart _ruinedStairfall(double startAngleDeg, bool withCoins) {
   final platforms = [
-    lower,
-    upper,
-    upperDanger,
-    getRampPlatform(startAngleDeg + 42, 8, 55, 100),
+    getCurvePlatform(startAngleDeg, 8, 190),
+    getCurvePlatform(startAngleDeg + 10, 8, 155),
+    getCurvePlatform(startAngleDeg + 20, 8, 120),
+    getCurvePlatform(
+      startAngleDeg + 30,
+      6,
+      90,
+      effect: PlatformEffect.crumble,
+    ),
+    getCurvePlatform(startAngleDeg + 40, 12, 60),
   ];
-  final coins = withCoins ? generateCoinsForCurvePlatforms([upper]) : <Coin>[];
+  final coins = _coinsForPlatforms(platforms.take(3).toList(), withCoins);
   return WorldPart(platforms: platforms, coins: coins);
 }
 
-WorldPart _ceilingTunnel(double startAngleDeg, bool withCoins) {
-  final floor = getCurvePlatform(startAngleDeg, 34, 60);
+WorldPart _springVaults(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 7, 45),
+    getCurvePlatform(
+      startAngleDeg + 10,
+      6,
+      85,
+      effect: PlatformEffect.bounce,
+    ),
+    getCurvePlatform(startAngleDeg + 23, 8, 205),
+    getCurvePlatform(
+      startAngleDeg + 36,
+      6,
+      235,
+      effect: PlatformEffect.bounce,
+    ),
+    getCurvePlatform(startAngleDeg + 50, 10, 310),
+  ];
+  final coins =
+      withCoins ? generateCoins(6, 165, startAngleDeg + 10, 30) : <Coin>[];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+
+WorldPart _crumblingSpine(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 9, 55),
+    getCurvePlatform(
+      startAngleDeg + 12,
+      5,
+      75,
+      effect: PlatformEffect.crumble,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 20,
+      5,
+      96,
+      effect: PlatformEffect.crumble,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 28,
+      5,
+      118,
+      effect: PlatformEffect.crumble,
+    ),
+    getCurvePlatform(startAngleDeg + 39, 13, 125),
+  ];
+  final coins =
+      withCoins ? generateCoins(5, 160, startAngleDeg + 10, 24) : <Coin>[];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+
+WorldPart _lowTunnelRun(double startAngleDeg, bool withCoins) {
+  final floor = getCurvePlatform(startAngleDeg, 44, 58);
   final ceiling = getCurvePlatform(
-    startAngleDeg + 4,
-    26,
-    175,
+    startAngleDeg + 5,
+    30,
+    158,
     dangerPlatformType: DangerPlatformType.longSpike,
     direction: Direction.rotate180,
   );
-  final exit = getCurvePlatform(startAngleDeg + 37, 9, 95);
-  final platforms = [floor, ceiling, exit];
+  final exit = getRampPlatform(startAngleDeg + 46, 10, 60, 70);
   final coins =
-      withCoins ? generateCoins(5, 105, startAngleDeg + 8, 18) : <Coin>[];
+      withCoins ? generateCoins(5, 103, startAngleDeg + 8, 20) : <Coin>[];
+  return WorldPart(platforms: [floor, ceiling, exit], coins: coins);
+}
+
+WorldPart _coinCrescent(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 8, 46),
+    getCurvePlatform(startAngleDeg + 40, 10, 74),
+  ];
+  final coins = [
+    ...generateCoins(4, 90, startAngleDeg + 7, 9),
+    ...generateCoins(4, 140, startAngleDeg + 17, 9),
+    ...generateCoins(4, 195, startAngleDeg + 27, 9),
+  ];
+  return WorldPart(platforms: platforms, coins: withCoins ? coins : <Coin>[]);
+}
+
+WorldPart _stoneSerpentine(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 9, 70),
+    getRampPlatform(startAngleDeg + 11, 9, 70, 80),
+    getRampPlatform(startAngleDeg + 22, 9, 160, -90),
+    getCurvePlatform(startAngleDeg + 35, 12, 84),
+    getCurvePlatform(
+      startAngleDeg + 50,
+      8,
+      84,
+      dangerPlatformType: DangerPlatformType.smallSpike,
+    ),
+  ];
+  final coins =
+      withCoins ? generateCoins(4, 205, startAngleDeg + 20, 12) : <Coin>[];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+
+WorldPart _splitDecision(double startAngleDeg, bool withCoins) {
+  final lower = getCurvePlatform(startAngleDeg, 42, 56);
+  final upper = getCurvePlatform(startAngleDeg + 8, 19, 185);
+  final upperExit = getRampPlatform(startAngleDeg + 29, 11, 185, -115);
+  final lowerDanger = getCurvePlatform(
+    startAngleDeg + 24,
+    8,
+    57,
+    dangerPlatformType: DangerPlatformType.smallSpike,
+  );
+  final coins = withCoins ? generateCoinsForCurvePlatforms([upper]) : <Coin>[];
+  return WorldPart(
+    platforms: [lower, upper, upperExit, lowerDanger],
+    coins: coins,
+  );
+}
+
+WorldPart _hazardSqueeze(double startAngleDeg, bool withCoins) {
+  final floor = getCurvePlatform(startAngleDeg, 14, 60);
+  final mid = getCurvePlatform(startAngleDeg + 19, 11, 112);
+  final exit = getCurvePlatform(startAngleDeg + 36, 14, 66);
+  final dangers = [
+    getCurvePlatform(
+      startAngleDeg + 15,
+      5,
+      62,
+      dangerPlatformType: DangerPlatformType.longSpike,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 20,
+      9,
+      190,
+      dangerPlatformType: DangerPlatformType.longSpike,
+      direction: Direction.rotate180,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 31,
+      5,
+      68,
+      dangerPlatformType: DangerPlatformType.longSpike,
+    ),
+  ];
+  final coins =
+      withCoins ? generateCoins(3, 148, startAngleDeg + 20, 8) : <Coin>[];
+  return WorldPart(platforms: [floor, mid, exit, ...dangers], coins: coins);
+}
+
+WorldPart _skyBridge(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getRampPlatform(startAngleDeg, 12, 40, 120),
+    getCurvePlatform(startAngleDeg + 14, 16, 178),
+    getRampPlatform(startAngleDeg + 33, 12, 178, -112),
+    getCurvePlatform(startAngleDeg + 48, 12, 72),
+  ];
+  final coins = _coinsForPlatforms(platforms, withCoins);
+  return WorldPart(platforms: platforms, coins: coins);
+}
+
+WorldPart _bounceCanyon(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 8, 52),
+    getCurvePlatform(
+      startAngleDeg + 11,
+      7,
+      75,
+      effect: PlatformEffect.bounce,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 27,
+      7,
+      78,
+      effect: PlatformEffect.bounce,
+    ),
+    getCurvePlatform(startAngleDeg + 43, 11, 132),
+  ];
+  final dangers = [
+    getCurvePlatform(
+      startAngleDeg + 20,
+      5,
+      50,
+      dangerPlatformType: DangerPlatformType.smallSpike,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 36,
+      5,
+      55,
+      dangerPlatformType: DangerPlatformType.smallSpike,
+    ),
+  ];
+  final coins =
+      withCoins ? generateCoins(5, 190, startAngleDeg + 11, 22) : <Coin>[];
+  return WorldPart(platforms: [...platforms, ...dangers], coins: coins);
+}
+
+WorldPart _brokenAqueduct(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 13, 135),
+    getCurvePlatform(
+      startAngleDeg + 16,
+      6,
+      137,
+      effect: PlatformEffect.crumble,
+    ),
+    getCurvePlatform(startAngleDeg + 26, 13, 138),
+    getRampPlatform(startAngleDeg + 42, 10, 138, -72),
+    getCurvePlatform(startAngleDeg + 55, 8, 70),
+  ];
+  final coins =
+      withCoins ? generateCoins(5, 182, startAngleDeg + 5, 28) : <Coin>[];
+  return WorldPart(platforms: platforms, coins: coins);
+}
+
+WorldPart _slowClimb(double startAngleDeg, bool withCoins) {
+  final platforms = [
+    getCurvePlatform(startAngleDeg, 10, 48),
+    getRampPlatform(
+      startAngleDeg + 13,
+      10,
+      55,
+      92,
+      effect: PlatformEffect.slow,
+    ),
+    getCurvePlatform(
+      startAngleDeg + 26,
+      10,
+      150,
+      effect: PlatformEffect.slow,
+    ),
+    getRampPlatform(startAngleDeg + 39, 10, 150, 70),
+    getCurvePlatform(startAngleDeg + 52, 9, 230),
+  ];
+  final coins =
+      withCoins ? generateCoins(6, 115, startAngleDeg + 12, 30) : <Coin>[];
   return WorldPart(platforms: platforms, coins: coins);
 }

@@ -1,14 +1,17 @@
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Services/player_platform_collision.dart';
 
 class PlayerPhysics {
   final double gravity;
   final double jumpPower;
+  final double bounceJumpPower;
   final double ceilingBounceFactor;
 
   const PlayerPhysics({
     required this.gravity,
     required this.jumpPower,
+    this.bounceJumpPower = -18,
     required this.ceilingBounceFactor,
   });
 
@@ -24,6 +27,7 @@ class Player {
   bool _onGround = true;
   double playerY = 0;
   double playerAngle = 0;
+  double speedMultiplier = 1;
   bool _canDoubleJump = false;
   int score = 0;
   final PlayerPhysics physics;
@@ -50,6 +54,7 @@ class Player {
     _onGround = true;
     playerY = 0;
     playerAngle = 0;
+    speedMultiplier = 1;
     _canDoubleJump = false;
     score = 0;
   }
@@ -82,16 +87,14 @@ class Player {
       velocityY: _velocityY,
     );
 
+    applyPlatformCollision(platformCollision);
+
     switch (platformCollision.type) {
       case PlayerPlatformCollisionType.hitDanger:
-        game.endGame();
         return;
       case PlayerPlatformCollisionType.landed:
-        _velocityY = 0;
         newY = platformCollision.height + radius;
-        _onGround = true;
       case PlayerPlatformCollisionType.hitCeiling:
-        _velocityY = -_velocityY * physics.ceilingBounceFactor;
         newY = platformCollision.height - radius;
       case PlayerPlatformCollisionType.none:
         break;
@@ -104,6 +107,30 @@ class Player {
     }
 
     playerY = newY;
+  }
+
+  void applyPlatformCollision(PlayerPlatformCollisionResult collision) {
+    switch (collision.type) {
+      case PlayerPlatformCollisionType.hitDanger:
+        game.endGame();
+      case PlayerPlatformCollisionType.landed:
+        _onGround = true;
+        speedMultiplier = collision.effect.speedMultiplier;
+        if (collision.effect == PlatformEffect.bounce) {
+          _velocityY = physics.bounceJumpPower;
+          _onGround = false;
+          _canDoubleJump = true;
+        } else {
+          _velocityY = 0;
+        }
+        if (collision.effect == PlatformEffect.crumble) {
+          collision.platform?.markConsumed();
+        }
+      case PlayerPlatformCollisionType.hitCeiling:
+        _velocityY = -_velocityY * physics.ceilingBounceFactor;
+      case PlayerPlatformCollisionType.none:
+        speedMultiplier = 1;
+    }
   }
 
   void _incrementPlayerAngle(double frameScale) {

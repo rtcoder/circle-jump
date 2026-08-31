@@ -1,6 +1,7 @@
 import 'package:circle_jump/Enums/danger_platform_type.dart';
 import 'package:circle_jump/Enums/direction.dart';
 import 'package:circle_jump/Models/Platform/curve_platform.dart';
+import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
 import 'package:circle_jump/utils.dart';
 
@@ -8,6 +9,8 @@ CurvePlatform getCurvePlatform(
     double startAngleDeg, double lengthDeg, double height,
     {DangerPlatformType? dangerPlatformType,
     Direction? direction,
+    PlatformEffect effect = PlatformEffect.normal,
+    TerrainTheme terrain = TerrainTheme.grass,
     double strokeWidth = 15}) {
   final startAngleRad = degreesToRadians(startAngleDeg);
   final endAngle = startAngleDeg + lengthDeg;
@@ -22,6 +25,8 @@ CurvePlatform getCurvePlatform(
     isDanger: dangerPlatformType != null,
     dangerPlatformType: dangerPlatformType,
     imageDirection: direction,
+    effect: effect,
+    terrain: terrain,
     strokeWidth: strokeWidth,
   );
 }
@@ -30,6 +35,8 @@ RampPlatform getRampPlatform(
     double startAngleDeg, double lengthDeg, double airHeight, double height,
     {DangerPlatformType? dangerPlatformType,
     Direction? direction,
+    PlatformEffect effect = PlatformEffect.normal,
+    TerrainTheme terrain = TerrainTheme.grass,
     double strokeWidth = 15}) {
   final startAngleRad = degreesToRadians(startAngleDeg);
   final endAngle = startAngleDeg + lengthDeg;
@@ -45,6 +52,8 @@ RampPlatform getRampPlatform(
     isDanger: dangerPlatformType != null,
     dangerPlatformType: dangerPlatformType,
     imageDirection: direction,
+    effect: effect,
+    terrain: terrain,
     strokeWidth: strokeWidth,
   );
 }

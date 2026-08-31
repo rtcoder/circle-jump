@@ -34,13 +34,14 @@ class World {
   }
 
   void clear() {
-    _lastWorldUpdateAngleDeg=0;
+    _lastWorldUpdateAngleDeg = 0;
     _random = Random(seed);
     _worldPart.clear();
   }
 
   void update(double angleDelta, double frameScale) {
     _moveWorldElements(angleDelta);
+    _removeConsumedPlatforms();
     _updateWorldCycle(angleDelta);
     coinOscillation.updateOscillation(frameScale);
   }
@@ -66,6 +67,12 @@ class World {
     for (final element in elements) {
       element.move(angleDelta);
     }
+  }
+
+  void _removeConsumedPlatforms() {
+    _worldPart.platformCollector.items.removeWhere((platform) {
+      return platform.isConsumed;
+    });
   }
 
   void _updateWorldCycle(double angleDelta) {

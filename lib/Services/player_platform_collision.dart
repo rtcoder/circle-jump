@@ -10,11 +10,17 @@ class PlayerPlatformCollisionResult {
   final PlayerPlatformCollisionType type;
   final double height;
   final double strokeWidth;
+  final PlatformEffect effect;
+  final TerrainTheme terrain;
+  final PlatformModel? platform;
 
   const PlayerPlatformCollisionResult({
     required this.type,
     this.height = 0,
     this.strokeWidth = 0,
+    this.effect = PlatformEffect.normal,
+    this.terrain = TerrainTheme.grass,
+    this.platform,
   });
 
   factory PlayerPlatformCollisionResult.fromContact(
@@ -32,6 +38,9 @@ class PlayerPlatformCollisionResult {
         type: PlayerPlatformCollisionType.hitDanger,
         height: contact.height,
         strokeWidth: contact.strokeWidth,
+        effect: contact.effect,
+        terrain: contact.terrain,
+        platform: contact.platform,
       );
     }
     if (velocityY >= 0 && previousPlayerY > contact.height) {
@@ -39,6 +48,9 @@ class PlayerPlatformCollisionResult {
         type: PlayerPlatformCollisionType.landed,
         height: contact.height,
         strokeWidth: contact.strokeWidth,
+        effect: contact.effect,
+        terrain: contact.terrain,
+        platform: contact.platform,
       );
     }
     if (velocityY < 0 && previousPlayerY < contact.height) {
@@ -46,12 +58,18 @@ class PlayerPlatformCollisionResult {
         type: PlayerPlatformCollisionType.hitCeiling,
         height: contact.height,
         strokeWidth: contact.strokeWidth,
+        effect: contact.effect,
+        terrain: contact.terrain,
+        platform: contact.platform,
       );
     }
     return PlayerPlatformCollisionResult(
       type: PlayerPlatformCollisionType.none,
       height: contact.height,
       strokeWidth: contact.strokeWidth,
+      effect: contact.effect,
+      terrain: contact.terrain,
+      platform: contact.platform,
     );
   }
 }
@@ -141,7 +159,13 @@ class PlayerPlatformCollision {
 
     return withinHeight
         ? HeightOnPlatform(
-            expectedHeight, platform.strokeWidth, platform.isDanger)
+            expectedHeight,
+            platform.strokeWidth,
+            platform.isDanger,
+            effect: platform.effect,
+            terrain: platform.terrain,
+            platform: platform,
+          )
         : null;
   }
 
@@ -152,7 +176,13 @@ class PlayerPlatformCollision {
                 playerY >= platform.height - platform.strokeWidth);
     return isWithinHeight
         ? HeightOnPlatform(
-            platform.height, platform.strokeWidth, platform.isDanger)
+            platform.height,
+            platform.strokeWidth,
+            platform.isDanger,
+            effect: platform.effect,
+            terrain: platform.terrain,
+            platform: platform,
+          )
         : null;
   }
 

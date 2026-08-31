@@ -6,6 +6,7 @@ class GameCircle {
   final double _maxAngleDelta = 0.005;
   double _distance = 0;
   double angleDelta = 0.002;
+  double movementAngleDelta = 0.002;
   double angle = 0;
   double angleDeg = 0;
   Duration lastFrameDuration = Duration.zero;
@@ -22,6 +23,7 @@ class GameCircle {
   void clear() {
     _distance = 0;
     angleDelta = 0.002;
+    movementAngleDelta = 0.002;
     angle = 0;
     angleDeg = 0;
     lastFrameDuration = Duration.zero;
@@ -38,15 +40,20 @@ class GameCircle {
     return angleDelta * frameScale;
   }
 
-  void update(Player player, Duration frameDuration) {
+  void update(
+    Player player,
+    Duration frameDuration, [
+    double speedMultiplier = 1,
+  ]) {
     lastFrameDuration = frameDuration;
+    movementAngleDelta = frameAngleDelta * speedMultiplier;
     _updateDistance(player.radius);
     _updateAngleDelta();
     _incrementCircleAngle();
   }
 
   void _incrementCircleAngle() {
-    angle += frameAngleDelta;
+    angle += movementAngleDelta;
     angleDeg = radiansToDegrees(angle);
   }
 
@@ -57,6 +64,6 @@ class GameCircle {
   }
 
   void _updateDistance(double playerRadius) {
-    _distance += frameAngleDelta * playerRadius;
+    _distance += movementAngleDelta * playerRadius;
   }
 }

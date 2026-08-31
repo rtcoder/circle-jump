@@ -65,8 +65,8 @@ class _Game {
     if (state != GameState.playing) {
       return;
     }
-    gameCircle.update(player, frameDuration);
-    world.update(gameCircle.frameAngleDelta, gameCircle.frameScale);
+    gameCircle.update(player, frameDuration, player.speedMultiplier);
+    world.update(gameCircle.movementAngleDelta, gameCircle.frameScale);
     player.update(gameCircle.frameScale);
   }
 }
