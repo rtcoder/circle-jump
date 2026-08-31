@@ -13,6 +13,7 @@ void main() {
 
     expect(find.text('Score: 12'), findsOneWidget);
     expect(find.text('Distance: 345m'), findsOneWidget);
+    expect(find.text('Best: 12'), findsOneWidget);
   });
 }
 
@@ -20,7 +21,11 @@ Route<dynamic> _buildGameOverRoute(RouteSettings settings) {
   return MaterialPageRoute<void>(
     settings: RouteSettings(
       name: settings.name,
-      arguments: const GameOverResult(score: 12, distance: '345m'),
+      arguments: const GameOverResult(
+        score: 12,
+        distance: '345m',
+        highScore: 12,
+      ),
     ),
     builder: (_) => const GameOverScreen(),
   );

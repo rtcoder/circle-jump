@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class GameOverResult {
   final int score;
   final String distance;
+  final int highScore;
 
   const GameOverResult({
     required this.score,
     required this.distance,
+    required this.highScore,
   });
 }
 
@@ -21,7 +23,11 @@ class GameOverScreen extends StatelessWidget {
     final args = ModalRoute.of(context)?.settings.arguments;
     final result = args is GameOverResult
         ? args
-        : GameOverResult(score: args is int ? args : 0, distance: '0m');
+        : GameOverResult(
+            score: args is int ? args : 0,
+            distance: '0m',
+            highScore: args is int ? args : 0,
+          );
 
     return Scaffold(
       body: Center(
@@ -34,6 +40,14 @@ class GameOverScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               'Distance: ${result.distance}',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Best: ${result.highScore}',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

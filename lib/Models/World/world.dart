@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:circle_jump/Generators/world_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
@@ -8,8 +10,14 @@ import 'package:circle_jump/utils.dart';
 
 class World {
   final WorldPart _worldPart = WorldPart();
+  final int seed;
+  late Random _random;
   double _lastWorldUpdateAngleDeg = 0;
   final CoinOscillation coinOscillation = CoinOscillation();
+
+  World({this.seed = 1}) {
+    _random = Random(seed);
+  }
 
   Iterable<PlatformModel> getPlatforms({onlyVisible = false}) {
     if (onlyVisible) {
@@ -27,6 +35,7 @@ class World {
 
   void clear() {
     _lastWorldUpdateAngleDeg=0;
+    _random = Random(seed);
     _worldPart.clear();
   }
 
@@ -37,7 +46,7 @@ class World {
   }
 
   void initWorld() {
-    final worldPart = generateWorldPart(-80, 180);
+    final worldPart = generateWorldPart(-80, 180, random: _random);
     _worldPart.add(worldPart);
   }
 
@@ -47,7 +56,7 @@ class World {
 
   void _updateWorldData() {
     final double startAngleDeg = _worldPart.getEndAngleDeg();
-    final worldPart = generateWorldPart(startAngleDeg, 180);
+    final worldPart = generateWorldPart(startAngleDeg, 180, random: _random);
     _worldPart.add(worldPart);
     _worldPart.removeUnnecessaryItems();
   }
