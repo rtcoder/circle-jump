@@ -19,7 +19,43 @@ class PlatformPainter extends CustomPainter {
     final paint = Paint()..style = PaintingStyle.stroke;
 
     for (final platform in game.world.getPlatforms(onlyVisible: true)) {
+      paint.colorFilter = colorFilterFor(platform.effect, platform.terrain);
       _drawPlatform(canvas, platform, paint);
+    }
+  }
+
+  ColorFilter? colorFilterFor(PlatformEffect effect, TerrainTheme terrain) {
+    if (effect != PlatformEffect.normal) {
+      return _colorFilterForEffect(effect);
+    }
+    return _colorFilterForTerrain(terrain);
+  }
+
+  ColorFilter? _colorFilterForEffect(PlatformEffect effect) {
+    switch (effect) {
+      case PlatformEffect.normal:
+        return null;
+      case PlatformEffect.bounce:
+        return const ColorFilter.mode(Color(0xFF58D7FF), BlendMode.modulate);
+      case PlatformEffect.crumble:
+        return const ColorFilter.mode(Color(0xFFFFC65A), BlendMode.modulate);
+      case PlatformEffect.slow:
+        return const ColorFilter.mode(Color(0xFFA98CFF), BlendMode.modulate);
+    }
+  }
+
+  ColorFilter? _colorFilterForTerrain(TerrainTheme terrain) {
+    switch (terrain) {
+      case TerrainTheme.grass:
+        return null;
+      case TerrainTheme.stone:
+        return const ColorFilter.mode(Color(0xFFC0C3C8), BlendMode.modulate);
+      case TerrainTheme.ice:
+        return const ColorFilter.mode(Color(0xFFB9F3FF), BlendMode.modulate);
+      case TerrainTheme.volcanic:
+        return const ColorFilter.mode(Color(0xFFFF6A3D), BlendMode.modulate);
+      case TerrainTheme.ruins:
+        return const ColorFilter.mode(Color(0xFFC7A36A), BlendMode.modulate);
     }
   }
 
@@ -62,7 +98,9 @@ class PlatformPainter extends CustomPainter {
       final double y = center.centerY + platformRadius * sin(angle);
 
       // Obrót obrazka na podstawie kąta łuku i kierunku
-      final double rotation = angle + pi / 2 + DirectionRotation.getRotationAngle(platform.imageDirection);
+      final double rotation = angle +
+          pi / 2 +
+          DirectionRotation.getRotationAngle(platform.imageDirection);
 
       canvas.save();
       canvas.translate(x, y);
@@ -83,7 +121,6 @@ class PlatformPainter extends CustomPainter {
       canvas.restore();
     }
   }
-
 
   ui.Image getPlatformImage(PlatformModel platform) {
     if (!platform.isDanger) {
@@ -138,7 +175,7 @@ class PlatformPainter extends CustomPainter {
         canvas.translate(dst.center.dx, dst.center.dy);
         if (platform.imageDirection != null) {
           canvas.rotate(
-           DirectionRotation.getRotationAngle(platform.imageDirection));
+              DirectionRotation.getRotationAngle(platform.imageDirection));
         }
         canvas.drawImageRect(texture, src, dst.shift(-dst.center), paint);
         canvas.restore();

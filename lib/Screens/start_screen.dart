@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class StartScreen extends StatelessWidget {
-  const StartScreen({super.key});
+  final int highScore;
+
+  const StartScreen({super.key, this.highScore = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,14 @@ class StartScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const TitleWidget('Circle Jump'),
+                const SizedBox(height: 12),
+                Text(
+                  'Best: $highScore',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 ButtonWidget('Start Game', onPressed: () {
                   Navigator.pushNamed(context, '/game');

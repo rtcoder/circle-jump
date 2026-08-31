@@ -56,6 +56,8 @@ class CurvePlatform extends PlatformModel {
     super.isDanger,
     super.dangerPlatformType,
     super.imageDirection,
+    super.effect,
+    super.terrain,
   });
 
   @override

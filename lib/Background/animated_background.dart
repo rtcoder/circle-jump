@@ -15,7 +15,9 @@ class AnimatedBackground extends StatefulWidget {
 
 class _AnimatedBackgroundState extends State<AnimatedBackground>
     with SingleTickerProviderStateMixin {
+  static const double _targetFrameMs = 1000 / 60;
   late AnimationController _controller;
+  Duration _lastElapsed = Duration.zero;
   final List<Cloud> _clouds = cloudGenerator(15);
 
   @override
@@ -35,9 +37,10 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   }
 
   void _updateClouds(double timeDelta) {
+    final frameScale = timeDelta / _targetFrameMs;
     for (int i = 0; i < _clouds.length; i++) {
       final cloud = _clouds[i];
-      cloud.angle -= cloud.speed; // * timeDelta; // Ruch w lewo
+      cloud.move(frameScale);
     }
   }
 
@@ -47,9 +50,13 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
       animation: _controller,
       builder: (context, child) {
         final time = _controller.value;
-        final timeDelta = _controller.lastElapsedDuration?.inMilliseconds ?? 16;
+        final elapsed = _controller.lastElapsedDuration ?? Duration.zero;
+        final timeDelta = _lastElapsed == Duration.zero
+            ? _targetFrameMs
+            : (elapsed - _lastElapsed).inMicroseconds / 1000;
+        _lastElapsed = elapsed;
 
-        _updateClouds(timeDelta / 1000.0);
+        _updateClouds(timeDelta);
 
         final backgroundColor = getBackgroundColor(time);
 

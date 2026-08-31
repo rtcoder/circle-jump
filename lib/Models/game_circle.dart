@@ -6,9 +6,12 @@ class GameCircle {
   final double _maxAngleDelta = 0.005;
   double _distance = 0;
   double angleDelta = 0.002;
+  double movementAngleDelta = 0.002;
   double angle = 0;
   double angleDeg = 0;
+  Duration lastFrameDuration = Duration.zero;
   final radius = 1000.0;
+  static const double _targetFrameMs = 1000 / 60;
 
   String get distanceHuman {
     if (_distance < 1000) {
@@ -20,18 +23,37 @@ class GameCircle {
   void clear() {
     _distance = 0;
     angleDelta = 0.002;
+    movementAngleDelta = 0.002;
     angle = 0;
     angleDeg = 0;
+    lastFrameDuration = Duration.zero;
   }
 
-  void update(Player player) {
+  double get frameScale {
+    if (lastFrameDuration == Duration.zero) {
+      return 1;
+    }
+    return lastFrameDuration.inMicroseconds / (_targetFrameMs * 1000);
+  }
+
+  double get frameAngleDelta {
+    return angleDelta * frameScale;
+  }
+
+  void update(
+    Player player,
+    Duration frameDuration, [
+    double speedMultiplier = 1,
+  ]) {
+    lastFrameDuration = frameDuration;
+    movementAngleDelta = frameAngleDelta * speedMultiplier;
     _updateDistance(player.radius);
     _updateAngleDelta();
     _incrementCircleAngle();
   }
 
   void _incrementCircleAngle() {
-    angle += angleDelta;
+    angle += movementAngleDelta;
     angleDeg = radiansToDegrees(angle);
   }
 
@@ -42,6 +64,6 @@ class GameCircle {
   }
 
   void _updateDistance(double playerRadius) {
-    _distance += angleDelta * playerRadius;
+    _distance += movementAngleDelta * playerRadius;
   }
 }

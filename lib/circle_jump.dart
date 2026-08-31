@@ -2,6 +2,7 @@ import 'package:circle_jump/Models/game.dart';
 import 'package:circle_jump/Screens/game_over_screen.dart';
 import 'package:circle_jump/Screens/game_screen.dart';
 import 'package:circle_jump/Screens/start_screen.dart';
+import 'package:circle_jump/Services/high_score_store.dart';
 import 'package:circle_jump/Widgets/loading_screen.dart';
 import 'package:circle_jump/images.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class _CircleJumpState extends State<CircleJump> {
       return;
     }
     try {
+      highScoreStore.load();
       final loader = ImageLoader(context);
       final int progressStep = (100 / 7).ceil();
       final List<Future<void>> loadTasks = [
@@ -108,9 +110,9 @@ class _CircleJumpState extends State<CircleJump> {
       ),
       home: isLoading
           ? LoadingScreen(loadingProgress: loadingProgress)
-          : const StartScreen(),
+          : StartScreen(highScore: highScoreStore.bestScore),
       routes: {
-        '/game': (context) => const GameScreen(),
+        '/game': (context) => GameScreen(highScoreStore: highScoreStore),
         '/game-over': (context) => const GameOverScreen(),
       },
     );

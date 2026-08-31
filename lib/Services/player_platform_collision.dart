@@ -4,8 +4,90 @@ import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Platform/ramp_platform.dart';
 import 'package:circle_jump/Models/game.dart';
 
+enum PlayerPlatformCollisionType { none, landed, hitCeiling, hitDanger }
+
+class PlayerPlatformCollisionResult {
+  final PlayerPlatformCollisionType type;
+  final double height;
+  final double strokeWidth;
+  final PlatformEffect effect;
+  final TerrainTheme terrain;
+  final PlatformModel? platform;
+
+  const PlayerPlatformCollisionResult({
+    required this.type,
+    this.height = 0,
+    this.strokeWidth = 0,
+    this.effect = PlatformEffect.normal,
+    this.terrain = TerrainTheme.grass,
+    this.platform,
+  });
+
+  factory PlayerPlatformCollisionResult.fromContact(
+    HeightOnPlatform? contact, {
+    required double previousPlayerY,
+    required double velocityY,
+  }) {
+    if (contact == null) {
+      return const PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.none,
+      );
+    }
+    if (contact.isDanger) {
+      return PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.hitDanger,
+        height: contact.height,
+        strokeWidth: contact.strokeWidth,
+        effect: contact.effect,
+        terrain: contact.terrain,
+        platform: contact.platform,
+      );
+    }
+    if (velocityY >= 0 && previousPlayerY > contact.height) {
+      return PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.landed,
+        height: contact.height,
+        strokeWidth: contact.strokeWidth,
+        effect: contact.effect,
+        terrain: contact.terrain,
+        platform: contact.platform,
+      );
+    }
+    if (velocityY < 0 && previousPlayerY < contact.height) {
+      return PlayerPlatformCollisionResult(
+        type: PlayerPlatformCollisionType.hitCeiling,
+        height: contact.height,
+        strokeWidth: contact.strokeWidth,
+        effect: contact.effect,
+        terrain: contact.terrain,
+        platform: contact.platform,
+      );
+    }
+    return PlayerPlatformCollisionResult(
+      type: PlayerPlatformCollisionType.none,
+      height: contact.height,
+      strokeWidth: contact.strokeWidth,
+      effect: contact.effect,
+      terrain: contact.terrain,
+      platform: contact.platform,
+    );
+  }
+}
+
 class PlayerPlatformCollision {
   final double _heightThreshold = 20;
+
+  PlayerPlatformCollisionResult resolve({
+    required double previousPlayerY,
+    required double nextPlayerY,
+    required double velocityY,
+  }) {
+    return PlayerPlatformCollisionResult.fromContact(
+      isOnAnyPlatform(nextPlayerY),
+      previousPlayerY: previousPlayerY,
+      velocityY: velocityY,
+    );
+  }
 
   HeightOnPlatform? isOnAnyPlatform(double playerY) {
     HeightOnPlatform? closestPlatform;
@@ -77,7 +159,13 @@ class PlayerPlatformCollision {
 
     return withinHeight
         ? HeightOnPlatform(
-            expectedHeight, platform.strokeWidth, platform.isDanger)
+            expectedHeight,
+            platform.strokeWidth,
+            platform.isDanger,
+            effect: platform.effect,
+            terrain: platform.terrain,
+            platform: platform,
+          )
         : null;
   }
 
@@ -88,7 +176,13 @@ class PlayerPlatformCollision {
                 playerY >= platform.height - platform.strokeWidth);
     return isWithinHeight
         ? HeightOnPlatform(
-            platform.height, platform.strokeWidth, platform.isDanger)
+            platform.height,
+            platform.strokeWidth,
+            platform.isDanger,
+            effect: platform.effect,
+            terrain: platform.terrain,
+            platform: platform,
+          )
         : null;
   }
 

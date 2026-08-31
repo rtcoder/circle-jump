@@ -15,6 +15,10 @@ class Cloud {
     required this.opacity,
   });
 
+  void move(double frameScale) {
+    angle -= speed * frameScale;
+  }
+
   double _calculateRadius(double radius) {
     return radius + heightOverGround;
   }

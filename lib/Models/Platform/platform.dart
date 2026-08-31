@@ -3,6 +3,25 @@ import 'package:circle_jump/Enums/direction.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:flutter/material.dart';
 
+enum PlatformEffect {
+  normal(1),
+  bounce(1),
+  crumble(1),
+  slow(0.65);
+
+  final double speedMultiplier;
+
+  const PlatformEffect(this.speedMultiplier);
+}
+
+enum TerrainTheme {
+  grass,
+  stone,
+  ice,
+  volcanic,
+  ruins,
+}
+
 abstract class PlatformModel extends Movable {
   double startAngle;
   double endAngle;
@@ -13,6 +32,9 @@ abstract class PlatformModel extends Movable {
   final bool isDanger;
   final DangerPlatformType? dangerPlatformType;
   final Direction? imageDirection;
+  final PlatformEffect effect;
+  TerrainTheme terrain;
+  bool isConsumed = false;
 
   get startX;
 
@@ -32,8 +54,14 @@ abstract class PlatformModel extends Movable {
     this.isDanger = false,
     this.dangerPlatformType,
     this.imageDirection,
+    this.effect = PlatformEffect.normal,
+    this.terrain = TerrainTheme.grass,
   }) : assert(
           !isDanger || dangerPlatformType != null,
           'dangerPlatformType must be provided when isDanger is true',
         );
+
+  void markConsumed() {
+    isConsumed = true;
+  }
 }

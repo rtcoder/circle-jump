@@ -31,6 +31,12 @@ class WorldPart {
     coinCollector.join(worldPart.coinCollector);
   }
 
+  void applyTerrain(TerrainTheme terrain) {
+    for (final platform in platformCollector.items) {
+      platform.terrain = terrain;
+    }
+  }
+
   void removeUnnecessaryItems() {
     coinCollector.removeUnnecessaryItems();
     platformCollector.removeUnnecessaryItems();
