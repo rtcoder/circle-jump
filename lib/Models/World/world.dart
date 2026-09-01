@@ -10,6 +10,8 @@ import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/utils.dart';
 
 class World {
+  static const double terrainSurfaceOffset = 17;
+
   final WorldPart _worldPart = WorldPart();
   final int seed;
   late Random _random;
@@ -56,7 +58,7 @@ class World {
   }
 
   double get terrainHeightUnderPlayer {
-    return terrainSurface.heightAtAngle(_terrainAngle);
+    return terrainSurfaceOffset + terrainHeightAtScreenAngle(-pi / 2);
   }
 
   double terrainHeightAtScreenAngle(double screenAngle) {

@@ -23,7 +23,7 @@ void main() {
     game.updateScreenSize(const Size(800, 600));
     game.restart();
     game.world.terrainSurface = const TerrainSurface(
-      baseHeight: 24,
+      baseHeight: 7,
       amplitude: 0,
       frequency: 0,
     );
@@ -32,5 +32,24 @@ void main() {
     game.update(const Duration(milliseconds: 16));
 
     expect(game.player.playerY, closeTo(24, 0.0001));
+  });
+
+  test('terrain height under player matches the visible top of the circle', () {
+    game.updateScreenSize(const Size(800, 600));
+    game.restart();
+    game.world.terrainSurface = const TerrainSurface(
+      baseHeight: 0,
+      amplitude: 20,
+      frequency: 1,
+      phase: 0,
+    );
+
+    expect(
+      game.world.terrainHeightUnderPlayer,
+      closeTo(
+        17 + game.world.terrainHeightAtScreenAngle(-pi / 2),
+        0.0001,
+      ),
+    );
   });
 }

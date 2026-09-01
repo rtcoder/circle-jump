@@ -4,7 +4,9 @@ import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 
 class TerrainPainter extends CustomPainter {
-  static const int _segments = 180;
+  static const int _segments = 240;
+  static const double _earthStrokeWidth = 34;
+  static const double _grassStrokeWidth = 8;
 
   final Color earthColor;
   final Color grassColor;
@@ -22,36 +24,40 @@ class TerrainPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 34;
+      ..strokeWidth = _earthStrokeWidth;
     final grassPaint = Paint()
       ..color = grassColor
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 7;
+      ..strokeWidth = _grassStrokeWidth;
 
-    final path = Path();
+    canvas.drawCircle(
+      Offset(center.centerX, center.centerY),
+      center.radius,
+      earthPaint,
+    );
+
+    final grassPath = Path();
     for (int i = 0; i <= _segments; i++) {
       final angle = (i / _segments) * 2 * pi;
       final radius = center.radius +
-          game.world.terrainHeightAtScreenAngle(
-            angle,
-          );
+          _earthStrokeWidth / 2 +
+          game.world.terrainHeightAtScreenAngle(angle);
       final point = Offset(
         center.centerX + radius * cos(angle),
         center.centerY + radius * sin(angle),
       );
 
       if (i == 0) {
-        path.moveTo(point.dx, point.dy);
+        grassPath.moveTo(point.dx, point.dy);
       } else {
-        path.lineTo(point.dx, point.dy);
+        grassPath.lineTo(point.dx, point.dy);
       }
     }
-    path.close();
+    grassPath.close();
 
-    canvas.drawPath(path, earthPaint);
-    canvas.drawPath(path, grassPaint);
+    canvas.drawPath(grassPath, grassPaint);
   }
 
   @override

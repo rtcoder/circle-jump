@@ -1,4 +1,6 @@
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Painters/platform_painter.dart';
+import 'package:circle_jump/Painters/terrain_painter.dart';
 import 'package:circle_jump/Screens/game_screen.dart';
 import 'package:circle_jump/Services/high_score_store.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,24 @@ void main() {
     );
 
     expect(find.text('Distance: 0m'), findsOneWidget);
+  });
+
+  testWidgets('game screen draws terrain instead of platform ground',
+      (tester) async {
+    game.updateScreenSize(const Size(800, 600));
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: GameScreen(),
+      ),
+    );
+
+    expect(find.byWidgetPredicate((widget) {
+      return widget is CustomPaint && widget.painter is TerrainPainter;
+    }), findsOneWidget);
+    expect(find.byWidgetPredicate((widget) {
+      return widget is CustomPaint && widget.painter is PlatformPainter;
+    }), findsNothing);
   });
 
   testWidgets('escape pauses the game and shows pause actions', (tester) async {

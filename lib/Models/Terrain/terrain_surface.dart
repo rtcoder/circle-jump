@@ -10,8 +10,8 @@ class TerrainSurface {
 
   const TerrainSurface({
     this.baseHeight = 0,
-    this.amplitude = 16,
-    this.frequency = 3,
+    this.amplitude = 26,
+    this.frequency = 5,
     this.phase = 0,
   });
 
