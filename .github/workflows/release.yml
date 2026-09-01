@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -79,7 +79,7 @@ jobs:
             -DestinationPath circle-jump-windows-x64.zip
 
       - name: Upload Windows app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: circle-jump-windows-x64
           path: circle-jump-windows-x64.zip
@@ -91,7 +91,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -119,7 +119,7 @@ jobs:
         run: tar -czf circle-jump-linux-x64.tar.gz -C build/linux/x64/release/bundle .
 
       - name: Upload Linux app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: circle-jump-linux-x64
           path: circle-jump-linux-x64.tar.gz
@@ -131,7 +131,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -160,7 +160,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" circle-jump-macos.zip
 
       - name: Upload macOS app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: circle-jump-macos
           path: circle-jump-macos.zip
@@ -172,7 +172,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -200,7 +200,7 @@ jobs:
           zip -r circle-jump-ios-unsigned.ipa Payload
 
       - name: Upload unsigned iOS app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: circle-jump-ios-unsigned
           path: circle-jump-ios-unsigned.ipa
@@ -212,7 +212,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -237,13 +237,13 @@ jobs:
           cp build/app/outputs/bundle/release/app-release.aab circle-jump-android.aab
 
       - name: Upload Android APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: circle-jump-android-apk
           path: circle-jump-android.apk
 
       - name: Upload Android app bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: circle-jump-android-aab
           path: circle-jump-android.aab
@@ -260,13 +260,13 @@ jobs:
 
     steps:
       - name: Download release artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: release-artifacts
           merge-multiple: true
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           files: release-artifacts/*
