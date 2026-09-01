@@ -48,6 +48,14 @@ class PlatformPainter extends CustomPainter {
     switch (terrain) {
       case TerrainTheme.grass:
         return null;
+      case TerrainTheme.summer:
+        return const ColorFilter.mode(Color(0xFF6FD968), BlendMode.modulate);
+      case TerrainTheme.winter:
+        return const ColorFilter.mode(Color(0xFFE9FBFF), BlendMode.modulate);
+      case TerrainTheme.road:
+        return const ColorFilter.mode(Color(0xFF8D9298), BlendMode.modulate);
+      case TerrainTheme.desert:
+        return const ColorFilter.mode(Color(0xFFE8C45D), BlendMode.modulate);
       case TerrainTheme.stone:
         return const ColorFilter.mode(Color(0xFFC0C3C8), BlendMode.modulate);
       case TerrainTheme.ice:
@@ -90,12 +98,15 @@ class PlatformPainter extends CustomPainter {
     final int imageCount = (arcLength / scaledImageWidth).ceil();
 
     for (int i = 0; i < imageCount; i++) {
+      final double progress = imageCount <= 1 ? 0 : i / (imageCount - 1);
+      final double surfaceRadius =
+          platform.surfaceHeightAtProgress(progress) + center.radius;
       // Kąt dla bieżącej pozycji obrazka
       final double angle = startAngle + (i * scaledImageWidth / platformRadius);
 
       // Pozycja obrazka na okręgu
-      final double x = center.centerX + platformRadius * cos(angle);
-      final double y = center.centerY + platformRadius * sin(angle);
+      final double x = center.centerX + surfaceRadius * cos(angle);
+      final double y = center.centerY + surfaceRadius * sin(angle);
 
       // Obrót obrazka na podstawie kąta łuku i kierunku
       final double rotation = angle +
@@ -139,6 +150,10 @@ class PlatformPainter extends CustomPainter {
 
   void _drawRamp(
       Canvas canvas, RampPlatform platform, Paint paint, ui.Image? texture) {
+    if (!platform.surfaceProfile.isFlat) {
+      _drawUnevenRamp(canvas, platform, paint, texture);
+      return;
+    }
     final double centerX = (platform.startX + platform.endX) / 2;
     final double centerY = (platform.startY + platform.endY) / 2;
     final double angle =
@@ -186,6 +201,100 @@ class PlatformPainter extends CustomPainter {
       canvas.drawRect(rampRect, paint);
     }
     canvas.restore();
+  }
+
+  void _drawUnevenRamp(
+    Canvas canvas,
+    RampPlatform platform,
+    Paint paint,
+    ui.Image? texture,
+  ) {
+    final int segmentCount =
+        max(4, platform.endAngleDeg - platform.startAngleDeg)
+            .round()
+            .clamp(4, 12);
+
+    for (int i = 0; i < segmentCount; i++) {
+      final double startProgress = i / segmentCount;
+      final double endProgress = (i + 1) / segmentCount;
+      final double startAngleDeg = _lerp(
+        platform.startAngleDeg,
+        platform.endAngleDeg,
+        startProgress,
+      );
+      final double endAngleDeg = _lerp(
+        platform.startAngleDeg,
+        platform.endAngleDeg,
+        endProgress,
+      );
+      final Offset start = _positionOnPlatform(
+        startAngleDeg,
+        platform.surfaceHeightAtProgress(startProgress),
+      );
+      final Offset end = _positionOnPlatform(
+        endAngleDeg,
+        platform.surfaceHeightAtProgress(endProgress),
+      );
+
+      _drawRampSegment(canvas, platform, paint, texture, start, end);
+    }
+  }
+
+  void _drawRampSegment(
+    Canvas canvas,
+    RampPlatform platform,
+    Paint paint,
+    ui.Image? texture,
+    Offset start,
+    Offset end,
+  ) {
+    final double centerX = (start.dx + end.dx) / 2;
+    final double centerY = (start.dy + end.dy) / 2;
+    final double angle = atan2(end.dy - start.dy, end.dx - start.dx);
+    final double rampLength =
+        sqrt(pow(end.dx - start.dx, 2) + pow(end.dy - start.dy, 2));
+
+    canvas.save();
+    canvas.translate(centerX, centerY);
+    canvas.rotate(angle);
+
+    if (texture != null) {
+      final double imageWidth = texture.width.toDouble();
+      final double imageHeight = texture.height.toDouble();
+      final Rect src = Rect.fromLTWH(0, 0, imageWidth, imageHeight);
+      final Rect dst = Rect.fromCenter(
+        center: const Offset(0, 0),
+        width: rampLength,
+        height: platform.strokeWidth,
+      );
+      canvas.drawImageRect(texture, src, dst, paint);
+    } else {
+      paint.color = platform.color;
+      paint.style = PaintingStyle.fill;
+      canvas.drawRect(
+        Rect.fromCenter(
+          center: const Offset(0, 0),
+          width: rampLength,
+          height: platform.strokeWidth,
+        ),
+        paint,
+      );
+    }
+    canvas.restore();
+  }
+
+  Offset _positionOnPlatform(double angleDeg, double height) {
+    final center = game.circleCenter;
+    final angle = angleDeg * pi / 180;
+    final radius = center.radius + height;
+    return Offset(
+      center.centerX + radius * cos(angle),
+      center.centerY + radius * sin(angle),
+    );
+  }
+
+  double _lerp(double start, double end, double progress) {
+    return start + (end - start) * progress;
   }
 
   @override

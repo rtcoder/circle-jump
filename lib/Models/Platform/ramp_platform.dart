@@ -55,7 +55,15 @@ class RampPlatform extends PlatformModel {
     super.imageDirection,
     super.effect,
     super.terrain,
+    super.surfaceProfile,
   });
+
+  double surfaceHeightAtProgress(double progress) {
+    final clampedProgress = progress.clamp(0, 1).toDouble();
+    return startHeight +
+        (endHeight - startHeight) * clampedProgress +
+        surfaceProfile.offsetAt(clampedProgress);
+  }
 
   @override
   void move(double delta) {

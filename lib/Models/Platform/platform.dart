@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:circle_jump/Enums/danger_platform_type.dart';
 import 'package:circle_jump/Enums/direction.dart';
 import 'package:circle_jump/Models/movable.dart';
@@ -15,11 +17,41 @@ enum PlatformEffect {
 }
 
 enum TerrainTheme {
+  summer,
+  winter,
+  road,
   grass,
+  desert,
   stone,
   ice,
   volcanic,
   ruins,
+}
+
+class SurfaceProfile {
+  final double amplitude;
+  final double frequency;
+  final double phase;
+
+  static const flat = SurfaceProfile();
+
+  const SurfaceProfile({
+    this.amplitude = 0,
+    this.frequency = 0,
+    this.phase = 0,
+  });
+
+  bool get isFlat {
+    return amplitude == 0 || frequency == 0;
+  }
+
+  double offsetAt(double progress) {
+    if (isFlat) {
+      return 0;
+    }
+    final clampedProgress = progress.clamp(0, 1).toDouble();
+    return sin(clampedProgress * frequency * 2 * pi + phase) * amplitude;
+  }
 }
 
 abstract class PlatformModel extends Movable {
@@ -34,6 +66,7 @@ abstract class PlatformModel extends Movable {
   final Direction? imageDirection;
   final PlatformEffect effect;
   TerrainTheme terrain;
+  SurfaceProfile surfaceProfile;
   bool isConsumed = false;
 
   get startX;
@@ -56,6 +89,7 @@ abstract class PlatformModel extends Movable {
     this.imageDirection,
     this.effect = PlatformEffect.normal,
     this.terrain = TerrainTheme.grass,
+    this.surfaceProfile = SurfaceProfile.flat,
   }) : assert(
           !isDanger || dangerPlatformType != null,
           'dangerPlatformType must be provided when isDanger is true',

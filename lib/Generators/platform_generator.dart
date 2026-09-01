@@ -11,6 +11,7 @@ CurvePlatform getCurvePlatform(
     Direction? direction,
     PlatformEffect effect = PlatformEffect.normal,
     TerrainTheme terrain = TerrainTheme.grass,
+    SurfaceProfile surfaceProfile = SurfaceProfile.flat,
     double strokeWidth = 15}) {
   final startAngleRad = degreesToRadians(startAngleDeg);
   final endAngle = startAngleDeg + lengthDeg;
@@ -27,6 +28,7 @@ CurvePlatform getCurvePlatform(
     imageDirection: direction,
     effect: effect,
     terrain: terrain,
+    surfaceProfile: surfaceProfile,
     strokeWidth: strokeWidth,
   );
 }
@@ -37,6 +39,7 @@ RampPlatform getRampPlatform(
     Direction? direction,
     PlatformEffect effect = PlatformEffect.normal,
     TerrainTheme terrain = TerrainTheme.grass,
+    SurfaceProfile surfaceProfile = SurfaceProfile.flat,
     double strokeWidth = 15}) {
   final startAngleRad = degreesToRadians(startAngleDeg);
   final endAngle = startAngleDeg + lengthDeg;
@@ -54,6 +57,7 @@ RampPlatform getRampPlatform(
     imageDirection: direction,
     effect: effect,
     terrain: terrain,
+    surfaceProfile: surfaceProfile,
     strokeWidth: strokeWidth,
   );
 }

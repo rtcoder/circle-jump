@@ -7,28 +7,138 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Tag to publish, for example v0.1'
+        description: 'Tag to publish, for example v0.2'
         required: true
         type: string
 
 permissions:
   contents: write
 
+env:
+  FLUTTER_CHANNEL: stable
+  RELEASE_REF: ${{ github.event.inputs.release_tag || github.ref }}
+  RELEASE_TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
+
 jobs:
-  macos:
-    name: macOS release
-    runs-on: macos-latest
+  quality:
+    name: Analyze and test
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.release_tag || github.ref }}
+          ref: ${{ env.RELEASE_REF }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+  windows:
+    name: Windows release
+    runs-on: windows-latest
+    needs: quality
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_REF }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Package Windows app
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path build/windows/x64/runner/Release/* `
+            -DestinationPath circle-jump-windows-x64.zip
+
+      - name: Upload Windows app
+        uses: actions/upload-artifact@v4
+        with:
+          name: circle-jump-windows-x64
+          path: circle-jump-windows-x64.zip
+
+  linux:
+    name: Linux release
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_REF }}
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Linux desktop
+        run: flutter config --enable-linux-desktop
+
+      - name: Build Linux release
+        run: flutter build linux --release
+
+      - name: Package Linux app
+        run: tar -czf circle-jump-linux-x64.tar.gz -C build/linux/x64/release/bundle .
+
+      - name: Upload Linux app
+        uses: actions/upload-artifact@v4
+        with:
+          name: circle-jump-linux-x64
+          path: circle-jump-linux-x64.tar.gz
+
+  macos:
+    name: macOS release
+    runs-on: macos-latest
+    needs: quality
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_REF }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
 
       - name: Install dependencies
@@ -36,12 +146,6 @@ jobs:
 
       - name: Enable macOS desktop
         run: flutter config --enable-macos-desktop
-
-      - name: Analyze
-        run: flutter analyze
-
-      - name: Test
-        run: flutter test
 
       - name: Build macOS release
         run: flutter build macos --release
@@ -61,10 +165,110 @@ jobs:
           name: circle-jump-macos
           path: circle-jump-macos.zip
 
+  ios:
+    name: iOS release
+    runs-on: macos-latest
+    needs: quality
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_REF }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build unsigned iOS release
+        run: flutter build ios --release --no-codesign
+
+      - name: Package unsigned iOS app
+        run: |
+          APP_PATH="build/ios/iphoneos/Runner.app"
+          if [[ ! -d "$APP_PATH" ]]; then
+            echo "No iOS Runner.app found at $APP_PATH"
+            exit 1
+          fi
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/Runner.app
+          zip -r circle-jump-ios-unsigned.ipa Payload
+
+      - name: Upload unsigned iOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: circle-jump-ios-unsigned
+          path: circle-jump-ios-unsigned.ipa
+
+  android:
+    name: Android release
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_REF }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Build Android app bundle
+        run: flutter build appbundle --release
+
+      - name: Collect Android release files
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk circle-jump-android.apk
+          cp build/app/outputs/bundle/release/app-release.aab circle-jump-android.aab
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: circle-jump-android-apk
+          path: circle-jump-android.apk
+
+      - name: Upload Android app bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: circle-jump-android-aab
+          path: circle-jump-android.aab
+
+  publish:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    needs:
+      - windows
+      - linux
+      - macos
+      - ios
+      - android
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          merge-multiple: true
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
-          files: circle-jump-macos.zip
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: release-artifacts/*
           fail_on_unmatched_files: true
           generate_release_notes: true
