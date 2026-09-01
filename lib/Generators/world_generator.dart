@@ -32,12 +32,40 @@ final Map<String, _WorldPartFactory> _worldParts = {
 };
 
 const Map<TerrainTheme, List<String>> _terrainWorldParts = {
+  TerrainTheme.summer: [
+    'rollingDunes',
+    'springVaults',
+    'coinCrescent',
+    'skyBridge',
+    'bounceCanyon',
+  ],
+  TerrainTheme.winter: [
+    'iceSwitchbacks',
+    'slowClimb',
+    'rollingDunes',
+    'splitDecision',
+    'coinCrescent',
+  ],
+  TerrainTheme.road: [
+    'stoneSerpentine',
+    'splitDecision',
+    'lowTunnelRun',
+    'skyBridge',
+    'bounceCanyon',
+  ],
   TerrainTheme.grass: [
     'rollingDunes',
     'springVaults',
     'coinCrescent',
     'skyBridge',
     'bounceCanyon',
+  ],
+  TerrainTheme.desert: [
+    'rollingDunes',
+    'hazardSqueeze',
+    'bounceCanyon',
+    'stoneSerpentine',
+    'coinCrescent',
   ],
   TerrainTheme.stone: [
     'stoneSerpentine',
@@ -95,6 +123,7 @@ WorldPart generateWorldPart(
     }
     final randWorldPart = _randomWorldPart(nextStartAngle, worldName, rand)
       ..applyTerrain(selectedTerrain);
+    _applySurfaceProfiles(randWorldPart, selectedTerrain);
     final worldEndAngleDeg = randWorldPart.getEndAngleDeg();
     nextStartAngle = worldEndAngleDeg + 5;
     lastWorldName = worldName;
@@ -103,6 +132,39 @@ WorldPart generateWorldPart(
     }
   }
   return worldPart;
+}
+
+void _applySurfaceProfiles(WorldPart worldPart, TerrainTheme terrain) {
+  for (final platform in worldPart.platformCollector.items) {
+    platform.surfaceProfile = _surfaceProfileFor(terrain, platform);
+  }
+}
+
+SurfaceProfile _surfaceProfileFor(
+  TerrainTheme terrain,
+  PlatformModel platform,
+) {
+  final phase = platform.startAngleDeg / 18;
+  switch (terrain) {
+    case TerrainTheme.summer:
+      return SurfaceProfile(amplitude: 4, frequency: 1.3, phase: phase);
+    case TerrainTheme.winter:
+      return SurfaceProfile(amplitude: 6, frequency: 1.6, phase: phase);
+    case TerrainTheme.road:
+      return SurfaceProfile(amplitude: 2, frequency: 2.2, phase: phase);
+    case TerrainTheme.grass:
+      return SurfaceProfile(amplitude: 7, frequency: 1.5, phase: phase);
+    case TerrainTheme.desert:
+      return SurfaceProfile(amplitude: 11, frequency: 0.9, phase: phase);
+    case TerrainTheme.stone:
+      return SurfaceProfile(amplitude: 8, frequency: 2.6, phase: phase);
+    case TerrainTheme.ice:
+      return SurfaceProfile(amplitude: 4, frequency: 1.1, phase: phase);
+    case TerrainTheme.volcanic:
+      return SurfaceProfile(amplitude: 12, frequency: 2.0, phase: phase);
+    case TerrainTheme.ruins:
+      return SurfaceProfile(amplitude: 10, frequency: 1.8, phase: phase);
+  }
 }
 
 TerrainTheme _randomTerrain(Random random) {

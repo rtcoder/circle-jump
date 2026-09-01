@@ -58,7 +58,12 @@ class CurvePlatform extends PlatformModel {
     super.imageDirection,
     super.effect,
     super.terrain,
+    super.surfaceProfile,
   });
+
+  double surfaceHeightAtProgress(double progress) {
+    return height + surfaceProfile.offsetAt(progress);
+  }
 
   @override
   void move(double delta) {

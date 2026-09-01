@@ -121,20 +121,27 @@ class PlayerPlatformCollision {
   }
 
   double _getPlayerHeightOnPlatformCurve(CurvePlatform platform) {
-    return platform.height;
+    return platform.surfaceHeightAtProgress(_getPlayerProgressOnPlatform(
+      platform,
+    ));
   }
 
   double _getPlayerHeightOnPlatformRamp(RampPlatform platform) {
+    return platform.surfaceHeightAtProgress(_getPlayerProgressOnPlatform(
+      platform,
+    ));
+  }
+
+  double _getPlayerProgressOnPlatform(PlatformModel platform) {
     final double totalWidth = platform.endX - platform.startX;
     if (totalWidth == 0) {
-      return platform.startHeight;
+      return 0;
     }
 
     final double playerPercentage =
         (game.player.playerX - platform.startX) / totalWidth;
 
-    return platform.startHeight +
-        (platform.endHeight - platform.startHeight) * playerPercentage;
+    return playerPercentage.clamp(0, 1).toDouble();
   }
 
   HeightOnPlatform? _isOnPlatform(PlatformModel platform, double playerY) {
@@ -170,13 +177,14 @@ class PlayerPlatformCollision {
   }
 
   HeightOnPlatform? _isOnCurve(CurvePlatform platform, double playerY) {
+    final double expectedHeight = _getPlayerHeightOnPlatform(platform);
     final bool isWithinHeight =
-        (playerY - platform.height).abs() < _heightThreshold ||
-            (playerY <= platform.height &&
-                playerY >= platform.height - platform.strokeWidth);
+        (playerY - expectedHeight).abs() < _heightThreshold ||
+            (playerY <= expectedHeight &&
+                playerY >= expectedHeight - platform.strokeWidth);
     return isWithinHeight
         ? HeightOnPlatform(
-            platform.height,
+            expectedHeight,
             platform.strokeWidth,
             platform.isDanger,
             effect: platform.effect,
