@@ -4,6 +4,7 @@ import 'package:circle_jump/Generators/world_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
+import 'package:circle_jump/Models/Terrain/terrain_surface.dart';
 import 'package:circle_jump/Models/World/world_part.dart';
 import 'package:circle_jump/Models/movable.dart';
 import 'package:circle_jump/utils.dart';
@@ -13,6 +14,8 @@ class World {
   final int seed;
   late Random _random;
   double _lastWorldUpdateAngleDeg = 0;
+  double _terrainAngle = 0;
+  TerrainSurface terrainSurface = const TerrainSurface();
   final CoinOscillation coinOscillation = CoinOscillation();
 
   World({this.seed = 1}) {
@@ -35,15 +38,29 @@ class World {
 
   void clear() {
     _lastWorldUpdateAngleDeg = 0;
+    _terrainAngle = 0;
     _random = Random(seed);
     _worldPart.clear();
   }
 
   void update(double angleDelta, double frameScale) {
+    _terrainAngle = (_terrainAngle + angleDelta) % (2 * pi);
     _moveWorldElements(angleDelta);
     _removeConsumedPlatforms();
     _updateWorldCycle(angleDelta);
     coinOscillation.updateOscillation(frameScale);
+  }
+
+  double get terrainAngle {
+    return _terrainAngle;
+  }
+
+  double get terrainHeightUnderPlayer {
+    return terrainSurface.heightAtAngle(_terrainAngle);
+  }
+
+  double terrainHeightAtScreenAngle(double screenAngle) {
+    return terrainSurface.heightAtAngle(screenAngle + _terrainAngle);
   }
 
   void initWorld() {

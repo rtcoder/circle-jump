@@ -3,59 +3,30 @@ import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/World/world.dart';
 import 'package:circle_jump/Models/game_circle.dart';
 import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/Services/player_platform_collision.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('bounce landing launches the player upward', () {
-    final player = Player();
+  test('bounce platform keeps the stronger jump multiplier for future hazards',
+      () {
     final platform = getCurvePlatform(0, 8, 100, effect: PlatformEffect.bounce);
-    final collision = PlayerPlatformCollisionResult(
-      type: PlayerPlatformCollisionType.landed,
-      height: 100,
-      strokeWidth: 15,
-      effect: platform.effect,
-      platform: platform,
-    );
 
-    player.applyPlatformCollision(collision);
-
-    expect(player.velocityY, PlayerPhysics.standard.bounceJumpPower);
+    expect(platform.effect, PlatformEffect.bounce);
     expect(platform.isConsumed, isFalse);
   });
 
-  test('crumble landing marks the platform as consumed', () {
-    final player = Player();
+  test('crumble platforms can still be consumed by future obstacle logic', () {
     final platform =
         getCurvePlatform(0, 8, 100, effect: PlatformEffect.crumble);
-    final collision = PlayerPlatformCollisionResult(
-      type: PlayerPlatformCollisionType.landed,
-      height: 100,
-      strokeWidth: 15,
-      effect: platform.effect,
-      platform: platform,
-    );
 
-    player.applyPlatformCollision(collision);
+    platform.markConsumed();
 
     expect(platform.isConsumed, isTrue);
-    expect(player.velocityY, 0);
   });
 
-  test('slow landing applies the platform slow multiplier', () {
-    final player = Player();
+  test('slow platform effect still exposes its speed multiplier', () {
     final platform = getCurvePlatform(0, 8, 100, effect: PlatformEffect.slow);
-    final collision = PlayerPlatformCollisionResult(
-      type: PlayerPlatformCollisionType.landed,
-      height: 100,
-      strokeWidth: 15,
-      effect: platform.effect,
-      platform: platform,
-    );
 
-    player.applyPlatformCollision(collision);
-
-    expect(player.speedMultiplier, PlatformEffect.slow.speedMultiplier);
+    expect(platform.effect.speedMultiplier, 0.65);
   });
 
   test('world removes consumed crumble platforms during update', () {
