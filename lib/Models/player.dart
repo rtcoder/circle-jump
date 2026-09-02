@@ -38,11 +38,11 @@ class Player {
   }
 
   double get playerX {
-    return game.screenSize.width / 2;
+    return game.world.playerScreenX(game.screenSize.width);
   }
 
   double get playerYAbsolutePosition {
-    return (game.screenSize.height / 2) - playerY;
+    return game.world.terrainBaselineY(game.screenSize.height) - playerY;
   }
 
   void restart() {
@@ -56,7 +56,7 @@ class Player {
   }
 
   void update(double frameScale) {
-    _incrementPlayerAngle(frameScale);
+    _incrementPlayerAngle();
     _updatePlayerY(frameScale);
   }
 
@@ -88,11 +88,7 @@ class Player {
     playerY = newY;
   }
 
-  void _incrementPlayerAngle(double frameScale) {
-    playerAngle += _calculatePlayerAngleDelta() * frameScale;
-  }
-
-  double _calculatePlayerAngleDelta() {
-    return game.gameCircle.angleDelta * game.gameCircle.radius / radius;
+  void _incrementPlayerAngle() {
+    playerAngle += game.gameCircle.movementDistanceDelta / radius;
   }
 }

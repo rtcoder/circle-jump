@@ -1,23 +1,21 @@
 import 'dart:math';
 
-import 'package:circle_jump/Generators/world_generator.dart';
 import 'package:circle_jump/Models/Coin/coin.dart';
 import 'package:circle_jump/Models/Coin/coin_oscillation.dart';
 import 'package:circle_jump/Models/Platform/platform.dart';
 import 'package:circle_jump/Models/Terrain/terrain_surface.dart';
 import 'package:circle_jump/Models/World/world_part.dart';
 import 'package:circle_jump/Models/movable.dart';
-import 'package:circle_jump/utils.dart';
 
 class World {
-  static const double terrainSurfaceOffset = 17;
+  static const double terrainLookAhead = 160;
+  static const double pixelsPerMeter = 8;
 
   final WorldPart _worldPart = WorldPart();
   final int seed;
   late Random _random;
-  double _lastWorldUpdateAngleDeg = 0;
-  double _terrainAngle = 0;
-  TerrainSurface terrainSurface = const TerrainSurface();
+  double _distance = 0;
+  TerrainSurface terrainSurface = TerrainSurface.generateInitial();
   final CoinOscillation coinOscillation = CoinOscillation();
 
   World({this.seed = 1}) {
@@ -39,49 +37,58 @@ class World {
   }
 
   void clear() {
-    _lastWorldUpdateAngleDeg = 0;
-    _terrainAngle = 0;
+    _distance = 0;
     _random = Random(seed);
+    terrainSurface = TerrainSurface.generateInitial(random: _random);
     _worldPart.clear();
   }
 
-  void update(double angleDelta, double frameScale) {
-    _terrainAngle = (_terrainAngle + angleDelta) % (2 * pi);
-    _moveWorldElements(angleDelta);
+  void update(double distanceDelta, double frameScale) {
+    _distance += distanceDelta;
+    terrainSurface.ensureGeneratedThrough(
+      _distance + terrainLookAhead,
+      random: _random,
+    );
     _removeConsumedPlatforms();
-    _updateWorldCycle(angleDelta);
     coinOscillation.updateOscillation(frameScale);
   }
 
-  double get terrainAngle {
-    return _terrainAngle;
+  double get distance {
+    return _distance;
   }
 
   double get terrainHeightUnderPlayer {
-    return terrainSurfaceOffset + terrainHeightAtScreenAngle(-pi / 2);
+    return terrainSurface.heightAtDistance(_distance);
   }
 
-  double terrainHeightAtScreenAngle(double screenAngle) {
-    return terrainSurface.heightAtAngle(screenAngle + _terrainAngle);
+  double terrainHeightAtWorldDistance(double distance) {
+    return terrainSurface.heightAtDistance(distance);
+  }
+
+  double terrainBaselineY(double screenHeight) {
+    return screenHeight * 0.72;
+  }
+
+  double playerScreenX(double screenWidth) {
+    return screenWidth * 0.35;
+  }
+
+  double screenXToWorldDistance(double screenX, double screenWidth) {
+    return _distance + (screenX - playerScreenX(screenWidth)) / pixelsPerMeter;
   }
 
   void initWorld() {
-    final worldPart = generateWorldPart(-80, 180, random: _random);
-    _worldPart.add(worldPart);
+    terrainSurface.ensureGeneratedThrough(
+      TerrainSurface.initialLength,
+      random: _random,
+    );
   }
 
   void removeCollectedCoins(List<Coin> collectedCoins) {
     _worldPart.coinCollector.removeMany(collectedCoins);
   }
 
-  void _updateWorldData() {
-    final double startAngleDeg = _worldPart.getEndAngleDeg();
-    final worldPart = generateWorldPart(startAngleDeg, 180, random: _random);
-    _worldPart.add(worldPart);
-    _worldPart.removeUnnecessaryItems();
-  }
-
-  void _moveWorldElements(double angleDelta) {
+  void moveWorldElements(double angleDelta) {
     final List<Movable> elements = [...getPlatforms(), ...getCoins()];
     for (final element in elements) {
       element.move(angleDelta);
@@ -92,13 +99,5 @@ class World {
     _worldPart.platformCollector.items.removeWhere((platform) {
       return platform.isConsumed;
     });
-  }
-
-  void _updateWorldCycle(double angleDelta) {
-    _lastWorldUpdateAngleDeg += radiansToDegrees(angleDelta);
-    if (_lastWorldUpdateAngleDeg > 90) {
-      _lastWorldUpdateAngleDeg = 0;
-      _updateWorldData();
-    }
   }
 }

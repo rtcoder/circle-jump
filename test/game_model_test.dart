@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:circle_jump/Models/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,12 +25,12 @@ void main() {
     game.updateScreenSize(const Size(800, 600));
     game.restart();
     game.pause();
-    final startAngle = game.gameCircle.angle;
+    final startDistance = game.world.distance;
 
     game.update(frame);
 
     expect(game.state, GameState.paused);
-    expect(game.gameCircle.angle, startAngle);
+    expect(game.world.distance, startDistance);
   });
 
   test('paused game can resume updates', () {
@@ -44,7 +42,7 @@ void main() {
     game.update(frame);
 
     expect(game.state, GameState.playing);
-    expect(game.gameCircle.angle, isNot(0));
+    expect(game.world.distance, greaterThan(0));
   });
 
   test('game update advances by the provided frame duration', () {
@@ -56,25 +54,33 @@ void main() {
     expect(game.gameCircle.lastFrameDuration, frame);
   });
 
-  test('world movement is scaled by the provided frame duration', () {
+  test('world distance is scaled by the provided frame duration', () {
     const longFrame = Duration(milliseconds: 32);
     game.updateScreenSize(const Size(800, 600));
     game.restart();
-    final platform = game.world.getPlatforms().first;
-    final startAngleDeg = platform.startAngleDeg;
 
     game.update(longFrame);
 
     expect(
-      platform.startAngleDeg,
+      game.world.distance,
       closeTo(
-        startAngleDeg -
-            game.gameCircle.angleDelta *
-                game.gameCircle.frameScale *
-                180 /
-                pi,
+        game.gameCircle.speedMetersPerFrame * game.gameCircle.frameScale,
         0.000001,
       ),
     );
+  });
+
+  test('world generates more straight terrain ahead as distance advances', () {
+    game.updateScreenSize(const Size(800, 600));
+    game.restart();
+    final generatedBefore = game.world.terrainSurface.generatedUntil;
+
+    for (int i = 0; i < 500; i++) {
+      game.update(frame);
+    }
+
+    expect(game.world.distance, greaterThan(40));
+    expect(
+        game.world.terrainSurface.generatedUntil, greaterThan(generatedBefore));
   });
 }

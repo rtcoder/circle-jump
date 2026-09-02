@@ -1,17 +1,15 @@
-import 'package:circle_jump/Models/player.dart';
-import 'package:circle_jump/utils.dart';
-
 class GameCircle {
-  final double _baseAngleDelta = 0.002;
-  final double _maxAngleDelta = 0.005;
+  static const double _targetFrameMs = 1000 / 60;
+  static const double _baseSpeedMetersPerFrame = 0.12;
+  static const double _maxSpeedMetersPerFrame = 0.34;
+
   double _distance = 0;
-  double angleDelta = 0.002;
-  double movementAngleDelta = 0.002;
+  double speedMetersPerFrame = _baseSpeedMetersPerFrame;
+  double movementDistanceDelta = _baseSpeedMetersPerFrame;
   double angle = 0;
   double angleDeg = 0;
-  Duration lastFrameDuration = Duration.zero;
   final radius = 1000.0;
-  static const double _targetFrameMs = 1000 / 60;
+  Duration lastFrameDuration = Duration.zero;
 
   String get distanceHuman {
     if (_distance < 1000) {
@@ -22,8 +20,8 @@ class GameCircle {
 
   void clear() {
     _distance = 0;
-    angleDelta = 0.002;
-    movementAngleDelta = 0.002;
+    speedMetersPerFrame = _baseSpeedMetersPerFrame;
+    movementDistanceDelta = _baseSpeedMetersPerFrame;
     angle = 0;
     angleDeg = 0;
     lastFrameDuration = Duration.zero;
@@ -36,34 +34,27 @@ class GameCircle {
     return lastFrameDuration.inMicroseconds / (_targetFrameMs * 1000);
   }
 
-  double get frameAngleDelta {
-    return angleDelta * frameScale;
+  double get frameDistanceDelta {
+    return speedMetersPerFrame * frameScale;
   }
 
   void update(
-    Player player,
     Duration frameDuration, [
     double speedMultiplier = 1,
   ]) {
     lastFrameDuration = frameDuration;
-    movementAngleDelta = frameAngleDelta * speedMultiplier;
-    _updateDistance(player.radius);
-    _updateAngleDelta();
-    _incrementCircleAngle();
+    movementDistanceDelta = frameDistanceDelta * speedMultiplier;
+    _updateDistance();
+    _updateSpeed();
   }
 
-  void _incrementCircleAngle() {
-    angle += movementAngleDelta;
-    angleDeg = radiansToDegrees(angle);
-  }
-
-  void _updateAngleDelta() {
-    if (_distance > 10 && angleDelta < _maxAngleDelta) {
-      angleDelta = _baseAngleDelta * (1 + (_distance / 1000) * 2);
+  void _updateSpeed() {
+    if (_distance > 10 && speedMetersPerFrame < _maxSpeedMetersPerFrame) {
+      speedMetersPerFrame = _baseSpeedMetersPerFrame * (1 + _distance / 900);
     }
   }
 
-  void _updateDistance(double playerRadius) {
-    _distance += movementAngleDelta * playerRadius;
+  void _updateDistance() {
+    _distance += movementDistanceDelta;
   }
 }
