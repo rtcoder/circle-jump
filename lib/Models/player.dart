@@ -1,4 +1,5 @@
 import 'package:circle_jump/Models/game.dart';
+import 'package:circle_jump/Models/World/world.dart';
 
 class PlayerPhysics {
   final double gravity;
@@ -89,6 +90,7 @@ class Player {
   }
 
   void _incrementPlayerAngle() {
-    playerAngle += game.gameCircle.movementDistanceDelta / radius;
+    playerAngle +=
+        (game.gameCircle.movementDistanceDelta * World.pixelsPerMeter) / radius;
   }
 }
