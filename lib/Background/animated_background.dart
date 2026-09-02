@@ -36,11 +36,11 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
     super.dispose();
   }
 
-  void _updateClouds(double timeDelta) {
+  void _updateClouds(double timeDelta, double screenWidth) {
     final frameScale = timeDelta / _targetFrameMs;
     for (int i = 0; i < _clouds.length; i++) {
       final cloud = _clouds[i];
-      cloud.move(frameScale);
+      cloud.move(frameScale, screenWidth: screenWidth);
     }
   }
 
@@ -56,11 +56,10 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             : (elapsed - _lastElapsed).inMicroseconds / 1000;
         _lastElapsed = elapsed;
 
-        _updateClouds(timeDelta);
-
         final backgroundColor = getBackgroundColor(time);
 
         final size = MediaQuery.of(context).size;
+        _updateClouds(timeDelta, size.width);
 
         return Stack(
           children: [

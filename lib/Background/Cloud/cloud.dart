@@ -1,33 +1,23 @@
-import 'dart:math';
-
 class Cloud {
-  double heightOverGround; // Pozycja Y chmury
-  double size; // Rozmiar chmury
-  double speed; // Szybkość przesuwania
-  double angle; // Szybkość przesuwania
-  double opacity; // Szybkość przesuwania
+  double x;
+  double y;
+  double size;
+  double speed;
+  double opacity;
 
   Cloud({
-    required this.heightOverGround,
+    required this.x,
+    required this.y,
     required this.size,
     required this.speed,
-    required this.angle,
     required this.opacity,
   });
 
-  void move(double frameScale) {
-    angle -= speed * frameScale;
-  }
+  void move(double frameScale, {double? screenWidth}) {
+    x -= speed * frameScale;
 
-  double _calculateRadius(double radius) {
-    return radius + heightOverGround;
-  }
-
-  double calculateX(double centerX, double radius) {
-    return centerX + _calculateRadius(radius) * cos(angle);
-  }
-
-  double calculateY(double centerY, double radius) {
-    return centerY + _calculateRadius(radius) * sin(angle);
+    if (screenWidth != null && x < -size * 3) {
+      x = screenWidth + size;
+    }
   }
 }
